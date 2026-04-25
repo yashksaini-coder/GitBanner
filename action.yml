@@ -1,0 +1,57 @@
+name: GitBanner
+description: Generate a personalized GitHub stats banner (SVG + PNG) for your profile README — total commits, stars, language distribution, project highlights, and your coding persona.
+author: yashksaini-coder
+branding:
+  icon: bar-chart-2
+  color: purple
+
+inputs:
+  github-token:
+    description: |
+      A GitHub personal access token used to query the GraphQL/REST APIs.
+      Required scopes: read:user (and repo if include-private is true).
+      Defaults to ${{ github.token }} but a PAT is recommended for full data.
+    required: true
+
+  username:
+    description: GitHub login to render. Defaults to the repository owner.
+    required: false
+    default: ''
+
+  theme:
+    description: Theme name. Currently supported: dark.
+    required: false
+    default: dark
+
+  format:
+    description: Output format — svg, png, or both.
+    required: false
+    default: both
+
+  output-path:
+    description: Output path without extension. Files are written as <output-path>.svg and <output-path>.png.
+    required: false
+    default: gitbanner
+
+  include-private:
+    description: Include private repository stats (requires repo scope on the token).
+    required: false
+    default: 'false'
+
+  commit:
+    description: When true, commit and push the regenerated card if it changed.
+    required: false
+    default: 'true'
+
+  commit-message:
+    description: Commit message used when committing the regenerated card.
+    required: false
+    default: 'chore: refresh GitBanner stats'
+
+outputs:
+  card-path:
+    description: Filesystem path of the primary generated card (SVG by default, PNG if format=png).
+
+runs:
+  using: node20
+  main: dist/index.js
