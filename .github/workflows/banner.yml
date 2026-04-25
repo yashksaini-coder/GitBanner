@@ -1,0 +1,21 @@
+name: Refresh GitBanner
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./
+        with:
+          github-token: ${{ secrets.GITBANNER_PAT || github.token }}
+          username: ${{ github.repository_owner }}
+          theme: dark
+          format: both
+          output-path: examples/preview
