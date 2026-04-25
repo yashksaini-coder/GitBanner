@@ -1,0 +1,156 @@
+{
+  "profile": {
+    "login": "yashksaini-coder",
+    "name": "Yash K Saini",
+    "createdAt": "2022-01-15T00:00:00Z"
+  },
+  "repos": [
+    {
+      "name": "yashksaini-coder",
+      "isPrivate": false,
+      "isFork": false,
+      "createdAt": "2023-06-01T00:00:00Z",
+      "pushedAt": "2026-04-01T00:00:00Z",
+      "stargazerCount": 12,
+      "forkCount": 2,
+      "primaryLanguage": "TypeScript",
+      "languages": [
+        { "name": "TypeScript", "size": 800000, "color": "#3178c6" },
+        { "name": "Python", "size": 80000, "color": "#3572a5" }
+      ],
+      "userCommits": 1000
+    },
+    {
+      "name": "Leetcode",
+      "isPrivate": false,
+      "isFork": false,
+      "createdAt": "2024-09-01T00:00:00Z",
+      "pushedAt": "2025-12-22T00:00:00Z",
+      "stargazerCount": 18,
+      "forkCount": 4,
+      "primaryLanguage": "Python",
+      "languages": [
+        { "name": "Python", "size": 600000, "color": "#3572a5" },
+        { "name": "Jupyter Notebook", "size": 200000, "color": "#DA5B0B" }
+      ],
+      "userCommits": 541
+    },
+    {
+      "name": "py-libp2p",
+      "isPrivate": false,
+      "isFork": false,
+      "createdAt": "2024-02-10T00:00:00Z",
+      "pushedAt": "2025-08-01T00:00:00Z",
+      "stargazerCount": 4,
+      "forkCount": 1,
+      "primaryLanguage": "Python",
+      "languages": [{ "name": "Python", "size": 400000, "color": "#3572a5" }],
+      "userCommits": 273
+    },
+    {
+      "name": "Leetcode-Journal",
+      "isPrivate": false,
+      "isFork": false,
+      "createdAt": "2024-04-01T00:00:00Z",
+      "pushedAt": "2025-03-22T00:00:00Z",
+      "stargazerCount": 26,
+      "forkCount": 5,
+      "primaryLanguage": "TypeScript",
+      "languages": [
+        { "name": "TypeScript", "size": 300000, "color": "#3178c6" },
+        { "name": "JavaScript", "size": 50000, "color": "#f1e05a" },
+        { "name": "HTML", "size": 30000, "color": "#e34c26" }
+      ],
+      "userCommits": 145
+    },
+    {
+      "name": "Prodigy-InfoTech",
+      "isPrivate": false,
+      "isFork": false,
+      "createdAt": "2024-06-01T00:00:00Z",
+      "pushedAt": "2025-02-01T00:00:00Z",
+      "stargazerCount": 25,
+      "forkCount": 8,
+      "primaryLanguage": "C++",
+      "languages": [
+        { "name": "C++", "size": 200000, "color": "#f34b7d" },
+        { "name": "Java", "size": 50000, "color": "#b07219" }
+      ],
+      "userCommits": 98
+    },
+    {
+      "name": "CodePen",
+      "isPrivate": false,
+      "isFork": false,
+      "createdAt": "2024-03-01T00:00:00Z",
+      "pushedAt": "2025-01-15T00:00:00Z",
+      "stargazerCount": 23,
+      "forkCount": 3,
+      "primaryLanguage": "HTML",
+      "languages": [
+        { "name": "HTML", "size": 150000, "color": "#e34c26" },
+        { "name": "CSS", "size": 80000, "color": "#563d7c" },
+        { "name": "JavaScript", "size": 40000, "color": "#f1e05a" }
+      ],
+      "userCommits": 71
+    },
+    {
+      "name": "C_coding",
+      "isPrivate": false,
+      "isFork": false,
+      "createdAt": "2023-01-01T00:00:00Z",
+      "pushedAt": "2024-08-23T00:00:00Z",
+      "stargazerCount": 5,
+      "forkCount": 1,
+      "primaryLanguage": "C",
+      "languages": [{ "name": "C", "size": 250000, "color": "#555555" }],
+      "userCommits": 88
+    },
+    {
+      "name": "Turbine_Q1_26",
+      "isPrivate": false,
+      "isFork": false,
+      "createdAt": "2026-01-25T00:00:00Z",
+      "pushedAt": "2026-04-20T00:00:00Z",
+      "stargazerCount": 3,
+      "forkCount": 0,
+      "primaryLanguage": "Rust",
+      "languages": [
+        { "name": "Rust", "size": 180000, "color": "#dea584" },
+        { "name": "Cairo", "size": 40000, "color": "#ff4a48" }
+      ],
+      "userCommits": 84
+    },
+    {
+      "name": "lua-experiments",
+      "isPrivate": false,
+      "isFork": false,
+      "createdAt": "2024-12-01T00:00:00Z",
+      "pushedAt": "2025-03-12T00:00:00Z",
+      "stargazerCount": 2,
+      "forkCount": 0,
+      "primaryLanguage": "Lua",
+      "languages": [{ "name": "Lua", "size": 30000, "color": "#000080" }],
+      "userCommits": 21
+    },
+    {
+      "name": "starter-fork",
+      "isPrivate": false,
+      "isFork": true,
+      "createdAt": "2024-05-01T00:00:00Z",
+      "pushedAt": "2024-05-02T00:00:00Z",
+      "stargazerCount": 0,
+      "forkCount": 0,
+      "primaryLanguage": "JavaScript",
+      "languages": [{ "name": "JavaScript", "size": 1000, "color": "#f1e05a" }],
+      "userCommits": 0
+    }
+  ],
+  "contributionsByYear": [
+    { "year": 2022, "commits": 50 },
+    { "year": 2023, "commits": 800 },
+    { "year": 2024, "commits": 1700 },
+    { "year": 2025, "commits": 1500 },
+    { "year": 2026, "commits": 557 }
+  ]
+}
