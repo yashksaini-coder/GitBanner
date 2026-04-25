@@ -1,0 +1,33 @@
+{
+  "name": "gitbanner",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "GitHub Marketplace Action that renders a personalized GitHub stats card (SVG + PNG) for your profile README.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "ncc build src/index.ts -o dist --minify --license licenses.txt && node scripts/inject-esm-shim.mjs",
+    "dev": "tsx src/cli.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "package": "npm run build"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@actions/core": "^1.11.1",
+    "@actions/github": "^6.0.0",
+    "@octokit/graphql": "^8.1.1",
+    "@octokit/rest": "^21.0.2",
+    "@resvg/resvg-js": "^2.6.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.16.5",
+    "@vercel/ncc": "^0.38.2",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.2",
+    "vitest": "^2.1.1"
+  }
+}
