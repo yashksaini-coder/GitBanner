@@ -34,3 +34,21 @@ export function fitFontSize(
   }
   return sizes[sizes.length - 1];
 }
+
+// Pick the largest font size that fits — and if even the smallest size
+// overflows, truncate the text with an ellipsis so the label stays inside
+// `maxWidth`.
+export function fitText(
+  text: string,
+  maxWidth: number,
+  sizes: number[],
+  widthRatio = 0.55,
+): { text: string; size: number } {
+  for (const size of sizes) {
+    if (text.length * size * widthRatio <= maxWidth) return { text, size };
+  }
+  const smallest = sizes[sizes.length - 1];
+  const maxChars = Math.max(1, Math.floor(maxWidth / (smallest * widthRatio)) - 1);
+  if (text.length <= maxChars) return { text, size: smallest };
+  return { text: text.slice(0, maxChars) + '…', size: smallest };
+}

@@ -313,7 +313,7 @@ function goToLanguageTile(p: StatsPayload, theme: Theme, col: number, cols: numb
     iconBgColor: theme.accents.code,
     iconStroke: theme.accents.code,
     value: p.goToLanguage.name,
-    subLine: `your go-to language (${formatNumber(p.goToLanguage.reposUsing)} repos)`,
+    subLine: `your go-to · ${formatNumber(p.goToLanguage.reposUsing)} repos`,
     theme,
   });
 }
