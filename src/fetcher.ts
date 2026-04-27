@@ -4,7 +4,6 @@ import type { RawData, Repo, RepoLanguage, YearlyContribution } from './types.js
 interface FetchOptions {
   username: string;
   token: string;
-  includePrivate: boolean;
 }
 
 interface RepoNode {
@@ -31,6 +30,8 @@ interface ProfileResponse {
     login: string;
     name: string | null;
     createdAt: string;
+    followers: { totalCount: number };
+    following: { totalCount: number };
     repositories: {
       pageInfo: { hasNextPage: boolean; endCursor: string | null };
       nodes: RepoNode[];
@@ -50,18 +51,22 @@ const REPO_QUERY = /* GraphQL */ `
   query Repos(
     $login: String!
     $cursor: String
-    $privacy: RepositoryPrivacy
     $authorId: ID!
   ) {
     user(login: $login) {
       login
       name
       createdAt
+      followers {
+        totalCount
+      }
+      following {
+        totalCount
+      }
       repositories(
         first: 50
         after: $cursor
         ownerAffiliations: [OWNER]
-        privacy: $privacy
         orderBy: { field: CREATED_AT, direction: ASC }
       ) {
         pageInfo {
@@ -131,15 +136,13 @@ export async function fetchAll(opts: FetchOptions): Promise<RawData> {
   const authorId = await fetchUserNodeId(client, opts.username);
 
   const repos: Repo[] = [];
-  const privacy = opts.includePrivate ? null : 'PUBLIC';
   let cursor: string | null = null;
-  let profile: { login: string; name: string | null; createdAt: string } | null = null;
+  let profile: RawData['profile'] | null = null;
 
   while (true) {
     const data = (await client<ProfileResponse>(REPO_QUERY, {
       login: opts.username,
       cursor,
-      privacy,
       authorId,
     })) as ProfileResponse;
 
@@ -148,6 +151,8 @@ export async function fetchAll(opts: FetchOptions): Promise<RawData> {
         login: data.user.login,
         name: data.user.name,
         createdAt: data.user.createdAt,
+        followers: data.user.followers.totalCount,
+        following: data.user.following.totalCount,
       };
     }
 
@@ -155,8 +160,9 @@ export async function fetchAll(opts: FetchOptions): Promise<RawData> {
       repos.push(toRepo(node));
     }
 
-    if (!data.user.repositories.pageInfo.hasNextPage) break;
-    cursor = data.user.repositories.pageInfo.endCursor;
+    const pageInfo = data.user.repositories.pageInfo;
+    if (!pageInfo.hasNextPage || !pageInfo.endCursor) break;
+    cursor = pageInfo.endCursor;
   }
 
   if (!profile) {

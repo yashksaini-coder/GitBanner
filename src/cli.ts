@@ -14,6 +14,7 @@ interface CliArgs {
   format: 'svg' | 'png' | 'both';
   fixture?: string;
   includePrivate: boolean;
+  exclude: string[];
 }
 
 async function main(): Promise<void> {
@@ -31,12 +32,15 @@ async function main(): Promise<void> {
     raw = await fetchAll({
       username: args.user,
       token,
-      includePrivate: args.includePrivate,
     });
   }
 
-  console.log(`Aggregating: ${raw.repos.length} repos`);
-  const payload = aggregate(raw);
+  const excludeRepos = computeExclude(args.exclude, raw.profile.login);
+  console.log(`Aggregating: ${raw.repos.length} repos (excluding ${excludeRepos.length})`);
+  const payload = aggregate(raw, {
+    excludeRepos,
+    includePrivate: args.includePrivate,
+  });
   console.log(
     `  ${payload.totalCommits} commits · ${payload.totalStars} stars · ${payload.languageCount} languages · persona=${payload.persona.label}`,
   );
@@ -70,6 +74,7 @@ function parseArgs(argv: string[]): CliArgs {
     theme: 'dark',
     format: 'both',
     includePrivate: false,
+    exclude: [],
   };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
@@ -103,6 +108,12 @@ function parseArgs(argv: string[]): CliArgs {
       case '--include-private':
         args.includePrivate = true;
         break;
+      case '--exclude':
+        args.exclude = next()
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean);
+        break;
       case '--help':
       case '-h':
         printHelp();
@@ -130,11 +141,21 @@ Options:
   --format             svg | png | both (default: both)
   --fixture            Load RawData from a JSON fixture instead of fetching
   --include-private    Include private repo stats
+  --exclude            Comma-separated repo names to exclude (the user's
+                       profile README repo is always excluded automatically)
 `);
 }
 
 async function ensureDir(filePath: string): Promise<void> {
   await mkdir(dirname(filePath), { recursive: true });
+}
+
+function computeExclude(userExcludes: string[], login: string): string[] {
+  const list = [...userExcludes];
+  if (!list.some((r) => r.toLowerCase() === login.toLowerCase())) {
+    list.push(login);
+  }
+  return list;
 }
 
 main().catch((err) => {

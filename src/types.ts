@@ -2,6 +2,8 @@ export interface Profile {
   login: string;
   name: string | null;
   createdAt: string;
+  followers: number;
+  following: number;
 }
 
 export interface RepoLanguage {
@@ -87,15 +89,20 @@ export interface StatsPayload {
 
   publicCount: number;
   privateCount: number;
-  forkCount: number;
+  forkedRepoCount: number;
   ownedCount: number;
+  incomingForks: number;
 
   oldestProject: ProjectRef;
   latestProject: ProjectRef;
   mostActiveProject: ProjectRef & { commits: number };
 
   yearsCoding: number;
+  bestYear: { year: number; commits: number };
   goToLanguage: { name: string; reposUsing: number; color: string };
+
+  followers: number;
+  following: number;
 
   persona: Persona;
 }

@@ -21,12 +21,15 @@ async function run(): Promise<void> {
     const commitMessage =
       core.getInput('commit-message') || 'chore: refresh GitBanner stats';
     const shouldCommit = parseBool(core.getInput('commit'), true);
+    const excludeRepos = parseExclude(core.getInput('exclude'), username);
 
     core.info(`Fetching GitHub data for ${username}...`);
-    const raw = await fetchAll({ username, token, includePrivate });
+    const raw = await fetchAll({ username, token });
 
-    core.info(`Aggregating ${raw.repos.length} repos...`);
-    const payload = aggregate(raw);
+    core.info(
+      `Aggregating ${raw.repos.length} repos (excluding ${excludeRepos.length}: ${excludeRepos.join(', ') || 'none'})...`,
+    );
+    const payload = aggregate(raw, { excludeRepos, includePrivate });
     core.info(
       `${payload.totalCommits} commits · ${payload.totalStars} stars · ${payload.languageCount} languages · persona="${payload.persona.label}"`,
     );
@@ -83,6 +86,18 @@ function parseBool(input: string, fallback: boolean): boolean {
   if (v === 'true' || v === 'yes' || v === '1') return true;
   if (v === 'false' || v === 'no' || v === '0') return false;
   return fallback;
+}
+
+function parseExclude(input: string, username: string): string[] {
+  const fromInput = input
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  // Always exclude the profile README repo (repo named after the user).
+  if (!fromInput.some((r) => r.toLowerCase() === username.toLowerCase())) {
+    fromInput.push(username);
+  }
+  return fromInput;
 }
 
 run();

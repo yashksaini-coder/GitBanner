@@ -38,6 +38,15 @@ inputs:
     required: false
     default: 'false'
 
+  exclude:
+    description: |
+      Comma-separated list of repository names to exclude from per-repo
+      calculations (top lists, languages, project highlights). The user's
+      profile README repo (a repo named exactly after the user) is always
+      excluded automatically.
+    required: false
+    default: ''
+
   commit:
     description: When true, commit and push the regenerated card if it changed.
     required: false

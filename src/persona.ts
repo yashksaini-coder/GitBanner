@@ -17,8 +17,8 @@ const RULES: PersonaRule[] = [
     tagline: 'Your work is loved!',
     iconKey: 'star-burst',
     accentColor: '#facc15',
-    test: (s) => s.totalStars >= 500 || s.forkCount >= 20,
-    score: (s) => s.totalStars * 2 + s.forkCount * 5,
+    test: (s) => s.totalStars >= 500 || s.incomingForks >= 50,
+    score: (s) => s.totalStars * 2 + s.incomingForks * 3,
   },
   {
     key: 'polyglot',
