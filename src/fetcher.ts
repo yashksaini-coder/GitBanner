@@ -58,7 +58,7 @@ const REPO_QUERY = /* GraphQL */ `
       name
       createdAt
       repositories(
-        first: 100
+        first: 50
         after: $cursor
         ownerAffiliations: [OWNER]
         privacy: $privacy
