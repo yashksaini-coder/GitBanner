@@ -1,10 +1,13 @@
 import { Resvg } from '@resvg/resvg-js';
+import { existsSync, readFileSync } from 'node:fs';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { aggregate } from './compute.js';
 import { fetchAll } from './fetcher.js';
 import { toSvg } from './render/svg.js';
 import type { RawData, ThemeName } from './types.js';
+
+loadDotEnv();
 
 interface CliArgs {
   user?: string;
@@ -148,6 +151,19 @@ Options:
 
 async function ensureDir(filePath: string): Promise<void> {
   await mkdir(dirname(filePath), { recursive: true });
+}
+
+function loadDotEnv(): void {
+  if (!existsSync('.env')) return;
+  for (const line of readFileSync('.env', 'utf8').split('\n')) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) continue;
+    const eq = trimmed.indexOf('=');
+    if (eq === -1) continue;
+    const key = trimmed.slice(0, eq).trim();
+    const value = trimmed.slice(eq + 1).trim().replace(/^["']|["']$/g, '');
+    if (!process.env[key]) process.env[key] = value;
+  }
 }
 
 function computeExclude(userExcludes: string[], login: string): string[] {
