@@ -98,6 +98,31 @@ describe('aggregate', () => {
     expect(stats2.mostActiveProject.name).not.toBe('yashksaini-coder');
   });
 
+  it('excluded repos still contribute to totalCommits but nothing else', () => {
+    const base = aggregate(raw);
+    const excluded = aggregate(raw, { excludeRepos: ['yashksaini-coder'] });
+
+    // totalCommits is computed from a wider scope that ignores the exclude
+    // list, so the headline number is preserved.
+    expect(excluded.totalCommits).toBe(base.totalCommits);
+
+    // Stars drop by the excluded repo's stargazer count.
+    const readme = raw.repos.find((r) => r.name === 'yashksaini-coder');
+    expect(excluded.totalStars).toBe(base.totalStars - readme!.stargazerCount);
+
+    // The excluded repo no longer appears in top-by-commits or as most active.
+    expect(excluded.topReposByCommits.find((r) => r.name === 'yashksaini-coder')).toBeUndefined();
+    expect(excluded.mostActiveProject.name).not.toBe('yashksaini-coder');
+
+    // avgCommitsPerRepo recomputed without the excluded repo's commits AND
+    // without it in the denominator.
+    const aggReposWithout = raw.repos.filter(
+      (r) => !r.isFork && !r.isPrivate && r.name !== 'yashksaini-coder',
+    );
+    const sumWithout = aggReposWithout.reduce((s, r) => s + r.userCommits, 0);
+    expect(excluded.avgCommitsPerRepo).toBe(Math.round(sumWithout / aggReposWithout.length));
+  });
+
   it('picks oldest, latest, and most-active projects correctly', () => {
     expect(stats.oldestProject.name).toBe('C_coding');
     expect(stats.latestProject.name).toBe('Turbine_Q1_26');

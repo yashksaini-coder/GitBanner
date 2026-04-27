@@ -36,12 +36,22 @@ export function aggregate(raw: RawData, options: AggregateOptions = {}): StatsPa
   // so the displayed top-N lists never leak private names.
   const aggRepos = includePrivate ? ownedRepos : ownedRepos.filter((r) => !r.isPrivate);
 
-  const repoSumCommits = aggRepos.reduce((sum, r) => sum + r.userCommits, 0);
+  // Total commits counts every owned repo we can see — including repos in
+  // `excludeRepos` (e.g. the profile README) — so the headline reflects the
+  // user's full activity. Excluded repos are still removed from per-repo
+  // aggregations (top lists, languages, project highlights, avg).
+  const allOwnedRepos = raw.repos.filter((r) => !r.isFork);
+  const commitsScope = includePrivate
+    ? allOwnedRepos
+    : allOwnedRepos.filter((r) => !r.isPrivate);
+  const totalCommitsFromRepos = commitsScope.reduce((sum, r) => sum + r.userCommits, 0);
+
+  const aggRepoSumCommits = aggRepos.reduce((sum, r) => sum + r.userCommits, 0);
   const contribSum = raw.contributionsByYear.reduce((sum, y) => sum + y.commits, 0);
   // Display the larger of the two sources — repo history undercounts when
   // contributions live in repos we can't query, while contributions overcount
   // for users who heavily review/comment.
-  const totalCommits = Math.max(repoSumCommits, contribSum);
+  const totalCommits = Math.max(totalCommitsFromRepos, contribSum);
 
   const totalStars = aggRepos.reduce((sum, r) => sum + r.stargazerCount, 0);
 
@@ -61,9 +71,10 @@ export function aggregate(raw: RawData, options: AggregateOptions = {}): StatsPa
         );
 
   // Use repo-sum (not the contribution-graph max) as the numerator so the
-  // average is derived from the same denominator's universe.
+  // average is derived from the same denominator's universe. Excluded repos
+  // are not in either side of this ratio.
   const avgCommitsPerRepo =
-    aggRepos.length === 0 ? 0 : Math.round(repoSumCommits / aggRepos.length);
+    aggRepos.length === 0 ? 0 : Math.round(aggRepoSumCommits / aggRepos.length);
 
   const oldestProject = projectRef(
     aggRepos.slice().sort(byDateAsc((r) => r.createdAt))[0],
