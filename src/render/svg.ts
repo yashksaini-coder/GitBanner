@@ -5,7 +5,8 @@ import { renderHighlightTile } from './tiles/highlight-tile.js';
 import { renderLanguagesTile } from './tiles/languages-tile.js';
 import { renderPersonaTile } from './tiles/persona-tile.js';
 import { renderProjectTile } from './tiles/project-tile.js';
-import { escapeXml, renderStatTile } from './tiles/stat-tile.js';
+import { renderStatTile } from './tiles/stat-tile.js';
+import { escapeXml } from './util.js';
 
 const CANVAS_W = 1600;
 const CANVAS_H = 900;
@@ -46,9 +47,10 @@ export function toSvg(payload: StatsPayload, themeName: ThemeName = 'dark'): str
   ].join('');
 
   const row3 = [
-    yearsTile(payload, theme, 0, 3),
-    avgCommitsTile(payload, theme, 1, 3),
-    goToLanguageTile(payload, theme, 2, 3),
+    yearsTile(payload, theme, 0, 4),
+    avgCommitsTile(payload, theme, 1, 4),
+    forksReceivedTile(payload, theme, 2, 4),
+    goToLanguageTile(payload, theme, 3, 4),
   ].join('');
 
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -60,7 +62,7 @@ export function toSvg(payload: StatsPayload, themeName: ThemeName = 'dark'): str
   ${row1}
   ${row2}
   ${row3}
-  <text x="${CANVAS_W / 2}" y="${CANVAS_H - 10}" text-anchor="middle" class="gb-text" font-size="14" fill="${theme.textMuted}">gitbanner · github.com/${escapeXml(payload.username)}</text>
+  <text x="${CANVAS_W / 2}" y="${CANVAS_H - 10}" text-anchor="middle" class="gb-text" font-size="14" fill="${theme.textMuted}">gitbanner · github.com/${escapeXml(payload.username)} · ${formatNumber(payload.followers)} followers · ${formatNumber(payload.following)} following · best year: ${payload.bestYear.year} (${formatNumber(payload.bestYear.commits)} commits)</text>
 </svg>`;
 }
 
@@ -168,9 +170,19 @@ function statVisibilityTile(p: StatsPayload, theme: Theme, col: number, cols: nu
     label: 'Public | Private',
     rows: [
       {
-        label: `${formatNumber(p.forkCount)} forks · ${formatNumber(p.ownedCount)} owned`,
-        value: '',
+        label: 'Owned',
+        value: formatNumber(p.ownedCount),
+        color: theme.accents.visibility,
+      },
+      {
+        label: 'Forks of others',
+        value: formatNumber(p.forkedRepoCount),
         color: theme.textSecondary,
+      },
+      {
+        label: 'Forks received',
+        value: formatNumber(p.incomingForks),
+        color: theme.accents.stars,
       },
     ],
     rowValueColor: theme.textSecondary,
@@ -270,6 +282,22 @@ function avgCommitsTile(p: StatsPayload, theme: Theme, col: number, cols: number
     iconStroke: theme.accents.clock,
     value: formatNumber(p.avgCommitsPerRepo),
     subLine: 'avg commits per repo',
+    theme,
+  });
+}
+
+function forksReceivedTile(p: StatsPayload, theme: Theme, col: number, cols: number) {
+  const { x, w } = gridX(col, cols);
+  return renderHighlightTile({
+    x,
+    y: ROW3_Y,
+    w,
+    h: ROW3_H,
+    iconKey: 'fork',
+    iconBgColor: theme.accents.stars,
+    iconStroke: theme.accents.stars,
+    value: formatNumber(p.incomingForks),
+    subLine: 'forks received',
     theme,
   });
 }
