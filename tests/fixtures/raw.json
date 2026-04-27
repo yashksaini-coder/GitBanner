@@ -2,7 +2,9 @@
   "profile": {
     "login": "yashksaini-coder",
     "name": "Yash K Saini",
-    "createdAt": "2022-01-15T00:00:00Z"
+    "createdAt": "2022-01-15T00:00:00Z",
+    "followers": 245,
+    "following": 87
   },
   "repos": [
     {

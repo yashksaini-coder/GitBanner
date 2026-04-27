@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest';
 import { aggregate } from '../src/compute.js';
 import type { RawData } from '../src/types.js';
 
+
+
 const raw = JSON.parse(
   readFileSync(new URL('./fixtures/raw.json', import.meta.url), 'utf8'),
 ) as RawData;
@@ -56,11 +58,44 @@ describe('aggregate', () => {
     expect(stats.avgLifespanDays).toBeGreaterThan(0);
   });
 
-  it('counts public/private/fork/owned correctly', () => {
+  it('counts public/private/forked/owned correctly', () => {
     expect(stats.privateCount).toBe(0);
-    expect(stats.forkCount).toBe(1);
+    expect(stats.forkedRepoCount).toBe(1);
     expect(stats.ownedCount).toBe(9);
     expect(stats.publicCount).toBe(9);
+  });
+
+  it('sums incoming forks (others forking owned repos)', () => {
+    const expected = raw.repos
+      .filter((r) => !r.isFork)
+      .reduce((s, r) => s + r.forkCount, 0);
+    expect(stats.incomingForks).toBe(expected);
+  });
+
+  it('exposes followers and following from profile', () => {
+    expect(stats.followers).toBe(raw.profile.followers);
+    expect(stats.following).toBe(raw.profile.following);
+  });
+
+  it('picks the year with the most contributions as bestYear', () => {
+    const expected = raw.contributionsByYear
+      .slice()
+      .sort((a, b) => b.commits - a.commits)[0];
+    expect(stats.bestYear.year).toBe(expected.year);
+    expect(stats.bestYear.commits).toBe(expected.commits);
+  });
+
+  it('avgCommitsPerRepo divides repo-sum (not contribution-graph max) by repo count', () => {
+    // Compute the same way aggregate does, restricted to non-private owned repos.
+    const aggRepos = raw.repos.filter((r) => !r.isFork && !r.isPrivate);
+    const repoSum = aggRepos.reduce((s, r) => s + r.userCommits, 0);
+    expect(stats.avgCommitsPerRepo).toBe(Math.round(repoSum / aggRepos.length));
+  });
+
+  it('respects excludeRepos: profile README repo is filtered from per-repo lists', () => {
+    const stats2 = aggregate(raw, { excludeRepos: ['yashksaini-coder'] });
+    expect(stats2.topReposByCommits.find((r) => r.name === 'yashksaini-coder')).toBeUndefined();
+    expect(stats2.mostActiveProject.name).not.toBe('yashksaini-coder');
   });
 
   it('picks oldest, latest, and most-active projects correctly', () => {

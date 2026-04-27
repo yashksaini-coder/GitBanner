@@ -42,10 +42,14 @@ describe('toSvg', () => {
     expect(svg).toContain(`${stats.yearsCoding} years`);
     expect(svg).toContain('avg commits per repo');
     expect(svg).toContain(stats.goToLanguage.name);
+    expect(svg).toContain('forks received');
   });
 
-  it('embeds the username in aria-label and footer', () => {
+  it('embeds the username, followers, following, and best year in the footer', () => {
     expect(svg).toContain(`aria-label="GitHub stats for ${stats.username}`);
     expect(svg).toContain(`github.com/${stats.username}`);
+    expect(svg).toContain(`${stats.followers.toLocaleString('en-US')} followers`);
+    expect(svg).toContain(`${stats.following.toLocaleString('en-US')} following`);
+    expect(svg).toContain(`best year: ${stats.bestYear.year}`);
   });
 });

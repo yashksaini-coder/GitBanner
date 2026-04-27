@@ -17,13 +17,17 @@ function makeStats(overrides: Partial<StatsPayload>): StatsPayload {
     avgCommitsPerRepo: 0,
     publicCount: 0,
     privateCount: 0,
-    forkCount: 0,
+    forkedRepoCount: 0,
     ownedCount: 0,
+    incomingForks: 0,
     oldestProject: { name: '—', date: new Date().toISOString() },
     latestProject: { name: '—', date: new Date().toISOString() },
     mostActiveProject: { name: '—', date: new Date().toISOString(), commits: 0 },
     yearsCoding: 1,
+    bestYear: { year: 2024, commits: 0 },
     goToLanguage: { name: '—', reposUsing: 0, color: '#000' },
+    followers: 0,
+    following: 0,
     persona: { key: 'rising-dev', label: '', tagline: '', iconKey: '', accentColor: '' },
   };
   return { ...base, ...overrides };
@@ -38,8 +42,8 @@ describe('scorePersona', () => {
     expect(scorePersona(makeStats({ totalStars: 1000 })).key).toBe('open-source-star');
   });
 
-  it('returns Open Source Star when forks are heavy', () => {
-    expect(scorePersona(makeStats({ forkCount: 25 })).key).toBe('open-source-star');
+  it('returns Open Source Star when received forks are heavy', () => {
+    expect(scorePersona(makeStats({ incomingForks: 60 })).key).toBe('open-source-star');
   });
 
   it('returns Polyglot when many languages', () => {
