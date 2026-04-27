@@ -9,7 +9,7 @@ jobs:
   refresh:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - uses: ./
@@ -18,4 +18,10 @@ jobs:
           username: ${{ github.repository_owner }}
           theme: dark
           format: both
-          output-path: examples/preview
+          output-path: out/gitbanner
+          commit: 'false'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gitbanner
+          path: out/gitbanner.*
+          if-no-files-found: error
