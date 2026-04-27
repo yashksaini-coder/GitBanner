@@ -9,7 +9,7 @@ jobs:
   refresh:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: ./
@@ -19,9 +19,3 @@ jobs:
           theme: dark
           format: both
           output-path: out/gitbanner
-          commit: 'false'
-      - uses: actions/upload-artifact@v4
-        with:
-          name: gitbanner
-          path: out/gitbanner.*
-          if-no-files-found: error

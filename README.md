@@ -4,6 +4,8 @@ A GitHub Action that renders a personalized stats banner (SVG + PNG) for your pr
 
 Inspired by the [githubtimeline.com](https://githubtimeline.com) layout.
 
+![Preview](./out/gitbanner.png)
+
 ## Quick start
 
 1. Create a repo named `<your-username>/<your-username>` (the GitHub profile repo).
