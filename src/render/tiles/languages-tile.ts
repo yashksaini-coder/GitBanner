@@ -1,6 +1,6 @@
 import type { Theme } from '../../types.js';
 import { iconByKey, renderIcon } from '../icons.js';
-import { escapeXml } from './stat-tile.js';
+import { escapeXml } from '../util.js';
 
 export interface LanguagesTileProps {
   x: number;

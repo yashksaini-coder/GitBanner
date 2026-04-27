@@ -1,6 +1,6 @@
 import type { Persona, Theme } from '../../types.js';
 import { iconByKey, renderIcon } from '../icons.js';
-import { escapeXml } from './stat-tile.js';
+import { escapeXml, fitFontSize } from '../util.js';
 
 export interface PersonaTileProps {
   x: number;
@@ -29,6 +29,10 @@ export function renderPersonaTile(p: PersonaTileProps): string {
     strokeWidth: 2.4,
   });
 
+  const labelMaxWidth = w - 116 - 28; // tile width minus illustration column minus right padding
+  const labelFontSize = fitFontSize(persona.label, labelMaxWidth, [36, 32, 28, 24]);
+  const taglineFontSize = fitFontSize(persona.tagline, labelMaxWidth, [20, 18, 16]);
+
   return `
     <g transform="translate(${x}, ${y})">
       <rect width="${w}" height="${h}" rx="22" fill="${theme.tile}" stroke="${theme.tileBorder}" stroke-width="1.5"/>
@@ -38,8 +42,8 @@ export function renderPersonaTile(p: PersonaTileProps): string {
 
       <g transform="translate(28, ${h / 2 - 20})">${personaIllustration}</g>
 
-      <text x="116" y="${h / 2 + 18}" class="gb-display" font-size="36" fill="${theme.textPrimary}">${escapeXml(persona.label)}</text>
-      <text x="116" y="${h - 28}" class="gb-text" font-size="20" fill="${theme.textSecondary}">${escapeXml(persona.tagline)}</text>
+      <text x="116" y="${h / 2 + 18}" class="gb-display" font-size="${labelFontSize}" fill="${theme.textPrimary}">${escapeXml(persona.label)}</text>
+      <text x="116" y="${h - 28}" class="gb-text" font-size="${taglineFontSize}" fill="${theme.textSecondary}">${escapeXml(persona.tagline)}</text>
     </g>
   `;
 }

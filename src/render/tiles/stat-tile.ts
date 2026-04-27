@@ -1,5 +1,8 @@
 import type { Theme } from '../../types.js';
 import { iconByKey, renderIcon } from '../icons.js';
+import { escapeXml, fitFontSize, truncate } from '../util.js';
+
+export { escapeXml };
 
 export interface StatTileRow {
   label: string;
@@ -47,18 +50,25 @@ export function renderStatTile(p: StatTileProps): string {
   const rowsStartY = 250;
   const rowGap = 34;
 
+  const labelFontSize = 16;
+  const valueRowFontSize = 17;
+  const rowGutter = 12;
+
   const rowsSvg = rows
     .map((row, i) => {
       const rowY = rowsStartY + i * rowGap;
-      const labelMax = row.value ? 14 : 28;
+      // Estimate the value column width and reserve the rest for the label.
+      const valueWidth = row.value ? row.value.length * valueRowFontSize * 0.6 : 0;
+      const labelPxAvail = w - 64 - valueWidth - (row.value ? rowGutter : 0);
+      const labelMaxChars = Math.max(8, Math.floor(labelPxAvail / (labelFontSize * 0.55)));
       return `
-      <text x="32" y="${rowY}" class="gb-text" font-size="16" fill="${theme.textSecondary}">${escapeXml(truncate(row.label, labelMax))}</text>
-      <text x="${w - 32}" y="${rowY}" text-anchor="end" class="gb-mono" font-size="17" fill="${row.color}">${escapeXml(row.value)}</text>
+      <text x="32" y="${rowY}" class="gb-text" font-size="${labelFontSize}" fill="${theme.textSecondary}">${escapeXml(truncate(row.label, labelMaxChars))}</text>
+      <text x="${w - 32}" y="${rowY}" text-anchor="end" class="gb-mono" font-size="${valueRowFontSize}" fill="${row.color}">${escapeXml(row.value)}</text>
     `;
     })
     .join('');
 
-  const valueFontSize = chooseValueFontSize(value, w);
+  const valueFontSize = fitFontSize(value, w - 64, [64, 56, 48, 42, 36, 32]);
 
   return `
     <g transform="translate(${x}, ${y})">
@@ -79,34 +89,3 @@ export function renderStatTile(p: StatTileProps): string {
   `;
 }
 
-function chooseValueFontSize(value: string, tileWidth: number): number {
-  // Display weight ~= 0.6 px-per-char at the chosen font size.
-  // Reserve 64px of horizontal padding inside the tile.
-  const usable = tileWidth - 64;
-  const measure = (size: number) => value.length * size * 0.55;
-  for (const size of [64, 56, 48, 42, 36]) {
-    if (measure(size) <= usable) return size;
-  }
-  return 32;
-}
-
-function truncate(s: string, max: number): string {
-  return s.length <= max ? s : s.slice(0, max - 1) + '…';
-}
-
-export function escapeXml(value: string): string {
-  return value.replace(/[&<>"']/g, (c) => {
-    switch (c) {
-      case '&':
-        return '&amp;';
-      case '<':
-        return '&lt;';
-      case '>':
-        return '&gt;';
-      case '"':
-        return '&quot;';
-      default:
-        return '&apos;';
-    }
-  });
-}
