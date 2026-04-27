@@ -92,13 +92,13 @@ describe('aggregate', () => {
     expect(stats.avgCommitsPerRepo).toBe(Math.round(repoSum / aggRepos.length));
   });
 
-  it('respects excludeRepos: profile README repo is filtered from per-repo lists', () => {
+  it('respects excludeRepos: profile README is filtered from non-commits lists', () => {
     const stats2 = aggregate(raw, { excludeRepos: ['yashksaini-coder'] });
-    expect(stats2.topReposByCommits.find((r) => r.name === 'yashksaini-coder')).toBeUndefined();
+    expect(stats2.topReposByStars.find((r) => r.name === 'yashksaini-coder')).toBeUndefined();
     expect(stats2.mostActiveProject.name).not.toBe('yashksaini-coder');
   });
 
-  it('excluded repos still contribute to totalCommits but nothing else', () => {
+  it('excluded repos still contribute to totalCommits and the top-commits list, but nothing else', () => {
     const base = aggregate(raw);
     const excluded = aggregate(raw, { excludeRepos: ['yashksaini-coder'] });
 
@@ -106,13 +106,17 @@ describe('aggregate', () => {
     // list, so the headline number is preserved.
     expect(excluded.totalCommits).toBe(base.totalCommits);
 
+    // The whole commits section keeps the README repo, so the top-commits
+    // list still includes it (when it has enough commits to rank).
+    expect(excluded.topReposByCommits.find((r) => r.name === 'yashksaini-coder')).toBeDefined();
+
     // Stars drop by the excluded repo's stargazer count.
     const readme = raw.repos.find((r) => r.name === 'yashksaini-coder');
     expect(excluded.totalStars).toBe(base.totalStars - readme!.stargazerCount);
 
-    // The excluded repo no longer appears in top-by-commits or as most active.
-    expect(excluded.topReposByCommits.find((r) => r.name === 'yashksaini-coder')).toBeUndefined();
+    // Project highlights and stars-list ignore the excluded repo.
     expect(excluded.mostActiveProject.name).not.toBe('yashksaini-coder');
+    expect(excluded.topReposByStars.find((r) => r.name === 'yashksaini-coder')).toBeUndefined();
 
     // avgCommitsPerRepo recomputed without the excluded repo's commits AND
     // without it in the denominator.

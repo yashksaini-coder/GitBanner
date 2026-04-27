@@ -36,10 +36,10 @@ export function aggregate(raw: RawData, options: AggregateOptions = {}): StatsPa
   // so the displayed top-N lists never leak private names.
   const aggRepos = includePrivate ? ownedRepos : ownedRepos.filter((r) => !r.isPrivate);
 
-  // Total commits counts every owned repo we can see — including repos in
-  // `excludeRepos` (e.g. the profile README) — so the headline reflects the
-  // user's full activity. Excluded repos are still removed from per-repo
-  // aggregations (top lists, languages, project highlights, avg).
+  // The commits section (headline + top-3 list) counts every owned repo we
+  // can see — including repos in `excludeRepos` (e.g. the profile README) —
+  // so it reflects the user's full activity. Excluded repos are still removed
+  // from every other aggregation (stars, languages, project highlights, avg).
   const allOwnedRepos = raw.repos.filter((r) => !r.isFork);
   const commitsScope = includePrivate
     ? allOwnedRepos
@@ -55,7 +55,7 @@ export function aggregate(raw: RawData, options: AggregateOptions = {}): StatsPa
 
   const totalStars = aggRepos.reduce((sum, r) => sum + r.stargazerCount, 0);
 
-  const topReposByCommits = topByMetric(aggRepos, (r) => r.userCommits, 3);
+  const topReposByCommits = topByMetric(commitsScope, (r) => r.userCommits, 3);
   const topReposByStars = topByMetric(aggRepos, (r) => r.stargazerCount, 3);
   const topReposByLifespan = topByMetric(aggRepos, lifespanDays, 3);
 
