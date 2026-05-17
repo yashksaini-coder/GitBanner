@@ -2,8 +2,6 @@
 
 [![GitHub release](https://img.shields.io/github/v/release/yashksaini-coder/GitBanner?logo=github&label=release)](https://github.com/yashksaini-coder/GitBanner/releases)
 [![Marketplace](https://img.shields.io/badge/Marketplace-GitBanner%20Profile%20Card-purple?logo=github)](https://github.com/marketplace/actions/gitbanner-profile-card)
-[![CI](https://github.com/yashksaini-coder/GitBanner/actions/workflows/ci.yml/badge.svg)](https://github.com/yashksaini-coder/GitBanner/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
 A GitHub Action that renders a personalized stats banner (SVG + PNG) for your profile README — total commits, stars, language distribution, project highlights, and your coding persona.
 
