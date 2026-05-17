@@ -12,10 +12,9 @@ const raw = JSON.parse(
 describe('aggregate', () => {
   const stats = aggregate(raw);
 
-  it('uses the larger of repo-history vs contributions for totalCommits', () => {
-    const fromRepos = raw.repos.reduce((s, r) => s + r.userCommits, 0);
+  it('takes totalCommits straight from the GitHub contribution graph', () => {
     const fromContribs = raw.contributionsByYear.reduce((s, y) => s + y.commits, 0);
-    expect(stats.totalCommits).toBe(Math.max(fromRepos, fromContribs));
+    expect(stats.totalCommits).toBe(fromContribs);
   });
 
   it('sums stars across owned (non-fork) repos', () => {
@@ -98,12 +97,12 @@ describe('aggregate', () => {
     expect(stats2.mostActiveProject.name).not.toBe('yashksaini-coder');
   });
 
-  it('excluded repos still contribute to totalCommits and the top-commits list, but nothing else', () => {
+  it('excludeRepos does not affect totalCommits and still keeps the top-commits list intact', () => {
     const base = aggregate(raw);
     const excluded = aggregate(raw, { excludeRepos: ['yashksaini-coder'] });
 
-    // totalCommits is computed from a wider scope that ignores the exclude
-    // list, so the headline number is preserved.
+    // totalCommits comes from the per-user contribution graph, which has
+    // no notion of repo exclusions, so the headline number is preserved.
     expect(excluded.totalCommits).toBe(base.totalCommits);
 
     // The whole commits section keeps the README repo, so the top-commits

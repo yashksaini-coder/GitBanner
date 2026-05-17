@@ -1,7 +1,3 @@
-// V1 uses a system font stack. Embedding base64 webfonts is a v1.1 enhancement —
-// system fonts render consistently across browsers and resvg-js (with default font loading)
-// while keeping the dist bundle small.
-
 export const FONT_STACK_DISPLAY =
   '"Inter Display", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
 

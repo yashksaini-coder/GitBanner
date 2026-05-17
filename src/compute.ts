@@ -21,10 +21,8 @@ export function aggregate(raw: RawData, options: AggregateOptions = {}): StatsPa
   const excluded = new Set((options.excludeRepos ?? []).map((r) => r.toLowerCase()));
   const includePrivate = options.includePrivate ?? false;
 
-  // Drop excluded repos before any aggregation.
   const reposVisible = raw.repos.filter((r) => !excluded.has(r.name.toLowerCase()));
 
-  // Counts always reflect what the token saw (after exclusions).
   const ownedRepos = reposVisible.filter((r) => !r.isFork);
   const publicCount = ownedRepos.filter((r) => !r.isPrivate).length;
   const privateCount = ownedRepos.filter((r) => r.isPrivate).length;
@@ -32,26 +30,20 @@ export function aggregate(raw: RawData, options: AggregateOptions = {}): StatsPa
   const ownedCount = ownedRepos.length;
   const incomingForks = ownedRepos.reduce((sum, r) => sum + r.forkCount, 0);
 
-  // Per-repo aggregations exclude private repos when includePrivate is false,
-  // so the displayed top-N lists never leak private names.
+  // Top-N lists drop private repos so private names never leak.
   const aggRepos = includePrivate ? ownedRepos : ownedRepos.filter((r) => !r.isPrivate);
 
-  // The commits section (headline + top-3 list) counts every owned repo we
-  // can see — including repos in `excludeRepos` (e.g. the profile README) —
-  // so it reflects the user's full activity. Excluded repos are still removed
-  // from every other aggregation (stars, languages, project highlights, avg).
+  // commitsScope ignores excludeRepos so the top-3 list reflects full activity.
   const allOwnedRepos = raw.repos.filter((r) => !r.isFork);
   const commitsScope = includePrivate
     ? allOwnedRepos
     : allOwnedRepos.filter((r) => !r.isPrivate);
-  const totalCommitsFromRepos = commitsScope.reduce((sum, r) => sum + r.userCommits, 0);
 
   const aggRepoSumCommits = aggRepos.reduce((sum, r) => sum + r.userCommits, 0);
-  const contribSum = raw.contributionsByYear.reduce((sum, y) => sum + y.commits, 0);
-  // Display the larger of the two sources — repo history undercounts when
-  // contributions live in repos we can't query, while contributions overcount
-  // for users who heavily review/comment.
-  const totalCommits = Math.max(totalCommitsFromRepos, contribSum);
+
+  // totalCommits comes from GitHub's contribution graph — broader than
+  // per-repo history because it includes commits to repos we don't own.
+  const totalCommits = raw.contributionsByYear.reduce((sum, y) => sum + y.commits, 0);
 
   const totalStars = aggRepos.reduce((sum, r) => sum + r.stargazerCount, 0);
 
@@ -70,9 +62,6 @@ export function aggregate(raw: RawData, options: AggregateOptions = {}): StatsPa
             reposWithCommits.length,
         );
 
-  // Use repo-sum (not the contribution-graph max) as the numerator so the
-  // average is derived from the same denominator's universe. Excluded repos
-  // are not in either side of this ratio.
   const avgCommitsPerRepo =
     aggRepos.length === 0 ? 0 : Math.round(aggRepoSumCommits / aggRepos.length);
 

@@ -19,10 +19,7 @@ export function truncate(s: string, max: number): string {
   return s.length <= max ? s : s.slice(0, max - 1) + '…';
 }
 
-// Pick the largest font size in `sizes` whose rendered width fits `maxWidth`.
-// Width estimate uses a per-character ratio appropriate for display weights.
-// `widthRatio` is roughly `avg-glyph-width / font-size` — 0.55 works well for
-// the Inter Display weights we use; raise to ~0.6 for monospace.
+// widthRatio ≈ avg-glyph-width / font-size: 0.55 for Inter Display, ~0.6 for mono.
 export function fitFontSize(
   text: string,
   maxWidth: number,
@@ -35,9 +32,6 @@ export function fitFontSize(
   return sizes[sizes.length - 1];
 }
 
-// Pick the largest font size that fits — and if even the smallest size
-// overflows, truncate the text with an ellipsis so the label stays inside
-// `maxWidth`.
 export function fitText(
   text: string,
   maxWidth: number,

@@ -1,6 +1,4 @@
-// Inline SVG paths drawn on a 24x24 viewbox, designed to look like Lucide icons.
-// Each icon is rendered with stroke-width 2, stroke-linecap round, stroke-linejoin round.
-
+// Lucide-style icons on a 24x24 viewbox, stroke-width 2, round caps/joins.
 export const iconPaths: Record<string, string> = {
   // Row 1
   'git-branch':

@@ -62,11 +62,9 @@ export function toSvg(payload: StatsPayload, themeName: ThemeName = 'dark'): str
   ${row1}
   ${row2}
   ${row3}
-  <text x="${CANVAS_W / 2}" y="${CANVAS_H - 10}" text-anchor="middle" class="gb-text" font-size="14" fill="${theme.textMuted}">gitbanner · github.com/${escapeXml(payload.username)} · ${formatNumber(payload.followers)} followers · ${formatNumber(payload.following)} following · best year: ${payload.bestYear.year} (${formatNumber(payload.bestYear.commits)} commits)</text>
+  <text x="${CANVAS_W / 2}" y="${CANVAS_H - 10}" text-anchor="middle" class="gb-text" font-size="14" fill="${theme.textMuted}">gitbanner · github.com/${escapeXml(payload.username)} · ${formatNumber(payload.followers)} followers · ${formatNumber(payload.following)} following · best year: ${payload.bestYear.year} (${formatNumber(payload.bestYear.commits)} commits) · updated ${formatTimestamp(payload.generatedAt)}</text>
 </svg>`;
 }
-
-// ---- Row 1 tile builders ----
 
 function statCommitsTile(p: StatsPayload, theme: Theme, col: number, cols: number) {
   const { x, w } = gridX(col, cols);
@@ -190,8 +188,6 @@ function statVisibilityTile(p: StatsPayload, theme: Theme, col: number, cols: nu
   });
 }
 
-// ---- Row 2 tile builders ----
-
 function oldestProjectTile(p: StatsPayload, theme: Theme, col: number, cols: number) {
   const { x, w } = gridX(col, cols);
   return renderProjectTile({
@@ -251,8 +247,6 @@ function personaTileEl(p: StatsPayload, theme: Theme, col: number, cols: number)
     theme,
   });
 }
-
-// ---- Row 3 tile builders ----
 
 function yearsTile(p: StatsPayload, theme: Theme, col: number, cols: number) {
   const { x, w } = gridX(col, cols);
@@ -318,8 +312,6 @@ function goToLanguageTile(p: StatsPayload, theme: Theme, col: number, cols: numb
   });
 }
 
-// ---- Helpers ----
-
 function formatNumber(n: number): string {
   return n.toLocaleString('en-US');
 }
@@ -330,6 +322,12 @@ function formatShortDate(iso: string): string {
   const day = d.getUTCDate();
   const yr = d.getUTCFullYear();
   return `${m}/${day}/${yr}`;
+}
+
+function formatTimestamp(iso: string): string {
+  const d = new Date(iso);
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())} UTC`;
 }
 
 function trunc(s: string, max: number): string {

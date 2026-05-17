@@ -52,4 +52,8 @@ describe('toSvg', () => {
     expect(svg).toContain(`${stats.following.toLocaleString('en-US')} following`);
     expect(svg).toContain(`best year: ${stats.bestYear.year}`);
   });
+
+  it('appends a UTC timestamp to the footer', () => {
+    expect(svg).toMatch(/updated \d{4}-\d{2}-\d{2} \d{2}:\d{2} UTC/);
+  });
 });
