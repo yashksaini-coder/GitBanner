@@ -5,6 +5,26 @@
   "type": "module",
   "description": "GitHub Marketplace Action that renders a personalized GitHub stats card (SVG + PNG) for your profile README.",
   "main": "dist/index.js",
+  "license": "MIT",
+  "author": "yashksaini-coder <yashksaini89@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yashksaini-coder/GitBanner.git"
+  },
+  "homepage": "https://github.com/yashksaini-coder/GitBanner#readme",
+  "bugs": {
+    "url": "https://github.com/yashksaini-coder/GitBanner/issues"
+  },
+  "keywords": [
+    "github-action",
+    "github-actions",
+    "profile-readme",
+    "stats",
+    "svg",
+    "banner",
+    "card",
+    "github-stats"
+  ],
   "scripts": {
     "build": "ncc build src/index.ts -o dist --minify --license licenses.txt && node scripts/inject-esm-shim.mjs",
     "dev": "tsx src/cli.ts",
