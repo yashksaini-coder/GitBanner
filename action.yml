@@ -1,5 +1,5 @@
-name: GitBanner
-description: Generate a personalized GitHub stats banner (SVG + PNG) for your profile README — total commits, stars, language distribution, project highlights, and your coding persona.
+name: GitBanner Profile Card
+description: 'Generate a personalized GitHub stats banner: commits, stars, languages, persona, top projects (SVG + PNG).'
 author: yashksaini-coder
 branding:
   icon: bar-chart-2
