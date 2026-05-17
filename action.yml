@@ -10,7 +10,7 @@ inputs:
     description: |
       A GitHub personal access token used to query the GraphQL/REST APIs.
       Required scopes: read:user (and repo if include-private is true).
-      Defaults to ${{ github.token }} but a PAT is recommended for full data.
+      Defaults to github.token in workflows, but a PAT is recommended for full data.
     required: true
 
   username:
@@ -19,7 +19,7 @@ inputs:
     default: ''
 
   theme:
-    description: Theme name. Currently supported: dark.
+    description: 'Theme name. Currently supported: dark.'
     required: false
     default: dark
 
