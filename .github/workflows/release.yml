@@ -16,13 +16,12 @@ on:
           - release
           - prerelease
 
-permissions:
-  contents: write
-
 jobs:
   validate:
     name: Validate and run CI
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       tag: ${{ steps.normalize.outputs.tag }}
       major: ${{ steps.normalize.outputs.major }}
@@ -77,40 +76,35 @@ jobs:
     name: Tag and publish release
     runs-on: ubuntu-latest
     needs: validate
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Configure git identity
-        run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-      - name: Create and push the version tag
-        env:
-          TAG: ${{ needs.validate.outputs.tag }}
-        run: |
-          git tag -a "$TAG" -m "Release $TAG"
-          git push origin "$TAG"
-
-      - name: Create the GitHub Release
+      - name: Create the GitHub Release (creates the tag atomically)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ needs.validate.outputs.tag }}
           IS_PRE: ${{ inputs.release_type == 'prerelease' }}
+          TARGET_SHA: ${{ github.sha }}
         run: |
-          flags="--title $TAG --generate-notes --verify-tag"
+          # gh release create creates the tag on origin as part of the release.
+          # If anything fails, no tag exists and the workflow can be re-run cleanly.
+          flags=(--title "$TAG" --generate-notes --target "$TARGET_SHA")
           if [ "$IS_PRE" = "true" ]; then
-            flags="$flags --prerelease"
+            flags+=(--prerelease)
           fi
-          gh release create "$TAG" $flags
+          gh release create "$TAG" "${flags[@]}"
 
       - name: Move the floating major-version tag (stable releases only)
         if: inputs.release_type == 'release'
         env:
           MAJOR: ${{ needs.validate.outputs.major }}
-          TAG:   ${{ needs.validate.outputs.tag }}
+          TARGET_SHA: ${{ github.sha }}
         run: |
-          git tag -f "$MAJOR" "$TAG"
+          # Point the floating major tag (e.g. v1) at the same commit the release was cut from.
+          # Force-push because that's how floating major-version tags are designed to work.
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -f "$MAJOR" "$TARGET_SHA"
           git push origin "$MAJOR" --force
