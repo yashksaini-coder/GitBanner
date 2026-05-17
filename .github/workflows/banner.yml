@@ -18,4 +18,6 @@ jobs:
           username: ${{ github.repository_owner }}
           theme: dark
           format: both
+          include-private: true
+          commit: true
           output-path: out/gitbanner
