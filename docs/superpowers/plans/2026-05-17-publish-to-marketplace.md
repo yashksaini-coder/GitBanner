@@ -4,9 +4,9 @@
 
 **Goal:** Publish the GitBanner action to the GitHub Marketplace so anyone can `uses: yashksaini-coder/GitBanner@v1` in their workflow, with a sustainable release flow for future versions.
 
-**Architecture:** Add the missing publication-grade files (LICENSE, CHANGELOG, CONTRIBUTING, package.json metadata) on a feature branch. Add a tag-triggered release workflow that creates GitHub Releases and maintains the floating `v1` major-version tag. Polish README for first-time consumers. Ship via PR → merge → tag push → first-time Marketplace publish via the GitHub Releases UI (a one-time manual step).
+**Architecture:** Add the missing publication-grade files (LICENSE, CHANGELOG, CONTRIBUTING, package.json metadata) on a feature branch. Add a `workflow_dispatch`-triggered release workflow that validates the version, runs CI, and uses `gh release create --target $GITHUB_SHA` to atomically create the tag and the GitHub Release in one operation. The workflow also maintains the floating `v1` major-version tag for stable releases. Polish README for first-time consumers. Ship via PR → merge → maintainer triggers the release workflow → first-time Marketplace publish via the GitHub Releases UI (a one-time manual step).
 
-**Tech Stack:** GitHub Actions (release workflow), conventional commits (already in use), `gh` CLI for branch/PR/tag pushing, the GitHub Releases UI for the one-time Marketplace toggle.
+**Tech Stack:** GitHub Actions (workflow_dispatch release workflow), conventional commits (already in use), `gh` CLI for branch/PR creation and release workflow triggering, the GitHub Releases UI for the one-time Marketplace toggle.
 
 **Pre-flight state (observed in the repo on 2026-05-17):**
 - No `LICENSE` file (README claims MIT but the legal license text is missing — blocks redistribution)
@@ -43,7 +43,7 @@
 
 - Feature branch: `feat/marketplace-publish`
 - All non-ceremonial changes land via one PR
-- After merge: maintainer (you) pushes `v1.0.0` and `v1` tags → release workflow creates the Release → maintainer publishes to Marketplace via UI
+- After merge: maintainer triggers the release workflow (`gh workflow run release.yml -f version=1.0.0 -f release_type=release`) → workflow validates + runs CI + atomically creates the `v1.0.0` tag and the GitHub Release + moves the floating `v1` tag → maintainer publishes to Marketplace via UI
 
 ---
 
@@ -54,7 +54,7 @@
 - `CHANGELOG.md` — versioned change log starting at v1.0.0
 - `CONTRIBUTING.md` — local dev, testing, PR process
 - `.github/release.yml` — auto-generated release notes categorization
-- `.github/workflows/release.yml` — tag-push-triggered release workflow
+- `.github/workflows/release.yml` — `workflow_dispatch`-triggered release workflow (validates version + CI, then uses `gh release create --target $GITHUB_SHA` for an atomic tag-and-release)
 
 ### Modified files
 - `README.md` — fix repo-name casing, add troubleshooting + security/PAT notes, add Marketplace badge placeholder, recommend SHA pinning

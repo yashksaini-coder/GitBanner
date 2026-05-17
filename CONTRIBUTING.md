@@ -27,17 +27,6 @@ npm run typecheck
 npm run build
 ```
 
-## How the project is structured
-
-- `src/` — TypeScript source.
-- `src/render/` — SVG rendering layer (tiles, fonts, icons, theming).
-- `dist/` — Bundled output. The action runs `dist/index.js` directly at
-  workflow time, so this file must be committed and stay in sync with `src/`.
-  CI fails if it drifts (see `bundle-in-sync` job in `.github/workflows/ci.yml`).
-- `tests/` — Vitest tests against a fixed fixture in `tests/fixtures/raw.json`.
-- `scripts/inject-esm-shim.mjs` — Post-build patch that adds a small CJS-globals
-  shim to `dist/index.js`. See file header for the WHY.
-
 ## Pull request checklist
 
 Before opening a PR:

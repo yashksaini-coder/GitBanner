@@ -114,9 +114,19 @@ The action runs `dist/index.js` directly — there's no install step at runtime.
 ## Security
 
 - This action requires a Personal Access Token. Treat it like any other
-  long-lived credential: rotate periodically, scope minimally, and store
-  only as a repository secret.
-- Fine-grained PATs are preferred. Limit access to your profile repo only.
+  long-lived credential: rotate periodically, and store only as a
+  repository secret.
+- **Token scopes** (classic PAT) or **permissions** (fine-grained PAT):
+  - Always: `read:user` (classic) or *Account: Profile — Read-only* (fine-grained)
+  - Only if `include-private: true`: add `repo` scope or grant repository
+    access in the fine-grained PAT
+- **Fine-grained PAT repository access:** the action queries
+  `user.repositories(ownerAffiliations: [OWNER])` to compute stats and
+  language distribution across *all* your owned repos. A token scoped to
+  just the profile repo will return an empty repository list, producing a
+  banner with zeroed stats. Grant the token access to **all repositories
+  whose stats should appear on the banner** (typically "All repositories",
+  or every owned repo).
 - The action commits and pushes to your profile repo by default. Set
   `commit: false` if you'd rather do the commit yourself.
 
