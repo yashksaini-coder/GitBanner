@@ -78,8 +78,8 @@ function statCommitsTile(p: StatsPayload, theme: Theme, col: number, cols: numbe
     iconStroke: theme.accents.commits,
     cornerIconKey: 'moon',
     cornerIconColor: theme.textMuted,
-    value: formatNumber(p.totalCommits),
-    label: 'Total Commits',
+    value: formatNumber(p.totalContributions),
+    label: 'Total Contributions',
     rows: p.topReposByCommits.map((r) => ({
       label: trunc(r.name, 18),
       value: formatNumber(r.value),

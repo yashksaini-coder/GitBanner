@@ -20,7 +20,8 @@ describe('toSvg', () => {
   });
 
   it('renders all five row 1 metric values', () => {
-    expect(svg).toContain(stats.totalCommits.toLocaleString('en-US'));
+    expect(svg).toContain(stats.totalContributions.toLocaleString('en-US'));
+    expect(svg).toContain('Total Contributions');
     expect(svg).toContain(stats.totalStars.toLocaleString('en-US'));
     expect(svg).toContain(`${stats.languageCount}`);
     expect(svg).toContain(`${stats.avgLifespanDays.toLocaleString('en-US')} days`);
