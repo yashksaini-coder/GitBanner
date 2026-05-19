@@ -45,7 +45,7 @@ async function main(): Promise<void> {
     includePrivate: args.includePrivate,
   });
   console.log(
-    `  ${payload.totalCommits} commits · ${payload.totalStars} stars · ${payload.languageCount} languages · persona=${payload.persona.label}`,
+    `  ${payload.totalContributions} contributions (${payload.totalCommits} commits + ${payload.totalIssues} issues + ${payload.totalPRs} PRs + ${payload.totalReviews} reviews + ${payload.totalRestricted} restricted) · ${payload.totalStars} stars · ${payload.languageCount} languages · persona=${payload.persona.label}`,
   );
 
   const svg = toSvg(payload, args.theme);
