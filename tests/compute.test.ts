@@ -17,6 +17,32 @@ describe('aggregate', () => {
     expect(stats.totalCommits).toBe(fromContribs);
   });
 
+  it('sums issues, PRs, reviews, and restricted contributions across years', () => {
+    const sum = (field: 'issues' | 'prs' | 'reviews' | 'restricted') =>
+      raw.contributionsByYear.reduce((s, y) => s + y[field], 0);
+    expect(stats.totalIssues).toBe(sum('issues'));
+    expect(stats.totalPRs).toBe(sum('prs'));
+    expect(stats.totalReviews).toBe(sum('reviews'));
+    expect(stats.totalRestricted).toBe(sum('restricted'));
+  });
+
+  it('totalContributions = commits + issues + PRs + reviews + restricted', () => {
+    expect(stats.totalContributions).toBe(
+      stats.totalCommits +
+        stats.totalIssues +
+        stats.totalPRs +
+        stats.totalReviews +
+        stats.totalRestricted,
+    );
+  });
+
+  it('yearsCoding counts only years with at least one contribution', () => {
+    const expected = raw.contributionsByYear.filter(
+      (y) => y.commits + y.issues + y.prs + y.reviews + y.restricted > 0,
+    ).length;
+    expect(stats.yearsCoding).toBe(expected);
+  });
+
   it('sums stars across owned (non-fork) repos', () => {
     const expected = raw.repos
       .filter((r) => !r.isFork)

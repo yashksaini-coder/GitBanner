@@ -41,9 +41,14 @@ export function aggregate(raw: RawData, options: AggregateOptions = {}): StatsPa
 
   const aggRepoSumCommits = aggRepos.reduce((sum, r) => sum + r.userCommits, 0);
 
-  // totalCommits comes from GitHub's contribution graph — broader than
-  // per-repo history because it includes commits to repos we don't own.
+  // totalCommits is commits-only (drives persona scoring and the top-3 list).
   const totalCommits = raw.contributionsByYear.reduce((sum, y) => sum + y.commits, 0);
+  const totalIssues = raw.contributionsByYear.reduce((sum, y) => sum + y.issues, 0);
+  const totalPRs = raw.contributionsByYear.reduce((sum, y) => sum + y.prs, 0);
+  const totalReviews = raw.contributionsByYear.reduce((sum, y) => sum + y.reviews, 0);
+  const totalRestricted = raw.contributionsByYear.reduce((sum, y) => sum + y.restricted, 0);
+  // totalContributions is the headline: every counted activity GitHub surfaces.
+  const totalContributions = totalCommits + totalIssues + totalPRs + totalReviews + totalRestricted;
 
   const totalStars = aggRepos.reduce((sum, r) => sum + r.stargazerCount, 0);
 
@@ -82,9 +87,13 @@ export function aggregate(raw: RawData, options: AggregateOptions = {}): StatsPa
       }
     : { name: '—', date: new Date().toISOString(), commits: 0 };
 
+  // yearsCoding = distinct calendar years with at least one contribution of any kind.
+  // Gap years don't count; first year doesn't count if signup happened with no activity.
   const yearsCoding = Math.max(
     1,
-    Math.floor((Date.now() - new Date(raw.profile.createdAt).getTime()) / (DAY_MS * 365.25)),
+    raw.contributionsByYear.filter(
+      (y) => y.commits + y.issues + y.prs + y.reviews + y.restricted > 0,
+    ).length,
   );
 
   const bestYear = pickBestYear(raw.contributionsByYear);
@@ -94,6 +103,11 @@ export function aggregate(raw: RawData, options: AggregateOptions = {}): StatsPa
     username: raw.profile.login,
     generatedAt: new Date().toISOString(),
     totalCommits,
+    totalContributions,
+    totalIssues,
+    totalPRs,
+    totalReviews,
+    totalRestricted,
     totalStars,
     topReposByCommits,
     topReposByStars,

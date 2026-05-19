@@ -17,8 +17,16 @@
       "forkCount": 2,
       "primaryLanguage": "TypeScript",
       "languages": [
-        { "name": "TypeScript", "size": 800000, "color": "#3178c6" },
-        { "name": "Python", "size": 80000, "color": "#3572a5" }
+        {
+          "name": "TypeScript",
+          "size": 800000,
+          "color": "#3178c6"
+        },
+        {
+          "name": "Python",
+          "size": 80000,
+          "color": "#3572a5"
+        }
       ],
       "userCommits": 1000
     },
@@ -32,8 +40,16 @@
       "forkCount": 4,
       "primaryLanguage": "Python",
       "languages": [
-        { "name": "Python", "size": 600000, "color": "#3572a5" },
-        { "name": "Jupyter Notebook", "size": 200000, "color": "#DA5B0B" }
+        {
+          "name": "Python",
+          "size": 600000,
+          "color": "#3572a5"
+        },
+        {
+          "name": "Jupyter Notebook",
+          "size": 200000,
+          "color": "#DA5B0B"
+        }
       ],
       "userCommits": 541
     },
@@ -46,7 +62,13 @@
       "stargazerCount": 4,
       "forkCount": 1,
       "primaryLanguage": "Python",
-      "languages": [{ "name": "Python", "size": 400000, "color": "#3572a5" }],
+      "languages": [
+        {
+          "name": "Python",
+          "size": 400000,
+          "color": "#3572a5"
+        }
+      ],
       "userCommits": 273
     },
     {
@@ -59,9 +81,21 @@
       "forkCount": 5,
       "primaryLanguage": "TypeScript",
       "languages": [
-        { "name": "TypeScript", "size": 300000, "color": "#3178c6" },
-        { "name": "JavaScript", "size": 50000, "color": "#f1e05a" },
-        { "name": "HTML", "size": 30000, "color": "#e34c26" }
+        {
+          "name": "TypeScript",
+          "size": 300000,
+          "color": "#3178c6"
+        },
+        {
+          "name": "JavaScript",
+          "size": 50000,
+          "color": "#f1e05a"
+        },
+        {
+          "name": "HTML",
+          "size": 30000,
+          "color": "#e34c26"
+        }
       ],
       "userCommits": 145
     },
@@ -75,8 +109,16 @@
       "forkCount": 8,
       "primaryLanguage": "C++",
       "languages": [
-        { "name": "C++", "size": 200000, "color": "#f34b7d" },
-        { "name": "Java", "size": 50000, "color": "#b07219" }
+        {
+          "name": "C++",
+          "size": 200000,
+          "color": "#f34b7d"
+        },
+        {
+          "name": "Java",
+          "size": 50000,
+          "color": "#b07219"
+        }
       ],
       "userCommits": 98
     },
@@ -90,9 +132,21 @@
       "forkCount": 3,
       "primaryLanguage": "HTML",
       "languages": [
-        { "name": "HTML", "size": 150000, "color": "#e34c26" },
-        { "name": "CSS", "size": 80000, "color": "#563d7c" },
-        { "name": "JavaScript", "size": 40000, "color": "#f1e05a" }
+        {
+          "name": "HTML",
+          "size": 150000,
+          "color": "#e34c26"
+        },
+        {
+          "name": "CSS",
+          "size": 80000,
+          "color": "#563d7c"
+        },
+        {
+          "name": "JavaScript",
+          "size": 40000,
+          "color": "#f1e05a"
+        }
       ],
       "userCommits": 71
     },
@@ -105,7 +159,13 @@
       "stargazerCount": 5,
       "forkCount": 1,
       "primaryLanguage": "C",
-      "languages": [{ "name": "C", "size": 250000, "color": "#555555" }],
+      "languages": [
+        {
+          "name": "C",
+          "size": 250000,
+          "color": "#555555"
+        }
+      ],
       "userCommits": 88
     },
     {
@@ -118,8 +178,16 @@
       "forkCount": 0,
       "primaryLanguage": "Rust",
       "languages": [
-        { "name": "Rust", "size": 180000, "color": "#dea584" },
-        { "name": "Cairo", "size": 40000, "color": "#ff4a48" }
+        {
+          "name": "Rust",
+          "size": 180000,
+          "color": "#dea584"
+        },
+        {
+          "name": "Cairo",
+          "size": 40000,
+          "color": "#ff4a48"
+        }
       ],
       "userCommits": 84
     },
@@ -132,7 +200,13 @@
       "stargazerCount": 2,
       "forkCount": 0,
       "primaryLanguage": "Lua",
-      "languages": [{ "name": "Lua", "size": 30000, "color": "#000080" }],
+      "languages": [
+        {
+          "name": "Lua",
+          "size": 30000,
+          "color": "#000080"
+        }
+      ],
       "userCommits": 21
     },
     {
@@ -144,15 +218,56 @@
       "stargazerCount": 0,
       "forkCount": 0,
       "primaryLanguage": "JavaScript",
-      "languages": [{ "name": "JavaScript", "size": 1000, "color": "#f1e05a" }],
+      "languages": [
+        {
+          "name": "JavaScript",
+          "size": 1000,
+          "color": "#f1e05a"
+        }
+      ],
       "userCommits": 0
     }
   ],
   "contributionsByYear": [
-    { "year": 2022, "commits": 50 },
-    { "year": 2023, "commits": 800 },
-    { "year": 2024, "commits": 1700 },
-    { "year": 2025, "commits": 1500 },
-    { "year": 2026, "commits": 557 }
+    {
+      "year": 2022,
+      "commits": 50,
+      "issues": 6,
+      "prs": 8,
+      "reviews": 3,
+      "restricted": 1
+    },
+    {
+      "year": 2023,
+      "commits": 800,
+      "issues": 96,
+      "prs": 120,
+      "reviews": 48,
+      "restricted": 8
+    },
+    {
+      "year": 2024,
+      "commits": 1700,
+      "issues": 204,
+      "prs": 255,
+      "reviews": 102,
+      "restricted": 17
+    },
+    {
+      "year": 2025,
+      "commits": 1500,
+      "issues": 180,
+      "prs": 225,
+      "reviews": 90,
+      "restricted": 15
+    },
+    {
+      "year": 2026,
+      "commits": 557,
+      "issues": 67,
+      "prs": 84,
+      "reviews": 33,
+      "restricted": 6
+    }
   ]
 }

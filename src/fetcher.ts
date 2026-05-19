@@ -43,6 +43,10 @@ interface ContribResponse {
   user: {
     contributionsCollection: {
       totalCommitContributions: number;
+      totalIssueContributions: number;
+      totalPullRequestContributions: number;
+      totalPullRequestReviewContributions: number;
+      restrictedContributionsCount: number;
     };
   };
 }
@@ -121,6 +125,10 @@ const CONTRIB_QUERY = /* GraphQL */ `
     user(login: $login) {
       contributionsCollection(from: $from, to: $to) {
         totalCommitContributions
+        totalIssueContributions
+        totalPullRequestContributions
+        totalPullRequestReviewContributions
+        restrictedContributionsCount
       }
     }
   }
@@ -227,9 +235,14 @@ async function fetchContributionsByYear(
       to,
     })) as ContribResponse;
 
+    const cc = data.user.contributionsCollection;
     out.push({
       year,
-      commits: data.user.contributionsCollection.totalCommitContributions,
+      commits: cc.totalCommitContributions,
+      issues: cc.totalIssueContributions,
+      prs: cc.totalPullRequestContributions,
+      reviews: cc.totalPullRequestReviewContributions,
+      restricted: cc.restrictedContributionsCount,
     });
   }
 

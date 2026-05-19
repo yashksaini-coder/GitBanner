@@ -28,6 +28,10 @@ export interface Repo {
 export interface YearlyContribution {
   year: number;
   commits: number;
+  issues: number;
+  prs: number;
+  reviews: number;
+  restricted: number;
 }
 
 export interface RawData {
@@ -75,6 +79,11 @@ export interface StatsPayload {
   generatedAt: string;
 
   totalCommits: number;
+  totalContributions: number;
+  totalIssues: number;
+  totalPRs: number;
+  totalReviews: number;
+  totalRestricted: number;
   totalStars: number;
 
   topReposByCommits: TopRepo[];
