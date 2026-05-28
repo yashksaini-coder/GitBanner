@@ -47,6 +47,17 @@ inputs:
     required: false
     default: ''
 
+  ignore-languages:
+    description: |
+      Comma-separated list of language names to exclude from the
+      "Languages Used" count, the top-languages list, and the
+      "Go-to language" pick. Matched case-insensitively. Useful for
+      hiding auto-generated content like "Jupyter Notebook" outputs
+      or vendored code that GitHub's detection counts but you don't
+      write.
+    required: false
+    default: ''
+
   commit:
     description: When true, commit and push the regenerated card if it changed.
     required: false

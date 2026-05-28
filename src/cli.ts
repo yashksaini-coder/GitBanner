@@ -18,6 +18,7 @@ interface CliArgs {
   fixture?: string;
   includePrivate: boolean;
   exclude: string[];
+  ignoreLanguages: string[];
 }
 
 async function main(): Promise<void> {
@@ -39,10 +40,13 @@ async function main(): Promise<void> {
   }
 
   const excludeRepos = computeExclude(args.exclude, raw.profile.login);
-  console.log(`Aggregating: ${raw.repos.length} repos (excluding ${excludeRepos.length})`);
+  console.log(
+    `Aggregating: ${raw.repos.length} repos (excluding ${excludeRepos.length}; ignoring ${args.ignoreLanguages.length} languages)`,
+  );
   const payload = aggregate(raw, {
     excludeRepos,
     includePrivate: args.includePrivate,
+    ignoreLanguages: args.ignoreLanguages,
   });
   console.log(
     `  ${payload.totalContributions} contributions (${payload.totalCommits} commits + ${payload.totalIssues} issues + ${payload.totalPRs} PRs + ${payload.totalReviews} reviews + ${payload.totalRestricted} restricted) · ${payload.totalStars} stars · ${payload.languageCount} languages · persona=${payload.persona.label}`,
@@ -78,6 +82,7 @@ function parseArgs(argv: string[]): CliArgs {
     format: 'both',
     includePrivate: false,
     exclude: [],
+    ignoreLanguages: [],
   };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
@@ -117,6 +122,12 @@ function parseArgs(argv: string[]): CliArgs {
           .map((s) => s.trim())
           .filter(Boolean);
         break;
+      case '--ignore-languages':
+        args.ignoreLanguages = next()
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean);
+        break;
       case '--help':
       case '-h':
         printHelp();
@@ -146,6 +157,9 @@ Options:
   --include-private    Include private repo stats
   --exclude            Comma-separated repo names to exclude (the user's
                        profile README repo is always excluded automatically)
+  --ignore-languages   Comma-separated language names to drop from the
+                       Languages Used count, top-N list, and Go-to language
+                       pick (case-insensitive)
 `);
 }
 
