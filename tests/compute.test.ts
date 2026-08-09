@@ -1,189 +1,203 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { aggregate } from '../src/compute.js';
+import { aggregate, topExternalByPrs, topExternalByStars } from '../src/compute.js';
 import type { RawData } from '../src/types.js';
-
-
 
 const raw = JSON.parse(
   readFileSync(new URL('./fixtures/raw.json', import.meta.url), 'utf8'),
 ) as RawData;
 
-describe('aggregate', () => {
+const LOGIN = raw.profile.login.toLowerCase();
+const isExternal = (owner: string) => owner.toLowerCase() !== LOGIN;
+const publicPrs = raw.mergedPrs.filter((p) => !p.repo.isPrivate);
+
+describe('aggregate — external contribution metrics', () => {
   const stats = aggregate(raw);
 
-  it('takes totalCommits straight from the GitHub contribution graph', () => {
-    const fromContribs = raw.contributionsByYear.reduce((s, y) => s + y.commits, 0);
-    expect(stats.totalCommits).toBe(fromContribs);
+  it('counts only PRs merged into repos the user does not own', () => {
+    const expected = publicPrs.filter((p) => isExternal(p.repo.owner)).length;
+    expect(stats.prsMergedExternal).toBe(expected);
+    expect(stats.prsMergedExternal).toBeGreaterThan(0);
   });
 
-  it('sums issues, PRs, reviews, and restricted contributions across years', () => {
-    const sum = (field: 'issues' | 'prs' | 'reviews' | 'restricted') =>
-      raw.contributionsByYear.reduce((s, y) => s + y[field], 0);
-    expect(stats.totalIssues).toBe(sum('issues'));
-    expect(stats.totalPRs).toBe(sum('prs'));
-    expect(stats.totalReviews).toBe(sum('reviews'));
-    expect(stats.totalRestricted).toBe(sum('restricted'));
+  it('excludes private repos from external counts unless asked', () => {
+    const withPrivate = aggregate(raw, { includePrivate: true });
+    expect(raw.mergedPrs.some((p) => p.repo.isPrivate)).toBe(true);
+    expect(withPrivate.prsMergedExternal).toBeGreaterThanOrEqual(stats.prsMergedExternal);
   });
 
-  it('totalContributions = commits + issues + PRs + reviews + restricted', () => {
-    expect(stats.totalContributions).toBe(
-      stats.totalCommits +
-        stats.totalIssues +
-        stats.totalPRs +
-        stats.totalReviews +
-        stats.totalRestricted,
+  it('never leaks a private repo name into the external repo list', () => {
+    const privateNames = new Set(
+      raw.mergedPrs.filter((p) => p.repo.isPrivate).map((p) => p.repo.nameWithOwner),
     );
-  });
-
-  it('yearsCoding counts only years with at least one contribution', () => {
-    const expected = raw.contributionsByYear.filter(
-      (y) => y.commits + y.issues + y.prs + y.reviews + y.restricted > 0,
-    ).length;
-    expect(stats.yearsCoding).toBe(expected);
-  });
-
-  it('sums stars across owned (non-fork) repos', () => {
-    const expected = raw.repos
-      .filter((r) => !r.isFork)
-      .reduce((s, r) => s + r.stargazerCount, 0);
-    expect(stats.totalStars).toBe(expected);
-  });
-
-  it('produces top 3 repos by commits, sorted desc', () => {
-    expect(stats.topReposByCommits).toHaveLength(3);
-    expect(stats.topReposByCommits[0].name).toBe('yashksaini-coder');
-    expect(stats.topReposByCommits[0].value).toBe(1000);
-    expect(stats.topReposByCommits[1].name).toBe('Leetcode');
-  });
-
-  it('produces top 3 repos by stars', () => {
-    expect(stats.topReposByStars[0].name).toBe('Leetcode-Journal');
-    expect(stats.topReposByStars[0].value).toBe(26);
-  });
-
-  it('aggregates languages and computes percentages', () => {
-    expect(stats.languages.length).toBeGreaterThan(0);
-    const top = stats.languages[0];
-    expect(top.percent).toBeGreaterThan(0);
-    expect(top.color).toMatch(/^#/);
-    const sum = stats.languages.reduce((s, l) => s + l.percent, 0);
-    expect(sum).toBeLessThanOrEqual(100.01);
-  });
-
-  it('counts languages distinctly across owned repos', () => {
-    const distinct = new Set<string>();
-    for (const r of raw.repos.filter((r) => !r.isFork)) {
-      for (const l of r.languages) distinct.add(l.name);
+    for (const repo of stats.externalRepos) {
+      expect(privateNames.has(repo.nameWithOwner)).toBe(false);
     }
-    expect(stats.languageCount).toBe(distinct.size);
   });
 
-  it('ignoreLanguages drops the named languages from the count, the top-N list, and goToLanguage', () => {
-    const top = stats.languages[0].name;
-    const ignored = aggregate(raw, { ignoreLanguages: [top] });
-    expect(ignored.languages.find((l) => l.name === top)).toBeUndefined();
-    expect(ignored.languageCount).toBe(stats.languageCount - 1);
-    expect(ignored.goToLanguage.name).not.toBe(top);
-  });
-
-  it('ignoreLanguages matches case-insensitively', () => {
-    const top = stats.languages[0].name;
-    const ignored = aggregate(raw, { ignoreLanguages: [top.toLowerCase()] });
-    expect(ignored.languages.find((l) => l.name === top)).toBeUndefined();
-  });
-
-  it('computes avg lifespan only over repos with commits', () => {
-    expect(stats.avgLifespanDays).toBeGreaterThan(0);
-  });
-
-  it('counts public/private/forked/owned correctly', () => {
-    expect(stats.privateCount).toBe(0);
-    expect(stats.forkedRepoCount).toBe(1);
-    expect(stats.ownedCount).toBe(9);
-    expect(stats.publicCount).toBe(9);
-  });
-
-  it('sums incoming forks (others forking owned repos)', () => {
-    const expected = raw.repos
-      .filter((r) => !r.isFork)
-      .reduce((s, r) => s + r.forkCount, 0);
-    expect(stats.incomingForks).toBe(expected);
-  });
-
-  it('exposes followers and following from profile', () => {
-    expect(stats.followers).toBe(raw.profile.followers);
-    expect(stats.following).toBe(raw.profile.following);
-  });
-
-  it('picks the year with the most contributions as bestYear', () => {
-    const expected = raw.contributionsByYear
-      .slice()
-      .sort((a, b) => b.commits - a.commits)[0];
-    expect(stats.bestYear.year).toBe(expected.year);
-    expect(stats.bestYear.commits).toBe(expected.commits);
-  });
-
-  it('avgCommitsPerRepo divides repo-sum (not contribution-graph max) by repo count', () => {
-    // Compute the same way aggregate does, restricted to non-private owned repos.
-    const aggRepos = raw.repos.filter((r) => !r.isFork && !r.isPrivate);
-    const repoSum = aggRepos.reduce((s, r) => s + r.userCommits, 0);
-    expect(stats.avgCommitsPerRepo).toBe(Math.round(repoSum / aggRepos.length));
-  });
-
-  it('respects excludeRepos: profile README is filtered from non-commits lists', () => {
-    const stats2 = aggregate(raw, { excludeRepos: ['yashksaini-coder'] });
-    expect(stats2.topReposByStars.find((r) => r.name === 'yashksaini-coder')).toBeUndefined();
-    expect(stats2.mostActiveProject.name).not.toBe('yashksaini-coder');
-  });
-
-  it('excludeRepos does not affect totalCommits and still keeps the top-commits list intact', () => {
-    const base = aggregate(raw);
-    const excluded = aggregate(raw, { excludeRepos: ['yashksaini-coder'] });
-
-    // totalCommits comes from the per-user contribution graph, which has
-    // no notion of repo exclusions, so the headline number is preserved.
-    expect(excluded.totalCommits).toBe(base.totalCommits);
-
-    // The whole commits section keeps the README repo, so the top-commits
-    // list still includes it (when it has enough commits to rank).
-    expect(excluded.topReposByCommits.find((r) => r.name === 'yashksaini-coder')).toBeDefined();
-
-    // Stars drop by the excluded repo's stargazer count.
-    const readme = raw.repos.find((r) => r.name === 'yashksaini-coder');
-    expect(excluded.totalStars).toBe(base.totalStars - readme!.stargazerCount);
-
-    // Project highlights and stars-list ignore the excluded repo.
-    expect(excluded.mostActiveProject.name).not.toBe('yashksaini-coder');
-    expect(excluded.topReposByStars.find((r) => r.name === 'yashksaini-coder')).toBeUndefined();
-
-    // avgCommitsPerRepo recomputed without the excluded repo's commits AND
-    // without it in the denominator.
-    const aggReposWithout = raw.repos.filter(
-      (r) => !r.isFork && !r.isPrivate && r.name !== 'yashksaini-coder',
+  it('groups external repos and counts distinct projects', () => {
+    const all = aggregate(raw, { minMergedPrs: 1 });
+    const expected = new Set(
+      publicPrs.filter((p) => isExternal(p.repo.owner)).map((p) => p.repo.nameWithOwner),
     );
-    const sumWithout = aggReposWithout.reduce((s, r) => s + r.userCommits, 0);
-    expect(excluded.avgCommitsPerRepo).toBe(Math.round(sumWithout / aggReposWithout.length));
+    expect(all.externalRepoCount).toBe(expected.size);
+    expect(all.externalRepos).toHaveLength(expected.size);
   });
 
-  it('picks oldest, latest, and most-active projects correctly', () => {
-    expect(stats.oldestProject.name).toBe('C_coding');
-    expect(stats.latestProject.name).toBe('Turbine_Q1_26');
-    expect(stats.mostActiveProject.name).toBe('yashksaini-coder');
-    expect(stats.mostActiveProject.commits).toBe(1000);
+  it('sums merged PRs per repo without double counting', () => {
+    const all = aggregate(raw, { minMergedPrs: 1 });
+    const total = all.externalRepos.reduce((s, r) => s + r.mergedPrs, 0);
+    expect(total).toBe(all.prsMergedExternal);
   });
 
-  it('computes yearsCoding from profile.createdAt', () => {
-    expect(stats.yearsCoding).toBeGreaterThanOrEqual(3);
+  it('drops drive-by repos from repo-level claims but not from the PR count', () => {
+    const all = aggregate(raw, { minMergedPrs: 1 });
+    const strict = aggregate(raw, { minMergedPrs: 2 });
+
+    // Every external merged PR is real work, so the headline count is unchanged...
+    expect(strict.prsMergedExternal).toBe(all.prsMergedExternal);
+    // ...but single-PR repos no longer inflate reach or the project count.
+    expect(strict.externalRepoCount).toBeLessThan(all.externalRepoCount);
+    for (const repo of strict.externalRepos) {
+      expect(repo.mergedPrs).toBeGreaterThanOrEqual(2);
+    }
   });
 
-  it('picks the most-used language as goToLanguage', () => {
-    expect(stats.goToLanguage.name).toBe(stats.languages[0].name);
-    expect(stats.goToLanguage.reposUsing).toBeGreaterThan(0);
+  it('defaults to the drive-by filter rather than counting every repo', () => {
+    const explicit = aggregate(raw, { minMergedPrs: 2 });
+    expect(stats.externalRepoCount).toBe(explicit.externalRepoCount);
   });
 
-  it('attaches a persona', () => {
-    expect(stats.persona.label).toBeTruthy();
-    expect(stats.persona.iconKey).toBeTruthy();
+  it('falls back to every repo when the threshold would leave nothing', () => {
+    // A newcomer whose contributions are all first PRs must not see "0 projects"
+    // next to a non-zero merged count.
+    const onlyDriveBys: RawData = {
+      ...raw,
+      mergedPrs: [
+        { mergedAt: '2025-01-01T00:00:00Z', repo: { nameWithOwner: 'acme/one', owner: 'acme', stars: 10, isPrivate: false, languages: [{ name: 'Go', color: '#0ff' }] } },
+        { mergedAt: '2025-02-01T00:00:00Z', repo: { nameWithOwner: 'acme/two', owner: 'acme', stars: 20, isPrivate: false, languages: [{ name: 'Go', color: '#0ff' }] } },
+      ],
+    };
+    const out = aggregate(onlyDriveBys, { minMergedPrs: 5 });
+    expect(out.prsMergedExternal).toBe(2);
+    expect(out.externalRepoCount).toBe(2);
+    expect(out.biggestProject).not.toBeNull();
+  });
+
+  it('ranks external repos by merged PRs, descending', () => {
+    const counts = stats.externalRepos.map((r) => r.mergedPrs);
+    expect(counts).toEqual([...counts].sort((a, b) => b - a));
+  });
+
+  it('reports the highest-starred own repo alongside the star sum', () => {
+    const own = raw.ownRepos.filter((r) => !r.isFork && !r.isPrivate);
+    const top = own.reduce((a, b) => (b.stars > a.stars ? b : a));
+    expect(stats.ownTopRepo).toEqual({ name: top.name, stars: top.stars });
+    expect(stats.ownRepoCount).toBe(own.length);
+  });
+
+  it('never reveals a private repo as the highest-starred own repo', () => {
+    const inflated: RawData = {
+      ...raw,
+      ownRepos: [
+        ...raw.ownRepos,
+        { name: 'secret-sauce', isFork: false, isPrivate: true, stars: 99999 },
+      ],
+    };
+    expect(aggregate(inflated).ownTopRepo?.name).not.toBe('secret-sauce');
+    expect(aggregate(inflated, { includePrivate: true }).ownTopRepo?.name).toBe('secret-sauce');
+  });
+
+  it('picks the biggest project by stars, not by PR count', () => {
+    const maxStars = Math.max(...stats.externalRepos.map((r) => r.stars));
+    expect(stats.biggestProject?.stars).toBe(maxStars);
+  });
+
+  it('counts trailing-12-month momentum from external merges only', () => {
+    const cutoff = Date.now() - 365 * 24 * 60 * 60 * 1000;
+    const recent = publicPrs.filter(
+      (p) => isExternal(p.repo.owner) && Date.parse(p.mergedAt) >= cutoff,
+    );
+    expect(stats.recentExternalPrs).toBe(recent.length);
+    expect(stats.recentExternalRepoCount).toBe(
+      new Set(recent.map((p) => p.repo.nameWithOwner)).size,
+    );
+    expect(stats.recentExternalPrs).toBeLessThanOrEqual(stats.prsMergedExternal);
+  });
+
+  it('computes merge rate from the PR totals', () => {
+    expect(stats.mergeRatePct).toBe(
+      Math.round((raw.prTotals.merged / raw.prTotals.opened) * 100),
+    );
+  });
+
+  it('counts reviews on others repos separately from the total', () => {
+    const total = raw.reviewYears.reduce((s, y) => s + y.reviews, 0);
+    expect(stats.reviewsTotal).toBe(total);
+    expect(stats.reviewsExternal).toBeLessThanOrEqual(stats.reviewsTotal);
+    for (const entry of raw.reviewYears.flatMap((y) => y.byRepo)) {
+      if (!isExternal(entry.owner)) {
+        expect(stats.topReviewedRepos.map((r) => r.name)).not.toContain(
+          entry.nameWithOwner.split('/')[1],
+        );
+      }
+    }
+  });
+
+  it('counts every linguist language per project, not just the primary one', () => {
+    const distinct = new Set(
+      stats.externalRepos.flatMap((r) => r.languages.map((l) => l.name)),
+    );
+    expect(stats.languageCount).toBe(distinct.size);
+    // Multi-language repos mean the count exceeds a primary-only tally.
+    expect(stats.languageCount).toBeGreaterThan(
+      new Set(stats.externalRepos.map((r) => r.languages[0]?.name).filter(Boolean)).size,
+    );
+    const counts = stats.languages.map((l) => l.repos);
+    expect(counts).toEqual([...counts].sort((a, b) => b - a));
+    for (const lang of stats.languages) expect(lang.color).toMatch(/^#/);
+  });
+
+  it('sums own stars over non-fork repos only', () => {
+    const expected = raw.ownRepos
+      .filter((r) => !r.isFork && !r.isPrivate)
+      .reduce((s, r) => s + r.stars, 0);
+    expect(stats.ownStars).toBe(expected);
+  });
+
+  it('excludeRepos matches both bare name and owner/name', () => {
+    const target = stats.externalRepos[0];
+    const byFull = aggregate(raw, { excludeRepos: [target.nameWithOwner] });
+    const byBare = aggregate(raw, { excludeRepos: [target.name] });
+    for (const result of [byFull, byBare]) {
+      expect(result.externalRepos.find((r) => r.nameWithOwner === target.nameWithOwner)).toBeUndefined();
+      expect(result.prsMergedExternal).toBe(stats.prsMergedExternal - target.mergedPrs);
+    }
+  });
+});
+
+describe('aggregate — empty inputs', () => {
+  // A tile set that skips a query leaves its collection empty; nothing should throw.
+  const empty: RawData = {
+    profile: { login: 'nobody', name: null, createdAt: '2024-01-01T00:00:00Z', followers: 0, following: 0 },
+    mergedPrs: [],
+    prTotals: { opened: 0, merged: 0, open: 0 },
+    issueTotals: { opened: 0, closed: 0 },
+    reviewYears: [],
+    ownRepos: [],
+    window: null,
+  };
+
+  it('produces a zeroed payload rather than throwing', () => {
+    const stats = aggregate(empty);
+    expect(stats.prsMergedExternal).toBe(0);
+    expect(stats.externalRepoCount).toBe(0);
+    expect(stats.biggestProject).toBeNull();
+    expect(stats.ownTopRepo).toBeNull();
+    expect(stats.mergeRatePct).toBe(0);
+    expect(stats.recentExternalPrs).toBe(0);
+    expect(stats.languages).toEqual([]);
+    expect(topExternalByPrs(stats, 3)).toEqual([]);
+    expect(topExternalByStars(stats, 3)).toEqual([]);
   });
 });
