@@ -3,10 +3,12 @@ import * as github from '@actions/github';
 import { Resvg } from '@resvg/resvg-js';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
-import { aggregate } from './compute.js';
+import { aggregate, DEFAULT_MIN_MERGED_PRS } from './compute.js';
 import { fetchAll } from './fetcher.js';
 import { commitIfChanged } from './git.js';
 import { toSvg } from './render/svg.js';
+import { neededData, parseTiles } from './tiles.js';
+import { buildWindow } from './window.js';
 import type { OutputFormat, ThemeName } from './types.js';
 
 async function run(): Promise<void> {
@@ -22,20 +24,22 @@ async function run(): Promise<void> {
       core.getInput('commit-message') || 'chore: refresh GitBanner stats';
     const shouldCommit = parseBool(core.getInput('commit'), true);
     const excludeRepos = parseExclude(core.getInput('exclude'), username);
-    const ignoreLanguages = parseCsv(core.getInput('ignore-languages'));
-
-    core.info(`Fetching GitHub data for ${username}...`);
-    const raw = await fetchAll({ username, token });
+    const tiles = parseTiles(core.getInput('tiles'));
+    const minMergedPrs = parseCount(core.getInput('min-merged-prs'), DEFAULT_MIN_MERGED_PRS);
+    const needs = neededData(tiles);
+    const window = buildWindow(core.getInput('since'), core.getInput('until'));
 
     core.info(
-      `Aggregating ${raw.repos.length} repos (excluding ${excludeRepos.length}: ${excludeRepos.join(', ') || 'none'}, ignoring languages: ${ignoreLanguages.join(', ') || 'none'})...`,
+      `Fetching GitHub data for ${username}${window ? ` (${window.label})` : ''} — ${tiles.length} tiles need: ${[...needs].join(', ') || 'profile only'}`,
     );
-    const payload = aggregate(raw, { excludeRepos, includePrivate, ignoreLanguages });
+    const raw = await fetchAll({ username, token, needs, window });
+
+    const payload = aggregate(raw, { excludeRepos, includePrivate, minMergedPrs });
     core.info(
-      `${payload.totalContributions} contributions (${payload.totalCommits} commits + ${payload.totalIssues} issues + ${payload.totalPRs} PRs + ${payload.totalReviews} reviews + ${payload.totalRestricted} restricted) · ${payload.totalStars} stars · ${payload.languageCount} languages · persona="${payload.persona.label}"`,
+      `${payload.prsMergedExternal} PRs merged into others' repos across ${payload.externalRepoCount} projects · ${payload.reviewsExternal} external reviews · ${payload.mergeRatePct}% merge rate`,
     );
 
-    const svg = toSvg(payload, theme);
+    const svg = toSvg(payload, theme, tiles);
 
     const written: string[] = [];
     const svgPath = resolve(`${outputPath}.svg`);
@@ -89,6 +93,12 @@ function parseBool(input: string, fallback: boolean): boolean {
   return fallback;
 }
 
+function parseCount(input: string, fallback: number): number {
+  if (!input.trim()) return fallback;
+  const value = Number(input);
+  return Number.isFinite(value) && value >= 1 ? Math.floor(value) : fallback;
+}
+
 function parseExclude(input: string, username: string): string[] {
   const fromInput = input
     .split(',')
@@ -99,13 +109,6 @@ function parseExclude(input: string, username: string): string[] {
     fromInput.push(username);
   }
   return fromInput;
-}
-
-function parseCsv(input: string): string[] {
-  return input
-    .split(',')
-    .map((s) => s.trim())
-    .filter(Boolean);
 }
 
 run();

@@ -2,9 +2,11 @@ import { Resvg } from '@resvg/resvg-js';
 import { existsSync, readFileSync } from 'node:fs';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
-import { aggregate } from './compute.js';
+import { aggregate, DEFAULT_MIN_MERGED_PRS } from './compute.js';
 import { fetchAll } from './fetcher.js';
 import { toSvg } from './render/svg.js';
+import { neededData, parseTiles, TILE_KEYS } from './tiles.js';
+import { buildWindow } from './window.js';
 import type { RawData, ThemeName } from './types.js';
 
 loadDotEnv();
@@ -18,11 +20,18 @@ interface CliArgs {
   fixture?: string;
   includePrivate: boolean;
   exclude: string[];
-  ignoreLanguages: string[];
+  tiles?: string;
+  minMergedPrs?: number;
+  since?: string;
+  until?: string;
 }
 
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
+
+  const tiles = parseTiles(args.tiles);
+  const needs = neededData(tiles);
+  const window = buildWindow(args.since, args.until);
 
   let raw: RawData;
   if (args.fixture) {
@@ -32,27 +41,23 @@ async function main(): Promise<void> {
     if (!args.user) throw new Error('--user is required (or use --fixture <path>)');
     const token = args.token ?? process.env.GH_PAT ?? process.env.GITHUB_TOKEN;
     if (!token) throw new Error('Provide --token or set GH_PAT/GITHUB_TOKEN');
-    console.log(`Fetching data for ${args.user}...`);
-    raw = await fetchAll({
-      username: args.user,
-      token,
-    });
+    console.log(
+      `Fetching data for ${args.user}${window ? ` (${window.label})` : ''} — ${tiles.length} tiles need: ${[...needs].join(', ') || 'profile only'}`,
+    );
+    raw = await fetchAll({ username: args.user, token, needs, window });
   }
 
   const excludeRepos = computeExclude(args.exclude, raw.profile.login);
-  console.log(
-    `Aggregating: ${raw.repos.length} repos (excluding ${excludeRepos.length}; ignoring ${args.ignoreLanguages.length} languages)`,
-  );
   const payload = aggregate(raw, {
     excludeRepos,
     includePrivate: args.includePrivate,
-    ignoreLanguages: args.ignoreLanguages,
+    minMergedPrs: args.minMergedPrs,
   });
   console.log(
-    `  ${payload.totalContributions} contributions (${payload.totalCommits} commits + ${payload.totalIssues} issues + ${payload.totalPRs} PRs + ${payload.totalReviews} reviews + ${payload.totalRestricted} restricted) · ${payload.totalStars} stars · ${payload.languageCount} languages · persona=${payload.persona.label}`,
+    `  ${payload.prsMergedExternal} PRs merged into others' repos across ${payload.externalRepoCount} projects · ${payload.reviewsExternal} external reviews · ${payload.mergeRatePct}% merge rate`,
   );
 
-  const svg = toSvg(payload, args.theme);
+  const svg = toSvg(payload, args.theme, tiles);
   const svgPath = resolve(`${args.output}.svg`);
   const pngPath = resolve(`${args.output}.png`);
 
@@ -82,7 +87,6 @@ function parseArgs(argv: string[]): CliArgs {
     format: 'both',
     includePrivate: false,
     exclude: [],
-    ignoreLanguages: [],
   };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
@@ -122,11 +126,20 @@ function parseArgs(argv: string[]): CliArgs {
           .map((s) => s.trim())
           .filter(Boolean);
         break;
-      case '--ignore-languages':
-        args.ignoreLanguages = next()
-          .split(',')
-          .map((s) => s.trim())
-          .filter(Boolean);
+      case '--tiles':
+        args.tiles = next();
+        break;
+      case '--since':
+        args.since = next();
+        break;
+      case '--until':
+        args.until = next();
+        break;
+      case '--min-merged-prs':
+        args.minMergedPrs = Number(next());
+        if (!Number.isFinite(args.minMergedPrs) || args.minMergedPrs < 1) {
+          throw new Error('--min-merged-prs must be a positive number');
+        }
         break;
       case '--help':
       case '-h':
@@ -157,9 +170,14 @@ Options:
   --include-private    Include private repo stats
   --exclude            Comma-separated repo names to exclude (the user's
                        profile README repo is always excluded automatically)
-  --ignore-languages   Comma-separated language names to drop from the
-                       Languages Used count, top-N list, and Go-to language
-                       pick (case-insensitive)
+  --tiles              Comma-separated tiles to render, in order. Only the
+                       queries those tiles need are issued.
+                       Available: ${TILE_KEYS.join(', ')}
+  --min-merged-prs     Merged PRs a repo needs before it counts as one you
+                       contributed to (default ${DEFAULT_MIN_MERGED_PRS}). Keeps one-off
+                       drive-by PRs out of reach and project counts.
+  --since / --until    Scope the card to a date range (YYYY-MM-DD, inclusive,
+                       UTC). Max one year. Omit both for an all-time card.
 `);
 }
 

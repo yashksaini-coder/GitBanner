@@ -1,5 +1,5 @@
 name: GitBanner Profile Card
-description: 'Generate a personalized GitHub stats banner: commits, stars, languages, persona, top projects (SVG + PNG).'
+description: 'Generate an open-source contribution banner: PRs merged into other people''s repos, reviews given, projects shipped to and their reach (SVG + PNG).'
 author: yashksaini-coder
 branding:
   icon: bar-chart-2
@@ -47,14 +47,49 @@ inputs:
     required: false
     default: ''
 
-  ignore-languages:
+  tiles:
     description: |
-      Comma-separated list of language names to exclude from the
-      "Languages Used" count, the top-languages list, and the
-      "Go-to language" pick. Matched case-insensitively. Useful for
-      hiding auto-generated content like "Jupyter Notebook" outputs
-      or vendored code that GitHub's detection counts but you don't
-      write.
+      Comma-separated tiles to render, in order. Only the GraphQL queries the
+      selected tiles need are issued — dropping `own-stars`, for example, skips
+      repository pagination entirely.
+
+      Stat tiles (tall, with a top-3 list):
+        merged-prs  PRs merged into repos you don't own
+        reviews     code reviews you gave on others' repos
+        projects    distinct external projects you've landed work in
+        reach       combined stargazers of those projects
+        issues      issues opened / closed
+        languages   languages of the external projects you ship in (pills)
+      Mini tiles (short):
+        biggest-project, merge-rate, ships-in, own-stars, since
+
+      Default: merged-prs,reviews,projects,reach,issues,
+               biggest-project,merge-rate,ships-in,own-stars,since
+    required: false
+    default: ''
+
+  min-merged-prs:
+    description: |
+      How many merged PRs a repository needs before it counts as one you have
+      contributed to. Guards the reach, projects, biggest-project and languages
+      tiles against one-off drive-by PRs — a single PR into a 55k-star tutorial
+      repo would otherwise dominate your combined reach.
+      Set to 1 to count every repository you have ever landed a PR in.
+    required: false
+    default: '2'
+
+  since:
+    description: |
+      Scope the card to work done on or after this date (YYYY-MM-DD, UTC).
+      Combine with `until` for a weekly or monthly card. Omit both for all time.
+      GitHub caps contribution windows at one year.
+    required: false
+    default: ''
+
+  until:
+    description: |
+      Scope the card to work done on or before this date (YYYY-MM-DD, UTC,
+      inclusive of the whole day).
     required: false
     default: ''
 
