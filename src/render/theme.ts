@@ -10,16 +10,19 @@ export const dark: Theme = {
   divider: '#1f2937',
   pillBg: '#172033',
   pillText: '#93c5fd',
+  // Three hues, in this order, on surface #11161f. Validated all-pairs by
+  // dataviz/scripts/validate_palette.js: lightness band, chroma floor, CVD
+  // separation (worst ΔE 9.4 deutan), normal-vision floor (20.9), contrast.
+  // The ORDER is the CVD-safety mechanism — re-ordering or adding a fourth hue
+  // fails the gates, so extra tiles take `neutral` rather than a new colour.
   accents: {
-    commits: '#22c55e',
-    stars: '#facc15',
-    languages: '#3b82f6',
-    lifespan: '#a855f7',
-    visibility: '#60a5fa',
-    persona: '#fbbf24',
-    fire: '#fb923c',
-    clock: '#06b6d4',
-    code: '#ef4444',
+    prs: '#3987e5', // slot 1 — the hero
+    reviews: '#d95926', // slot 2
+    projects: '#199e70', // slot 3
+    reach: '#199e70', // same footprint story as projects
+    issues: '#8b949e',
+    languages: '#199e70',
+    neutral: '#8b949e',
   },
 };
 
