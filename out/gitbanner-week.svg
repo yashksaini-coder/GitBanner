@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="592" viewBox="0 0 1600 592" role="img" aria-label="Open source contributions by yashksaini-coder in 1–9 Aug 2026: 0 pull requests merged into other people&apos;s repositories across 0 projects.">
+  <defs>
+    <style>.gb-display { font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-weight: 700; letter-spacing: -0.02em; }
+    .gb-text { font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-weight: 500; }
+    .gb-text-bold { font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-weight: 700; }
+    .gb-mono { font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-weight: 600; }</style>
+  </defs>
+  <rect width="1600" height="592" rx="36" fill="#0b0d12"/>
+  
+    <g transform="translate(28, 28)">
+      <rect width="508" height="360" rx="24" fill="#11161f" stroke="#1c2230" stroke-width="1.5"/>
+      <g transform="translate(28, 28)">
+        <rect width="48" height="48" rx="12" fill="#3987e5" fill-opacity="0.16"/>
+        <g transform="translate(12, 12)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3987e5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" /><path d="M6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" /><path d="M6 9v6" /><path d="M18 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" /><path d="M13 6h2a3 3 0 0 1 3 3v6" /></svg></g>
+      </g>
+
+      <text x="92" y="72" class="gb-display" font-size="56" fill="#ffffff">0</text>
+      <text x="28" y="112" class="gb-text" font-size="19" fill="#ffffff">Merged into other people&apos;s repos</text>
+      <text x="28" y="136" class="gb-text" font-size="13" fill="#6b7280">1–9 Aug 2026 · 0 projects · 50% merge rate</text>
+
+      <line x1="28" y1="156" x2="480" y2="156" stroke="#1f2937" stroke-width="1"/>
+      <text x="28" y="182" class="gb-text" font-size="12" letter-spacing="0.08em" fill="#6b7280">WHERE THAT WORK LANDED</text>
+
+      
+    </g>
+  
+    <g transform="translate(552, 28)">
+      <rect width="246" height="360" rx="24" fill="#11161f" stroke="#1c2230" stroke-width="1.5"/>
+      <g transform="translate(28, 28)">
+        <rect width="48" height="48" rx="12" fill="#d95926" fill-opacity="0.16"/>
+        <g transform="translate(12, 12)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d95926" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /><path d="M8 9h8" /><path d="M8 13h5" /></svg></g>
+      </g>
+
+      <text x="92" y="66" class="gb-display" font-size="40" fill="#ffffff">0</text>
+      <text x="28" y="112" class="gb-text" font-size="17" fill="#ffffff">Reviews for others</text>
+      <text x="28" y="136" class="gb-text" font-size="13" fill="#6b7280">of 0 reviews total</text>
+
+      <line x1="28" y1="156" x2="218" y2="156" stroke="#1f2937" stroke-width="1"/>
+
+      
+    </g>
+  
+    <g transform="translate(814, 28)">
+      <rect width="246" height="360" rx="24" fill="#11161f" stroke="#1c2230" stroke-width="1.5"/>
+      <g transform="translate(28, 28)">
+        <rect width="48" height="48" rx="12" fill="#199e70" fill-opacity="0.16"/>
+        <g transform="translate(12, 12)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#199e70" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /><path d="M3.27 6.96L12 12.01l8.73-5.05" /><path d="M12 22.08V12" /></svg></g>
+      </g>
+
+      <text x="92" y="66" class="gb-display" font-size="40" fill="#ffffff">0</text>
+      <text x="28" y="112" class="gb-text" font-size="17" fill="#ffffff">Projects shipped to</text>
+      <text x="28" y="136" class="gb-text" font-size="13" fill="#6b7280">with 2+ merged PRs</text>
+
+      <line x1="28" y1="156" x2="218" y2="156" stroke="#1f2937" stroke-width="1"/>
+
+      
+    </g>
+  
+    <g transform="translate(1076, 28)">
+      <rect width="246" height="360" rx="24" fill="#11161f" stroke="#1c2230" stroke-width="1.5"/>
+      <g transform="translate(28, 28)">
+        <rect width="48" height="48" rx="12" fill="#199e70" fill-opacity="0.16"/>
+        <g transform="translate(12, 12)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#199e70" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6" /><path d="M8 6l-6 6 6 6" /></svg></g>
+      </g>
+
+      <text x="92" y="66" class="gb-display" font-size="40" fill="#ffffff">0</text>
+      <text x="28" y="112" class="gb-text" font-size="17" fill="#ffffff">Ships in</text>
+      <text x="28" y="136" class="gb-text" font-size="13" fill="#6b7280">generated files excluded</text>
+
+      <line x1="28" y1="156" x2="218" y2="156" stroke="#1f2937" stroke-width="1"/>
+
+      <g transform="translate(28, 176)"></g>
+    </g>
+  
+    <g transform="translate(1338, 28)">
+      <rect width="246" height="360" rx="24" fill="#11161f" stroke="#1c2230" stroke-width="1.5"/>
+      <g transform="translate(28, 28)">
+        <rect width="48" height="48" rx="12" fill="#8b949e" fill-opacity="0.16"/>
+        <g transform="translate(12, 12)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8b949e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z" /><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" /></svg></g>
+      </g>
+
+      <text x="92" y="66" class="gb-display" font-size="40" fill="#ffffff">3</text>
+      <text x="28" y="112" class="gb-text" font-size="17" fill="#ffffff">Issues opened</text>
+      <text x="28" y="136" class="gb-text" font-size="13" fill="#6b7280">1–9 Aug 2026</text>
+
+      <line x1="28" y1="156" x2="218" y2="156" stroke="#1f2937" stroke-width="1"/>
+
+      
+      <circle cx="32" cy="183" r="4" fill="#8b949e"/>
+      <text x="46" y="188" class="gb-text" font-size="15" fill="#9ca3af">Opened</text>
+      <text x="218" y="188" text-anchor="end" class="gb-mono" font-size="15" fill="#ffffff">3</text>
+    
+    </g>
+  
+    <g transform="translate(28, 404)">
+      <rect width="374" height="150" rx="22" fill="#11161f" stroke="#1c2230" stroke-width="1.5"/>
+      <g transform="translate(28, 24)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4a2 2 0 1 1 0-4h2" /><path d="M18 9h2a2 2 0 1 0 0-4h-2" /><path d="M6 5h12v6a6 6 0 1 1-12 0V5z" /><path d="M9 21h6" /><path d="M12 15v6" /></svg></g>
+      <text x="58" y="41" class="gb-text" font-size="16" fill="#9ca3af">Biggest project</text>
+
+      <text x="28" y="94" class="gb-display" font-size="36" fill="#ffffff">—</text>
+      <text x="28" y="124" class="gb-text" font-size="16" fill="#9ca3af">no external merges yet</text>
+    </g>
+  
+    <g transform="translate(418, 404)">
+      <rect width="374" height="150" rx="22" fill="#11161f" stroke="#1c2230" stroke-width="1.5"/>
+      <g transform="translate(28, 24)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><path d="M22 4L12 14.01l-3-3" /></svg></g>
+      <text x="58" y="41" class="gb-text" font-size="16" fill="#9ca3af">Merge rate</text>
+
+      <text x="28" y="94" class="gb-display" font-size="36" fill="#ffffff">50%</text>
+      <text x="28" y="124" class="gb-text" font-size="16" fill="#9ca3af">1 of 2 PRs</text>
+    </g>
+  
+    <g transform="translate(808, 404)">
+      <rect width="374" height="150" rx="22" fill="#11161f" stroke="#1c2230" stroke-width="1.5"/>
+      <g transform="translate(28, 24)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg></g>
+      <text x="58" y="41" class="gb-text" font-size="16" fill="#9ca3af">Stars earned</text>
+
+      <text x="28" y="94" class="gb-display" font-size="36" fill="#ffffff">815★</text>
+      <text x="28" y="124" class="gb-text" font-size="16" fill="#9ca3af">top: Rustlens · ★ 158</text>
+    </g>
+  
+    <g transform="translate(1198, 404)">
+      <rect width="374" height="150" rx="22" fill="#11161f" stroke="#1c2230" stroke-width="1.5"/>
+      <g transform="translate(28, 24)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8" /><path d="M14 7h7v7" /></svg></g>
+      <text x="58" y="41" class="gb-text" font-size="16" fill="#9ca3af">Last 12 months</text>
+
+      <text x="28" y="94" class="gb-display" font-size="36" fill="#ffffff">0</text>
+      <text x="28" y="124" class="gb-text" font-size="16" fill="#9ca3af">external merges · 0 projects</text>
+    </g>
+  
+  <text x="800" y="578" text-anchor="middle" class="gb-text" font-size="14" fill="#6b7280">gitbanner · github.com/yashksaini-coder · 1–9 Aug 2026 · 326 followers · 156 following · updated 2026-08-09 14:21 UTC</text>
+</svg>
