@@ -21,9 +21,17 @@ export async function commitIfChanged(
   }
 
   await git('commit', '-m', message, '--', ...paths);
-  const sha = (await git('rev-parse', 'HEAD')).trim();
-  await git('push');
 
+  try {
+    await git('push');
+  } catch {
+    // A scheduled run and a manual dispatch can land together; rebase onto
+    // whatever won the race and push again. A second failure is a real error.
+    await git('pull', '--rebase');
+    await git('push');
+  }
+
+  const sha = (await git('rev-parse', 'HEAD')).trim();
   return { committed: true, sha };
 }
 
