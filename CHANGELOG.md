@@ -5,6 +5,17 @@ All notable changes to GitBanner will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2026-08-11
+
+### Fixed
+
+- **Readable at README size.** GitHub renders the 1600px banner at ~846px in
+  a profile README (0.53x), which halved every font. The type scale is raised
+  across all cards — captions, stat labels, chart tick and value labels,
+  ridgeline repo names, radar labels and mini rows — so nothing that must be
+  read is authored below ~13px. Text bands grew before the chart zones were
+  computed, so the larger type never overlaps a chart.
+
 ## [1.2.0] - 2026-08-11
 
 This is a breaking redesign. The banner previously counted stars, languages
