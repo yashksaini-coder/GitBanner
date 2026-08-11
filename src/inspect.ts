@@ -13,6 +13,7 @@ interface CliArgs {
   fixture?: string;
   includePrivate: boolean;
   exclude: string[];
+  ignoreLanguages: string[];
   top: number;
   json: boolean;
   quiet: boolean;
@@ -130,6 +131,7 @@ async function main(): Promise<void> {
   const stats = aggregate(raw, {
     excludeRepos: args.exclude,
     includePrivate: args.includePrivate,
+    ignoreLanguages: args.ignoreLanguages,
   });
 
   let byRepo: RepoCommitBreakdown[] | null = null;
@@ -306,6 +308,7 @@ function parseArgs(argv: string[]): CliArgs {
   const args: CliArgs = {
     includePrivate: false,
     exclude: [],
+    ignoreLanguages: [],
     top: 30,
     json: false,
     quiet: false,
@@ -336,6 +339,12 @@ function parseArgs(argv: string[]): CliArgs {
       case '--exclude':
       case '-x':
         args.exclude = next()
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean);
+        break;
+      case '--ignore-languages':
+        args.ignoreLanguages = next()
           .split(',')
           .map((s) => s.trim())
           .filter(Boolean);
@@ -380,6 +389,10 @@ Options
   -t, --token <pat>       GitHub PAT (default: \$GH_PAT or \$GITHUB_TOKEN)
       --include-private   Treat private repos as visible for aggregations
   -x, --exclude <list>    Comma-separated repo names to exclude
+      --ignore-languages <list>
+                          Comma-separated language names to drop from
+                          the Languages Used count and Go-to language
+                          pick (case-insensitive)
   -n, --top <N>           How many repos to show in the per-repo breakdown (default 30)
       --json              Emit machine-readable JSON instead of the report
   -q, --quiet             Only show the headline summary

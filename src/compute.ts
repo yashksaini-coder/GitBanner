@@ -15,10 +15,14 @@ const FALLBACK_LANGUAGE_COLOR = '#94a3b8';
 export interface AggregateOptions {
   excludeRepos?: string[];
   includePrivate?: boolean;
+  ignoreLanguages?: string[];
 }
 
 export function aggregate(raw: RawData, options: AggregateOptions = {}): StatsPayload {
   const excluded = new Set((options.excludeRepos ?? []).map((r) => r.toLowerCase()));
+  const ignoredLanguages = new Set(
+    (options.ignoreLanguages ?? []).map((l) => l.toLowerCase()),
+  );
   const includePrivate = options.includePrivate ?? false;
 
   const reposVisible = raw.repos.filter((r) => !excluded.has(r.name.toLowerCase()));
@@ -56,7 +60,7 @@ export function aggregate(raw: RawData, options: AggregateOptions = {}): StatsPa
   const topReposByStars = topByMetric(aggRepos, (r) => r.stargazerCount, 3);
   const topReposByLifespan = topByMetric(aggRepos, lifespanDays, 3);
 
-  const { languages, languageCount } = aggregateLanguages(aggRepos);
+  const { languages, languageCount } = aggregateLanguages(aggRepos, ignoredLanguages);
 
   const reposWithCommits = aggRepos.filter((r) => r.userCommits > 0);
   const avgLifespanDays =
@@ -151,7 +155,10 @@ function topByMetric(repos: Repo[], metric: (r: Repo) => number, n: number): Top
     .slice(0, n);
 }
 
-function aggregateLanguages(repos: Repo[]): {
+function aggregateLanguages(
+  repos: Repo[],
+  ignored: Set<string>,
+): {
   languages: LanguageSummary[];
   languageCount: number;
 } {
@@ -159,6 +166,7 @@ function aggregateLanguages(repos: Repo[]): {
 
   for (const repo of repos) {
     for (const lang of repo.languages) {
+      if (ignored.has(lang.name.toLowerCase())) continue;
       const entry = totals.get(lang.name) ?? { bytes: 0, color: lang.color };
       entry.bytes += lang.size;
       if (!entry.color && lang.color) entry.color = lang.color;

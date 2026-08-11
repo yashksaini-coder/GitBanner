@@ -22,14 +22,15 @@ async function run(): Promise<void> {
       core.getInput('commit-message') || 'chore: refresh GitBanner stats';
     const shouldCommit = parseBool(core.getInput('commit'), true);
     const excludeRepos = parseExclude(core.getInput('exclude'), username);
+    const ignoreLanguages = parseCsv(core.getInput('ignore-languages'));
 
     core.info(`Fetching GitHub data for ${username}...`);
     const raw = await fetchAll({ username, token });
 
     core.info(
-      `Aggregating ${raw.repos.length} repos (excluding ${excludeRepos.length}: ${excludeRepos.join(', ') || 'none'})...`,
+      `Aggregating ${raw.repos.length} repos (excluding ${excludeRepos.length}: ${excludeRepos.join(', ') || 'none'}, ignoring languages: ${ignoreLanguages.join(', ') || 'none'})...`,
     );
-    const payload = aggregate(raw, { excludeRepos, includePrivate });
+    const payload = aggregate(raw, { excludeRepos, includePrivate, ignoreLanguages });
     core.info(
       `${payload.totalContributions} contributions (${payload.totalCommits} commits + ${payload.totalIssues} issues + ${payload.totalPRs} PRs + ${payload.totalReviews} reviews + ${payload.totalRestricted} restricted) · ${payload.totalStars} stars · ${payload.languageCount} languages · persona="${payload.persona.label}"`,
     );
@@ -98,6 +99,13 @@ function parseExclude(input: string, username: string): string[] {
     fromInput.push(username);
   }
   return fromInput;
+}
+
+function parseCsv(input: string): string[] {
+  return input
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
 }
 
 run();

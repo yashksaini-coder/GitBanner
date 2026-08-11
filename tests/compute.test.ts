@@ -79,6 +79,20 @@ describe('aggregate', () => {
     expect(stats.languageCount).toBe(distinct.size);
   });
 
+  it('ignoreLanguages drops the named languages from the count, the top-N list, and goToLanguage', () => {
+    const top = stats.languages[0].name;
+    const ignored = aggregate(raw, { ignoreLanguages: [top] });
+    expect(ignored.languages.find((l) => l.name === top)).toBeUndefined();
+    expect(ignored.languageCount).toBe(stats.languageCount - 1);
+    expect(ignored.goToLanguage.name).not.toBe(top);
+  });
+
+  it('ignoreLanguages matches case-insensitively', () => {
+    const top = stats.languages[0].name;
+    const ignored = aggregate(raw, { ignoreLanguages: [top.toLowerCase()] });
+    expect(ignored.languages.find((l) => l.name === top)).toBeUndefined();
+  });
+
   it('computes avg lifespan only over repos with commits', () => {
     expect(stats.avgLifespanDays).toBeGreaterThan(0);
   });
