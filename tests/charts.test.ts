@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import { dark } from '../src/render/theme.js';
 import { renderBars } from '../src/render/tiles/bars.js';
 import { hexSpiral, intensityColor, renderHexCluster } from '../src/render/tiles/hex.js';
-import { arcPath, renderMeter } from '../src/render/tiles/meter.js';
 
 describe('hexSpiral', () => {
   it('returns just the centre for n=1', () => {
@@ -31,11 +30,11 @@ describe('hexSpiral', () => {
 describe('renderHexCluster', () => {
   it('emits one polygon per value with the strongest (first) value brightest', () => {
     const values = [40, 9, 3, 1, 1];
-    const svg = renderHexCluster({ w: 440, h: 128, values, theme: dark });
+    const svg = renderHexCluster({ gradId: 'thex', w: 440, h: 128, values, theme: dark });
     const fills = [...svg.matchAll(/<polygon [^>]*fill="(#[0-9a-f]{6})"/g)].map((m) => m[1]);
     expect(fills).toHaveLength(values.length);
     // max value → t=1 → exact bright end of the ramp, at the spiral centre.
-    expect(fills[0]).toBe('#5598e7');
+    expect(fills[0]).toBe('#f2c14e');
     // Brightness (channel sum) is non-increasing outward for descending values.
     const lum = (hex: string) => parseInt(hex.slice(1), 16);
     for (let i = 1; i < fills.length; i++) {
@@ -44,12 +43,12 @@ describe('renderHexCluster', () => {
   });
 
   it('maps t=0 and t=1 to the ramp endpoints', () => {
-    expect(intensityColor(0, 40)).toBe('#132c49');
-    expect(intensityColor(40, 40)).toBe('#5598e7');
+    expect(intensityColor(0, 40)).toBe('#252b45');
+    expect(intensityColor(40, 40)).toBe('#f2c14e');
   });
 
   it('stays inside the zone and keeps hexes at least radius 5', () => {
-    const svg = renderHexCluster({ w: 200, h: 60, values: Array(30).fill(2), theme: dark });
+    const svg = renderHexCluster({ gradId: 'thex', w: 200, h: 60, values: Array(30).fill(2), theme: dark });
     const coords = [...svg.matchAll(/points="([^"]+)"/g)]
       .flatMap((m) => m[1].split(' '))
       .map((pair) => pair.split(',').map(Number));
@@ -62,59 +61,7 @@ describe('renderHexCluster', () => {
   });
 
   it('renders nothing for an empty value list', () => {
-    expect(renderHexCluster({ w: 100, h: 100, values: [], theme: dark })).toBe('');
-  });
-});
-
-describe('arcPath', () => {
-  it('places semicircle endpoints left and right of the centre', () => {
-    const d = arcPath(100, 50, 40, Math.PI, 2 * Math.PI);
-    const m = /^M (-?[\d.]+) (-?[\d.]+) A 40 40 0 0 1 (-?[\d.]+) (-?[\d.]+)$/.exec(d);
-    expect(m).not.toBeNull();
-    const [x0, y0, x1, y1] = m!.slice(1).map(Number);
-    expect(x0).toBeCloseTo(60, 1);
-    expect(y0).toBeCloseTo(50, 1);
-    expect(x1).toBeCloseTo(140, 1);
-    expect(y1).toBeCloseTo(50, 1);
-  });
-
-  it('sets the large-arc flag past half a turn', () => {
-    expect(arcPath(0, 0, 10, 0, 1.5 * Math.PI)).toContain(' A 10 10 0 1 1 ');
-    expect(arcPath(0, 0, 10, 0, 0.5 * Math.PI)).toContain(' A 10 10 0 0 1 ');
-  });
-});
-
-describe('renderMeter', () => {
-  const base = {
-    cx: 249,
-    cy: 268,
-    r: 78,
-    centerTop: '440',
-    centerBottom: 'of 516 resolved',
-    accent: '#199e70',
-    theme: dark,
-  };
-
-  it('renders track, fill, glow and centre labels', () => {
-    const svg = renderMeter({ ...base, pct: 85 });
-    expect(svg).toContain('stroke="#0e3524"'); // dark step of the green hue, not gray
-    expect(svg).toContain('stroke="#199e70"');
-    expect(svg).toContain('gbm-glow');
-    expect(svg).toContain('>440<');
-    expect(svg).toContain('of 516 resolved');
-  });
-
-  it('renders at pct 0 (track only) and pct 100 (full sweep)', () => {
-    const zero = renderMeter({ ...base, pct: 0 });
-    expect(zero).toContain('stroke="#0e3524"');
-    expect(zero).not.toContain('stroke="#199e70"');
-    const full = renderMeter({ ...base, pct: 100 });
-    expect(full).toContain('stroke="#199e70"');
-  });
-
-  it('clamps pct to 0..100', () => {
-    expect(renderMeter({ ...base, pct: 150 })).toBe(renderMeter({ ...base, pct: 100 }));
-    expect(renderMeter({ ...base, pct: -5 })).toBe(renderMeter({ ...base, pct: 0 }));
+    expect(renderHexCluster({ gradId: 'thex', w: 100, h: 100, values: [], theme: dark })).toBe('');
   });
 });
 

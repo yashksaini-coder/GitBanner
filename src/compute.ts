@@ -143,6 +143,7 @@ export function aggregate(raw: RawData, options: AggregateOptions = {}): StatsPa
     biggestProject,
     recentExternalPrs: recentPrs.length,
     monthlyExternalMerges: bucketByMonth(externalPrs),
+    issuesByYear: raw.reviewYears.map((y) => ({ year: y.year, opened: y.issuesOpened })),
     recentExternalRepoCount: recentRepos.size,
 
     reviewsTotal: reviews.total,
@@ -183,13 +184,16 @@ const MONTH_LETTERS = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D
  * with the current month, oldest first. Fed the same externalPrs list every
  * other external stat uses, so a windowed card inherits the window naturally.
  */
-function bucketByMonth(prs: MergedPr[]): { label: string; count: number }[] {
+function bucketByMonth(
+  prs: MergedPr[],
+): { label: string; month: number; count: number }[] {
   const now = new Date();
   // Months indexed as year*12+month so subtraction gives the bucket offset.
   const last = now.getUTCFullYear() * 12 + now.getUTCMonth();
   const first = last - 11;
   const buckets = Array.from({ length: 12 }, (_, i) => ({
     label: MONTH_LETTERS[(first + i) % 12],
+    month: (first + i) % 12,
     count: 0,
   }));
   for (const pr of prs) {

@@ -134,7 +134,9 @@ export interface StatsPayload {
    * External merges bucketed by calendar month (UTC), trailing 12 months
    * ending with the current month, oldest first. label = month's first letter.
    */
-  monthlyExternalMerges: { label: string; count: number }[];
+  monthlyExternalMerges: { label: string; month: number; count: number }[];
+  /** Issues you opened per calendar year, oldest first; empty when not fetched. */
+  issuesByYear: { year: number; opened: number }[];
 
   // Reviews
   reviewsTotal: number;

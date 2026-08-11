@@ -67,6 +67,13 @@ export interface WaveProps {
   accent: string;
   gradId: string;
   theme: Theme;
+  /** Extra hues for a horizontal ridge-style stroke gradient (left→right). */
+  strokeStops?: string[];
+  /** Faint horizontal gridlines at thirds, hyper-chart style. */
+  gridlines?: boolean;
+  emptyText?: string;
+  /** Tick label every Nth point (default 2 — every other month). */
+  tickEvery?: number;
 }
 
 const TOP_PAD = 12;
@@ -85,10 +92,11 @@ export function renderWave(p: WaveProps): string {
   const baseline = h - TICK_BAND;
   const baselineLine = `<line x1="0" y1="${baseline}" x2="${w}" y2="${baseline}" stroke="${theme.divider}" stroke-width="1"/>`;
 
-  if (n === 0 || points.every((pt) => pt.count === 0)) {
+  if (n < 2 || points.every((pt) => pt.count === 0)) {
+    const msg = p.emptyText ?? 'no external merges in the last 12 months';
     return (
       baselineLine +
-      `<text x="${r2(w / 2)}" y="${r2(baseline / 2)}" text-anchor="middle" class="gb-text" font-size="13" fill="${theme.textMuted}">no external merges in the last 12 months</text>`
+      `<text x="${r2(w / 2)}" y="${r2(baseline / 2)}" text-anchor="middle" class="gb-text" font-size="13" fill="${theme.textMuted}">${escapeXml(msg)}</text>`
     );
   }
 
@@ -103,12 +111,33 @@ export function renderWave(p: WaveProps): string {
   const area = `${curve} L ${r2(pts[n - 1].x)} ${baseline} L ${r2(pts[0].x)} ${baseline} Z`;
 
   const gradient = `<linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${accent}" stop-opacity="0.3"/><stop offset="1" stop-color="${accent}" stop-opacity="0"/></linearGradient>`;
+  // Optional ridge-style stroke: hues drift left→right like the reference.
+  const stops = p.strokeStops ?? [];
+  const strokeGrad =
+    stops.length > 1
+      ? `<linearGradient id="${gradId}-stroke" x1="0" y1="0" x2="1" y2="0">${stops
+          .map(
+            (c, i) =>
+              `<stop offset="${r2(i / (stops.length - 1))}" stop-color="${escapeXml(c)}"/>`,
+          )
+          .join('')}</linearGradient>`
+      : '';
+  const strokePaint = stops.length > 1 ? `url(#${gradId}-stroke)` : accent;
   // Generous filter region so the blur is not clipped at the group bounds.
   const glowFilter = `<filter id="${gradId}-glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4"/></filter>`;
+  const grid = p.gridlines
+    ? [1 / 3, 2 / 3]
+        .map((t) => {
+          const gy = r2(TOP_PAD + (baseline - TOP_PAD) * t);
+          return `<line x1="0" y1="${gy}" x2="${w}" y2="${gy}" stroke="${theme.divider}" stroke-width="1"/>`;
+        })
+        .join('')
+    : '';
 
+  const tickEvery = p.tickEvery ?? 2;
   const ticks = points
     .map((pt, i) =>
-      i % 2 === 0
+      i % tickEvery === 0
         ? `<text x="${r2(pts[i].x)}" y="${h - 2}" text-anchor="middle" class="gb-mono" font-size="9" fill="${theme.textMuted}">${escapeXml(pt.label)}</text>`
         : '',
     )
@@ -128,11 +157,12 @@ export function renderWave(p: WaveProps): string {
     .join('');
 
   return (
-    `<defs>${gradient}${glowFilter}</defs>` +
+    `<defs>${gradient}${strokeGrad}${glowFilter}</defs>` +
+    grid +
     `<path d="${area}" fill="url(#${gradId})"/>` +
     baselineLine +
-    `<g filter="url(#${gradId}-glow)"><path d="${curve}" fill="none" stroke="${accent}" stroke-width="8" stroke-opacity="0.45" stroke-linecap="round"/></g>` +
-    `<path d="${curve}" fill="none" stroke="${accent}" stroke-width="2.5" stroke-linecap="round"/>` +
+    `<g filter="url(#${gradId}-glow)"><path d="${curve}" fill="none" stroke="${strokePaint}" stroke-width="8" stroke-opacity="0.45" stroke-linecap="round"/></g>` +
+    `<path d="${curve}" fill="none" stroke="${strokePaint}" stroke-width="2.5" stroke-linecap="round"/>` +
     ticks +
     markers
   );

@@ -1,4 +1,5 @@
 import type { Theme } from '../../types.js';
+import { escapeXml } from '../util.js';
 
 export interface AxialHex {
   q: number;
@@ -42,19 +43,30 @@ export function hexSpiral(n: number): AxialHex[] {
   return out;
 }
 
-/** Dark→bright single-hue blue ramp endpoints (on black). */
-const RAMP_FROM = [0x13, 0x2c, 0x49];
-const RAMP_TO = [0x55, 0x98, 0xe7];
+/**
+ * Heat ramp, reference style: cool dark slate → ember red → gold core.
+ * A multi-hue sequential ramp is legal only as semantic heat WITH a scale
+ * legend — renderHexCluster always draws one.
+ */
+const HEAT_STOPS: readonly (readonly [number, number, number])[] = [
+  [0x25, 0x2b, 0x45], // low: dark slate
+  [0xc9, 0x3a, 0x3a], // mid: ember red
+  [0xf2, 0xc1, 0x4e], // high: gold
+];
 
 /**
- * Linear RGB interpolation '#132c49' → '#5598e7' over t = ln(1+v)/ln(1+max).
+ * Piecewise-linear RGB over the heat stops, t = ln(1+v)/ln(1+max).
  * Log scale because the external-PR distribution is heavily skewed: a linear
- * ramp would leave every hex but the centre at the dark end.
+ * ramp would leave every hex but the centre at the cold end.
  */
 export function intensityColor(v: number, max: number): string {
   const t = max > 0 ? Math.log(1 + Math.max(0, v)) / Math.log(1 + max) : 0;
-  const channels = RAMP_FROM.map((from, i) =>
-    Math.round(from + t * (RAMP_TO[i] - from))
+  const seg = Math.min(HEAT_STOPS.length - 2, Math.floor(t * (HEAT_STOPS.length - 1)));
+  const local = t * (HEAT_STOPS.length - 1) - seg;
+  const from = HEAT_STOPS[seg];
+  const to = HEAT_STOPS[seg + 1];
+  const channels = from.map((c, i) =>
+    Math.round(c + local * (to[i] - c))
       .toString(16)
       .padStart(2, '0'),
   );
@@ -104,8 +116,10 @@ export function renderHexCluster(p: {
   h: number;
   values: number[];
   theme: Theme;
+  /** Unique id prefix for the legend gradient. */
+  gradId: string;
 }): string {
-  const { w, h, values } = p;
+  const { w, h, values, theme } = p;
   if (values.length === 0) return '';
   const cells = hexSpiral(values.length);
 
@@ -125,10 +139,25 @@ export function renderHexCluster(p: {
   const oy = h / 2 - (b.minY + b.maxY) / 2;
   const max = Math.max(...values);
 
-  return cells
+  const hexes = cells
     .map((c, i) => {
       const { x, y } = cellCenter(c, size);
       return `<polygon points="${hexPoints(x + ox, y + oy, size)}" fill="${intensityColor(values[i], max)}" stroke="#000000" stroke-opacity="0.6" stroke-width="1"/>`;
     })
     .join('');
+
+  // The scale legend that licenses the multi-hue heat ramp: a small gradient
+  // strip with the min and max values, bottom-right of the zone.
+  const lw = 56;
+  const lx = w - lw - 30;
+  const ly = h - 10;
+  const min = Math.min(...values);
+  const legendGrad = `<linearGradient id="${escapeXml(p.gradId)}-legend" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="${intensityColor(min, max)}"/><stop offset="0.5" stop-color="${intensityColor(Math.exp(Math.log(1 + max) / 2) - 1, max)}"/><stop offset="1" stop-color="${intensityColor(max, max)}"/></linearGradient>`;
+  const legend =
+    `<defs>${legendGrad}</defs>` +
+    `<text x="${r2(lx - 6)}" y="${ly + 3}" text-anchor="end" class="gb-mono" font-size="9" fill="${theme.textMuted}">${min}</text>` +
+    `<rect x="${lx}" y="${ly - 6}" width="${lw}" height="7" rx="3.5" fill="url(#${escapeXml(p.gradId)}-legend)"/>` +
+    `<text x="${r2(lx + lw + 6)}" y="${ly + 3}" class="gb-mono" font-size="9" fill="${theme.textMuted}">${max}</text>`;
+
+  return hexes + legend;
 }
