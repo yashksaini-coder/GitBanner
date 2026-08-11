@@ -30,9 +30,9 @@ describe('toSvg', () => {
     expect(svg).not.toContain('Combined reach');
   });
 
-  it('pull requests card is popularity-spectrum columns, top repo in the stats', () => {
-    expect(svg).toContain('url(#gbh-cols)');
-    expect(svg).not.toContain('gbh-wave');
+  it('pull requests card is a popularity-spectrum area, top repo in the stats', () => {
+    expect(svg).toContain('url(#gbh-wave)');
+    expect(svg).not.toContain('gbh-cols');
     expect(svg).toContain('popularity spectrum');
     for (const label of ['&lt;10', '10+', '100+', '1k+', '10k+']) {
       expect(svg).toContain(label);
@@ -61,16 +61,12 @@ describe('toSvg', () => {
     expect(svg).toContain('Activity');
   });
 
-  it('activity is a value-labelled month-by-year heat grid', () => {
+  it('activity is gradient columns of the trailing 12 months', () => {
     expect(svg).toContain('Activity');
-    expect(svg).toContain('by month and year');
-    // U+00D7 is not in the embedded font subsets and would render as a hole
+    expect(svg).toContain('external merges per month');
+    expect(svg).toContain('url(#gba-cols)');
+    // U+00D7 stays banned: outside the font subsets it renders as a hole
     expect(svg).not.toContain('×');
-    // year gutter labels and value-bearing cells render
-    for (const row of stats.activityByMonth) {
-      expect(svg).toContain(`>${String(row.year).slice(2)}<`);
-    }
-    expect(svg).not.toContain('url(#gba-wave)');
     expect(TILES['momentum']).toBeUndefined();
   });
 

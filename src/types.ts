@@ -145,11 +145,6 @@ export interface StatsPayload {
    * ending with the current month, oldest first. label = month's first letter.
    */
   monthlyExternalMerges: { label: string; month: number; count: number }[];
-  /**
-   * Month × year grid of external merges, oldest year first (last 4 years).
-   * null = a month that hasn't happened yet in the current year.
-   */
-  activityByMonth: { year: number; months: (number | null)[] }[];
   /** Issues you opened per calendar year, oldest first; empty when not fetched. */
   issuesByYear: { year: number; opened: number }[];
   /**

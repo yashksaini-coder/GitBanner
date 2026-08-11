@@ -244,26 +244,6 @@ describe('aggregate — external contribution metrics', () => {
     expect(synth.popularitySpectrum.map((b) => b.count)).toEqual([2, 2, 0, 0, 2]);
   });
 
-  it('grids external merges by year and month, nulling only future months', () => {
-    const year = new Date().getUTCFullYear();
-    const month = new Date().getUTCMonth();
-    for (const row of stats.activityByMonth) {
-      expect(row.months).toHaveLength(12);
-      for (const [m, count] of row.months.entries()) {
-        if (row.year === year && m > month) expect(count).toBeNull();
-        else expect(count).toBeGreaterThanOrEqual(0);
-      }
-    }
-    // grid total equals every external merge with a parseable date, capped years
-    const gridSum = stats.activityByMonth
-      .flatMap((r) => r.months)
-      .reduce((s2: number, c) => s2 + (c ?? 0), 0);
-    expect(gridSum).toBeLessThanOrEqual(stats.prsMergedExternal);
-    expect(stats.activityByMonth.length).toBeLessThanOrEqual(4);
-    const years = stats.activityByMonth.map((r) => r.year);
-    expect(years).toEqual([...years].sort((a, b) => a - b));
-  });
-
   it('sums own stars over non-fork repos only', () => {
     const expected = raw.ownRepos
       .filter((r) => !r.isFork && !r.isPrivate)

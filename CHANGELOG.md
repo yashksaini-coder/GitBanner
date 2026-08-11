@@ -7,27 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed — spectrum columns, hex haze
+### Changed — activity columns, hex haze
 
-- The popularity spectrum renders as gradient columns (value on every cap,
-  bucket label under every base, rounded tops, square baselines) — the
-  honest form for discrete decade buckets, which the old area curve
-  implied were continuous.
+- The Activity card renders the trailing 12 months as gradient columns
+  (value on every cap, month letter under every base, rounded tops,
+  square baselines); the Pull requests card keeps its popularity-spectrum
+  area wave.
 - The projects hex gains the reference's periphery: data cells shrink
   slightly per ring (ring order is rank order, so the falloff double-encodes
   the truth) and a single ring of tiny near-background ghost hexes provides
   the haze — unmistakably texture, never heat-coloured, dropped entirely
   when the zone is too small to fit it.
-
-### Changed — Activity becomes a value-labelled heat grid
-
-- The Activity card's 12-month wave gives way to the reference's heat grid:
-  one rounded cell per month with its merge count inside, rows = years
-  (last 4), columns = Jan..Dec, colours on the same heat ramp as the
-  projects hex. Future months are skipped; past zero-months are honest dim
-  zeros; in-cell ink flips dark on bright cells. The grid shows the full
-  history the wave could not — including the Oct/Nov 2024 surge (99 and
-  108 merges) that no earlier chart surfaced.
 
 ### Changed — language burst, year-scoped top repo
 

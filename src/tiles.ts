@@ -1,6 +1,5 @@
 import { topExternalByPrs } from './compute.js';
 import { renderColumns } from './render/tiles/columns.js';
-import { renderHeatGrid } from './render/tiles/heatgrid.js';
 import { renderHexCluster } from './render/tiles/hex.js';
 import { renderLanguagesChart } from './render/tiles/languages-tile.js';
 import { renderMiniTile } from './render/tiles/mini-tile.js';
@@ -54,13 +53,16 @@ export const TILES: Record<string, TileDef> = {
         accent: theme.accents.prs,
         title: 'Pull requests',
         caption: `merged PRs across the popularity spectrum · ${p.periodLabel ?? new Date().getUTCFullYear()}`,
-        // Discrete decade buckets are columns, not a curve — an area would
-        // imply continuity between the bins.
-        chart: chartGroup(box.w, renderColumns({
+        // Area under the curve = your merged work, laid out by how popular
+        // the receiving project is (fixed log-decade star buckets).
+        chart: chartGroup(box.w, renderWave({
           w: box.w - 2 * PAD,
           h: CHART_H,
-          data: p.popularitySpectrum,
-          gradId: 'gbh-cols',
+          points: p.popularitySpectrum,
+          accent: theme.accents.prs,
+          gradId: 'gbh-wave',
+          gridlines: true,
+          tickEvery: 1,
           emptyText: 'no external merges yet',
           theme,
         })),
@@ -88,11 +90,13 @@ export const TILES: Record<string, TileDef> = {
         ...box,
         accent: theme.accents.prs,
         title: 'Activity',
-        caption: p.periodLabel ?? 'external merges by month and year · heat = count',
-        chart: chartGroup(box.w, renderHeatGrid({
+        caption: p.periodLabel ?? 'external merges per month · last 12 months',
+        chart: chartGroup(box.w, renderColumns({
           w: box.w - 2 * PAD,
           h: CHART_H,
-          rows: p.activityByMonth,
+          data: p.monthlyExternalMerges,
+          gradId: 'gba-cols',
+          emptyText: 'no external merges in the last 12 months',
           theme,
         })),
         stats: [
