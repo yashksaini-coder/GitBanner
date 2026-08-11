@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed — Code review becomes a 3D scatter
+
+- The reviews card's bars are now an isometric 3D scatter, reference style:
+  each glowing dot is one repo × one year of reviews, with three honest axes
+  from data already fetched — x = repo stars (log), depth = year, height =
+  reviews given (sqrt-spread; the 0/max axis labels stay exact). Full cube
+  wireframe so every point reads inside the chart; far-to-near draw order;
+  the busiest repo-year is direct-labelled. Zero new API cost.
+
 ### Changed — bigger charts, collective stat trios
 
 - Dot rows and the hex scale legend are gone; every card ends in an aligned
