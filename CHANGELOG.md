@@ -7,15 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed — PR candles
-
-- Pull requests renders the year's top repos as candle-style ranked bars:
-  centre-anchored on a midline (symmetric, so the floating look never
-  misstates a value — length is the number, like the stream's thickness),
-  rounded caps, value labels on the top three, rank ticks 01..n beneath.
-  Repo names live one card down in the Top projects leaderboard, and the
-  caption says so. The dash-segment rows retire.
-
 ### Changed — issues stream, PR dash leaderboard
 
 - Issues renders as a symmetric stream: band thickness = issues opened per

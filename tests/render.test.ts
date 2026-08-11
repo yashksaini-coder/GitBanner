@@ -30,18 +30,16 @@ describe('toSvg', () => {
     expect(svg).not.toContain('Combined reach');
   });
 
-  it('pull requests card is ranked candle bars of the year top repos', () => {
-    expect(svg).toContain('top repos by merged PRs, ranked');
+  it('pull requests card is a dash-segment leaderboard of the year top repos', () => {
+    expect(svg).toContain('top repos by merged PRs');
+    expect(svg).toContain('class="gbd-on"');
+    expect(svg).toContain('class="gbd-off"');
     const rows = (stats.topExternalThisYear.length > 0
       ? stats.topExternalThisYear
       : stats.externalRepos.map((r) => ({ name: r.name, value: r.mergedPrs }))
-    ).slice(0, 12);
-    expect([...svg.matchAll(/class="gbc-bar"/g)]).toHaveLength(rows.length);
-    // top-3 value caps and rank ticks render
-    for (const row of rows.slice(0, 3)) {
-      expect(svg).toContain(`>${row.value}<`);
-    }
-    expect(svg).toContain('>01<');
+    ).slice(0, 5);
+    // names longer than 13 chars render truncated with an ellipsis
+    for (const row of rows) expect(svg).toContain(row.name.slice(0, 12));
     expect(svg).toContain('projects this year');
   });
 

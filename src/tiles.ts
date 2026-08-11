@@ -1,6 +1,6 @@
 import { topExternalByPrs } from './compute.js';
 import { renderColumns } from './render/tiles/columns.js';
-import { renderCandles } from './render/tiles/candles.js';
+import { renderDashRows } from './render/tiles/dashes.js';
 import { renderStream } from './render/tiles/stream.js';
 import { renderHexCluster } from './render/tiles/hex.js';
 import { renderLanguagesChart } from './render/tiles/languages-tile.js';
@@ -51,14 +51,14 @@ export const TILES: Record<string, TileDef> = {
         ...box,
         accent: theme.accents.prs,
         title: 'Pull requests',
-        caption: `top repos by merged PRs, ranked · ${p.periodLabel ?? new Date().getUTCFullYear()} · names in Top projects below`,
-        chart: chartGroup(box.w, renderCandles({
+        caption: `top repos by merged PRs · ${p.periodLabel ?? new Date().getUTCFullYear()}`,
+        chart: chartGroup(box.w, renderDashRows({
           w: box.w - 2 * PAD,
           h: CHART_H,
-          data: (p.topExternalThisYear.length > 0
+          rows: (p.topExternalThisYear.length > 0
             ? p.topExternalThisYear
-            : topExternalByPrs(p, 12)
-          ).slice(0, 12).map((r) => ({ value: r.value })),
+            : topExternalByPrs(p, 5)
+          ).slice(0, 5).map((r) => ({ label: r.name, value: r.value })),
           accent: theme.accents.prs,
           emptyText: 'no external merges yet',
           theme,
