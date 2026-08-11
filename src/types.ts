@@ -136,6 +136,8 @@ export interface StatsPayload {
   // External footprint, derived from merged PRs
   externalRepos: ExternalRepo[];
   externalRepoCount: number;
+  /** Drive-by threshold actually applied to externalRepos; 1 when the newcomer fallback fired. */
+  minMergedPrsApplied: number;
   biggestProject: ExternalRepo | null;
   /** External merges in the trailing 12 months — the momentum story. */
   recentExternalPrs: number;

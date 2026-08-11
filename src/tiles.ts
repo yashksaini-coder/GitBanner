@@ -190,7 +190,15 @@ export const TILES: Record<string, TileDef> = {
           theme,
         })),
         stats: [
-          { value: n(p.externalRepoCount), label: 'projects · 2+ PRs' },
+          {
+            value: n(p.externalRepoCount),
+            // The threshold is configurable, and the newcomer fallback drops
+            // it to 1 — the label must state what was actually applied.
+            label:
+              p.minMergedPrsApplied > 1
+                ? `projects · ${p.minMergedPrsApplied}+ PRs`
+                : 'projects · all PRs',
+          },
           { value: n(maintainers), label: 'maintainers & orgs' },
           { value: most ? n(most.mergedPrs) : '—', label: 'most in one repo' },
         ],

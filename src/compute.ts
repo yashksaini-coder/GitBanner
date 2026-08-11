@@ -111,10 +111,11 @@ export function aggregate(
     (options.excludeRepos ?? []).map((r) => r.toLowerCase()),
   );
   const includePrivate = options.includePrivate ?? false;
-  const minMergedPrs = Math.max(
-    1,
-    options.minMergedPrs ?? DEFAULT_MIN_MERGED_PRS,
-  );
+  // Number.isFinite, not ??: Number('garbage') is NaN, and Math.max(1, NaN)
+  // is NaN, which would silently disable the drive-by filter below.
+  const minMergedPrs = Number.isFinite(options.minMergedPrs)
+    ? Math.max(1, options.minMergedPrs as number)
+    : DEFAULT_MIN_MERGED_PRS;
   const ignoredLanguages = new Set(
     (options.ignoreLanguages ?? []).map((l) => l.toLowerCase()),
   );
@@ -198,7 +199,8 @@ export function aggregate(
     : groupExternalRepos(
         externalPrs.filter(
           (pr) =>
-            new Date(pr.mergedAt).getUTCFullYear() === new Date().getUTCFullYear(),
+            new Date(pr.mergedAt).getUTCFullYear() ===
+            new Date().getUTCFullYear(),
         ),
       );
 
@@ -222,6 +224,9 @@ export function aggregate(
 
     externalRepos,
     externalRepoCount: externalRepos.length,
+    // 1 when the newcomer fallback fired — the list then holds every repo,
+    // so a "N+ PRs" claim on the card would be false.
+    minMergedPrsApplied: qualifying.length > 0 ? minMergedPrs : 1,
     biggestProject,
     recentExternalPrs: recentPrs.length,
     monthlyExternalMerges: bucketByMonth(externalPrs),
@@ -321,7 +326,7 @@ function bucketByMonth(
   return buckets;
 }
 
-const POPULARITY_LABELS = ['<10', '10+', '100+', '1k+', '10k+'];
+const POPULARITY_LABELS = ["<10", "10+", "100+", "1k+", "10k+"];
 
 /**
  * Merged PRs summed into fixed star-magnitude decades. Fixed buckets (not
@@ -334,7 +339,15 @@ function bucketByPopularity(
   const buckets = POPULARITY_LABELS.map((label) => ({ label, count: 0 }));
   for (const repo of repos) {
     const idx =
-      repo.stars < 10 ? 0 : repo.stars < 100 ? 1 : repo.stars < 1000 ? 2 : repo.stars < 10000 ? 3 : 4;
+      repo.stars < 10
+        ? 0
+        : repo.stars < 100
+          ? 1
+          : repo.stars < 1000
+            ? 2
+            : repo.stars < 10000
+              ? 3
+              : 4;
     buckets[idx].count += repo.mergedPrs;
   }
   return buckets;
@@ -398,13 +411,21 @@ function summariseLanguages(
   const totals = new Map<string, { repos: number; color: string | null }>();
 
   for (const repo of repos) {
-    const totalBytes = repo.languages.reduce((sum, l) => sum + Math.max(0, l.size), 0);
+    const totalBytes = repo.languages.reduce(
+      (sum, l) => sum + Math.max(0, l.size),
+      0,
+    );
     for (const [idx, lang] of repo.languages.entries()) {
       const key = lang.name.toLowerCase();
       if (NON_PROGRAMMING_LANGUAGES.has(key)) continue;
       if (ignored.has(key)) continue;
       // Weight gate: primary always counts; others need a real share.
-      if (idx > 0 && totalBytes > 0 && lang.size / totalBytes < MIN_LANGUAGE_SHARE) continue;
+      if (
+        idx > 0 &&
+        totalBytes > 0 &&
+        lang.size / totalBytes < MIN_LANGUAGE_SHARE
+      )
+        continue;
       const entry = totals.get(lang.name) ?? { repos: 0, color: lang.color };
       entry.repos++;
       if (!entry.color && lang.color) entry.color = lang.color;
@@ -518,7 +539,10 @@ function pickBestYear(years: ReviewYear[]): { year: number; commits: number } {
 
 function percent(part: number, whole: number): number {
   if (whole === 0) return 0;
-  return Math.round((part / whole) * 100);
+  // Clamped: on a windowed card the numerator (PRs *merged* in range, filtered
+  // by exclude/private) and denominator (PRs *opened* in range, unfiltered —
+  // contributionsCollection offers nothing better) can legitimately cross.
+  return Math.min(100, Math.round((part / whole) * 100));
 }
 
 /** Top N external repos by merged PRs, for a stat tile's row list. */
@@ -528,11 +552,3 @@ export function topExternalByPrs(p: StatsPayload, n: number): TopRepo[] {
     .map((r) => ({ name: r.name, value: r.mergedPrs }));
 }
 
-/** Top N external repos by stars, for the reach and projects tiles. */
-export function topExternalByStars(p: StatsPayload, n: number): TopRepo[] {
-  return p.externalRepos
-    .slice()
-    .sort((a, b) => b.stars - a.stars)
-    .slice(0, n)
-    .map((r) => ({ name: r.name, value: r.stars }));
-}

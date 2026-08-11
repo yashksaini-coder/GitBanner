@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { aggregate, MIN_LANGUAGE_SHARE, NON_PROGRAMMING_LANGUAGES, topExternalByPrs, topExternalByStars } from '../src/compute.js';
+import { aggregate, MIN_LANGUAGE_SHARE, NON_PROGRAMMING_LANGUAGES, topExternalByPrs } from '../src/compute.js';
 import type { RawData } from '../src/types.js';
 
 const raw = JSON.parse(
@@ -82,6 +82,37 @@ describe('aggregate — external contribution metrics', () => {
     expect(out.prsMergedExternal).toBe(2);
     expect(out.externalRepoCount).toBe(2);
     expect(out.biggestProject).not.toBeNull();
+    // The card label must not claim "5+ PRs" over an unfiltered list.
+    expect(out.minMergedPrsApplied).toBe(1);
+  });
+
+  it('reports the threshold it actually applied', () => {
+    expect(aggregate(raw, { minMergedPrs: 2 }).minMergedPrsApplied).toBe(2);
+    expect(aggregate(raw, { minMergedPrs: 1 }).minMergedPrsApplied).toBe(1);
+  });
+
+  it('falls back to the default threshold when given NaN, not to no filter', () => {
+    // Number('garbage') from a CLI flag is NaN; Math.max(1, NaN) is NaN and
+    // every `mergedPrs >= NaN` is false, which would silently disable the
+    // drive-by filter via the newcomer fallback.
+    const nan = aggregate(raw, { minMergedPrs: Number('garbage') });
+    expect(nan.externalRepoCount).toBe(stats.externalRepoCount);
+    expect(nan.minMergedPrsApplied).toBe(2);
+  });
+
+  it('clamps the merge rate at 100%', () => {
+    // A windowed card divides PRs merged-in-range by PRs opened-in-range;
+    // old PRs merged during the window can push the raw ratio past 1.
+    const crossed: RawData = {
+      ...raw,
+      window: { since: '2026-01-01T00:00:00Z', until: '2026-06-30T23:59:59Z', label: 'H1 2026' },
+      mergedPrs: [
+        { mergedAt: '2026-02-01T00:00:00Z', repo: { nameWithOwner: 'acme/one', owner: 'acme', stars: 10, isPrivate: false, languages: [] } },
+        { mergedAt: '2026-03-01T00:00:00Z', repo: { nameWithOwner: 'acme/two', owner: 'acme', stars: 20, isPrivate: false, languages: [] } },
+      ],
+      reviewYears: [{ year: 2026, reviews: 0, commits: 0, totalContributions: 0, issuesOpened: 0, prsOpened: 1, byRepo: [] }],
+    };
+    expect(aggregate(crossed).mergeRatePct).toBe(100);
   });
 
   it('ranks external repos by merged PRs, descending', () => {
@@ -284,6 +315,5 @@ describe('aggregate — empty inputs', () => {
     expect(stats.recentExternalPrs).toBe(0);
     expect(stats.languages).toEqual([]);
     expect(topExternalByPrs(stats, 3)).toEqual([]);
-    expect(topExternalByStars(stats, 3)).toEqual([]);
   });
 });
