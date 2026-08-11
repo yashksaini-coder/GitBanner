@@ -89,7 +89,7 @@ export const TILES: Record<string, TileDef> = {
         caption: 'with 2+ merged PRs',
         rows: topExternalByStars(p, 4).map((r) => ({
           label: trunc(r.name, 16),
-          value: `★ ${n(r.value)}`,
+          value: `${n(r.value)} stars`,
         })),
         theme,
       }),
@@ -162,7 +162,7 @@ export const TILES: Record<string, TileDef> = {
         label: 'Biggest project',
         value: p.biggestProject?.name ?? '—',
         subLine: p.biggestProject
-          ? `★ ${n(p.biggestProject.stars)} · ${n(p.biggestProject.mergedPrs)} merged`
+          ? `${n(p.biggestProject.stars)} stars · ${n(p.biggestProject.mergedPrs)} merged`
           : 'no external merges yet',
         theme,
       }),
@@ -192,9 +192,9 @@ export const TILES: Record<string, TileDef> = {
         iconKey: 'star',
         iconColor: theme.textMuted,
         label: 'Stars earned',
-        value: `${n(p.ownStars)}★`,
+        value: n(p.ownStars),
         subLine: p.ownTopRepo
-          ? `top: ${trunc(p.ownTopRepo.name, 16)} · ★ ${n(p.ownTopRepo.stars)}`
+          ? `top: ${trunc(p.ownTopRepo.name, 16)} · ${n(p.ownTopRepo.stars)} stars`
           : `across ${n(p.ownRepoCount)} repos you built`,
         theme,
       }),

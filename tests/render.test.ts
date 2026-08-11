@@ -108,10 +108,11 @@ describe('toSvg', () => {
     expect(widths[1]).toBe(widths[2]);
   });
 
-  it('embeds the footer identity line', () => {
-    expect(svg).toContain(`github.com/${stats.username}`);
-    expect(svg).toContain(`${stats.followers.toLocaleString('en-US')} followers`);
-    expect(svg).toMatch(/updated \d{4}-\d{2}-\d{2} \d{2}:\d{2} UTC/);
+  it('renders no footer line and no unrenderable star glyph', () => {
+    expect(svg).not.toContain('gitbanner ·');
+    expect(svg).not.toMatch(/updated \d{4}-\d{2}-\d{2}/);
+    // U+2605 is absent from the embedded font subsets and would vanish.
+    expect(svg).not.toContain('★');
   });
 });
 
@@ -173,7 +174,7 @@ describe('date windows', () => {
     expect(scoped.issuesClosed).toBeNull();
   });
 
-  it('labels the period and puts it in the footer', () => {
+  it('labels the period and shows it on the card', () => {
     const scoped = aggregate(week);
     expect(scoped.periodLabel).toBe('1-9 Aug 2026');
     expect(toSvg(scoped, 'dark')).toContain('1-9 Aug 2026');

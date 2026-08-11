@@ -9,9 +9,6 @@ const MARGIN = 28;
 const GAP = 16;
 const TOP_H = 360;
 const MINI_H = 150;
-const FOOTER_GAP = 24;
-const FOOTER_DESCENT = 14;
-
 /** A hero tile is worth two ordinary columns. */
 const HERO_SPAN = 2;
 
@@ -37,8 +34,7 @@ export function toSvg(
     y += MINI_H + GAP;
   }
 
-  const footerBaseline = y - GAP + FOOTER_GAP;
-  const canvasH = footerBaseline + FOOTER_DESCENT;
+  const canvasH = y - GAP + MARGIN;
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${CANVAS_W}" height="${canvasH}" viewBox="0 0 ${CANVAS_W} ${canvasH}" role="img" aria-label="${escapeXml(ariaLabel(payload))}">
@@ -47,7 +43,6 @@ export function toSvg(
   </defs>
   <rect width="${CANVAS_W}" height="${canvasH}" rx="36" fill="${theme.bg}"/>
   ${parts.join('')}
-  <text x="${CANVAS_W / 2}" y="${footerBaseline}" text-anchor="middle" class="gb-text" font-size="14" fill="${theme.textMuted}">${escapeXml(footer(payload))}</text>
 </svg>`;
 }
 
@@ -83,23 +78,5 @@ function ariaLabel(p: StatsPayload): string {
   return `Open source contributions by ${p.username}${scope}: ${p.prsMergedExternal} pull requests merged into other people's repositories across ${p.externalRepoCount} projects.`;
 }
 
-function footer(p: StatsPayload): string {
-  const parts = ['gitbanner', `github.com/${p.username}`];
-  if (p.periodLabel) parts.push(p.periodLabel);
-  parts.push(`${format(p.followers)} followers`, `${format(p.following)} following`);
-  if (!p.periodLabel && p.bestYear.commits > 0) {
-    parts.push(`best year: ${p.bestYear.year} (${format(p.bestYear.commits)} commits)`);
-  }
-  parts.push(`updated ${formatTimestamp(p.generatedAt)}`);
-  return parts.join(' · ');
-}
 
-function format(value: number): string {
-  return value.toLocaleString('en-US');
-}
 
-function formatTimestamp(iso: string): string {
-  const d = new Date(iso);
-  const pad = (v: number) => String(v).padStart(2, '0');
-  return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())} UTC`;
-}
