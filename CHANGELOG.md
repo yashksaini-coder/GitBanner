@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed — bigger charts, collective stat trios
+
+- Dot rows and the hex scale legend are gone; every card ends in an aligned
+  three-column stat row instead, and the chart zone grows ~40% (radar radius
+  +50%, hex cluster nearly doubles).
+- Projects card focuses on the collective open-source story: projects,
+  **distinct maintainers & orgs shipped for**, and most merged into one repo.
+- New third stats: last-12-months on Pull requests, avg-per-month on
+  Activity, projects-using-top-language on Ships in, external share on Code
+  review; the Issues opened/resolved rows folded into its trio.
+
 ### Changed — reference card anatomy
 
 - Chart cards adopt the hyper-chart anatomy end to end: bold title (icons
