@@ -275,6 +275,14 @@ needs and skips everything nothing asked for.
 An unknown tile name is a hard error rather than a silent drop, so a typo in a
 workflow can't quietly delete a tile.
 
+## Fonts
+
+Inter and JetBrains Mono subsets are embedded in every SVG as `@font-face`
+data URIs, and the PNG renderer loads the same subsets with system fonts
+disabled — the card renders identically on every machine and in every browser.
+Regenerate the subsets with `npm run build:fonts`. (U+2605 ★ is not in either
+face; rendered text spells out "stars" instead.)
+
 ## Why the drive-by filter exists
 
 A single PR into a huge repository is not a credential, but it dominates any

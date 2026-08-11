@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Embedded fonts.** Inter and JetBrains Mono subsets ship inside every SVG
+  as data-URI @font-face rules, and PNG rendering uses the same subsets with
+  system fonts disabled — output is identical on every machine.
+  `npm run build:fonts` regenerates them. Star counts are written as
+  "N stars" because U+2605 is absent from both faces.
+
+### Removed
+
+- The footer credit line at the bottom of the banner.
+
 ### Changed — banner now measures open-source contribution, not personal repos
 
 This is a breaking redesign. The banner previously counted stars, languages and
