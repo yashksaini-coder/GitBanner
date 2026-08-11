@@ -29,7 +29,7 @@
     <g transform="translate(32, 32)">
       <rect width="498" height="370" rx="24" fill="#0a0a0a" stroke="#1b1b1b" stroke-width="1"/>
       <text x="28" y="42" class="gb-text-bold" font-size="19" fill="#ffffff">Pull requests</text>
-      <text x="28" y="62" class="gb-text" font-size="12" fill="#6b7280">top repos by merged PRs · 1–9 Aug 2026</text>
+      <text x="28" y="62" class="gb-text" font-size="11" fill="#6b7280">top repos by merged PRs, ranked · 1–9 Aug 2026 · names in Top projects b…</text>
       <g transform="translate(28, 74)"><text x="221" y="113" text-anchor="middle" class="gb-text" font-size="13" fill="#6b7280">no external merges yet</text></g>
       <rect x="28" y="316" width="6" height="6" rx="2" fill="#3987e5"/><text x="40" y="322" class="gb-text" font-size="11" fill="#6b7280">merged for others</text><text x="28" y="356" class="gb-display" font-size="26" fill="#ffffff">0</text><rect x="175.33333333333334" y="316" width="6" height="6" rx="2" fill="#3987e5"/><text x="187.33333333333334" y="322" class="gb-text" font-size="11" fill="#6b7280">merge rate</text><text x="175.33333333333334" y="356" class="gb-display" font-size="26" fill="#ffffff">33%</text><rect x="322.6666666666667" y="316" width="6" height="6" rx="2" fill="#3987e5"/><text x="334.6666666666667" y="322" class="gb-text" font-size="11" fill="#6b7280">projects this year</text><text x="322.6666666666667" y="356" class="gb-display" font-size="26" fill="#ffffff">0</text>
     </g>
