@@ -9,8 +9,13 @@ const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
  */
 export function buildWindow(since?: string, until?: string): DateWindow | null {
   if (!since && !until) return null;
+  // until alone would mean "all time up to a date", which the one-year cap
+  // below can never satisfy — fail with the real reason, not the cap error.
+  if (!since) {
+    throw new Error('--until requires --since (contribution windows are capped at one year).');
+  }
 
-  const from = since ? startOfDay(parse(since, '--since')) : new Date(0);
+  const from = startOfDay(parse(since, '--since'));
   const to = until ? endOfDay(parse(until, '--until')) : new Date();
 
   if (from.getTime() > to.getTime()) {

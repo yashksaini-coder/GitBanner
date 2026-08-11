@@ -1,4 +1,4 @@
-import { graphql } from '@octokit/graphql';
+import { graphql } from "@octokit/graphql";
 import type {
   DataNeed,
   DateWindow,
@@ -8,7 +8,7 @@ import type {
   PrTotals,
   RawData,
   ReviewYear,
-} from './types.js';
+} from "./types.js";
 
 interface FetchOptions {
   username: string;
@@ -37,16 +37,20 @@ export async function fetchAll(opts: FetchOptions): Promise<RawData> {
   // contributionsCollection instead.
   const head = await fetchProfileHead(client, username, needs, window);
 
-  // A windowed card reads its issue counts off the contributions query too.
+  // A windowed card reads its issue counts — and its PRs-opened total, which
+  // the merge rate divides by — off the contributions query too.
   const wantContributions =
-    needs.has('reviews') || (window !== null && needs.has('issues'));
+    needs.has("reviews") ||
+    (window !== null && (needs.has("issues") || needs.has("prs")));
 
   const [mergedPrs, reviewYears, ownRepos] = await Promise.all([
-    needs.has('prs') ? fetchMergedPrs(client, username) : Promise.resolve([]),
+    needs.has("prs") ? fetchMergedPrs(client, username) : Promise.resolve([]),
     wantContributions
       ? fetchReviewYears(client, username, head.profile.createdAt, window)
       : Promise.resolve([]),
-    needs.has('ownRepos') ? fetchOwnRepos(client, username) : Promise.resolve([]),
+    needs.has("ownRepos")
+      ? fetchOwnRepos(client, username)
+      : Promise.resolve([]),
   ]);
 
   return {
@@ -65,7 +69,7 @@ export async function fetchAll(opts: FetchOptions): Promise<RawData> {
 // need so the query text stays honest about what the banner is asking for.
 
 interface ProfileHead {
-  profile: RawData['profile'];
+  profile: RawData["profile"];
   prTotals: PrTotals;
   issueTotals: IssueTotals;
 }
@@ -76,15 +80,17 @@ async function fetchProfileHead(
   needs: Set<DataNeed>,
   window: DateWindow | null,
 ): Promise<ProfileHead> {
-  const prFields = needs.has('prs') && !window
-    ? `prsOpened: pullRequests(states: [OPEN, CLOSED, MERGED]) { totalCount }
+  const prFields =
+    needs.has("prs") && !window
+      ? `prsOpened: pullRequests(states: [OPEN, CLOSED, MERGED]) { totalCount }
        prsMerged: pullRequests(states: [MERGED]) { totalCount }
        prsOpen:   pullRequests(states: [OPEN]) { totalCount }`
-    : '';
-  const issueFields = needs.has('issues') && !window
-    ? `issuesOpened: issues { totalCount }
+      : "";
+  const issueFields =
+    needs.has("issues") && !window
+      ? `issuesOpened: issues { totalCount }
        issuesClosed: issues(states: [CLOSED]) { totalCount }`
-    : '';
+      : "";
 
   const query = `
     query ProfileHead($login: String!) {
@@ -179,11 +185,19 @@ interface MergedPrNode {
     stargazerCount: number;
     isPrivate: boolean;
     owner: { login: string };
-    languages: { edges: Array<{ size: number; node: { name: string; color: string | null } }> };
+    languages: {
+      edges: Array<{
+        size: number;
+        node: { name: string; color: string | null };
+      }>;
+    };
   };
 }
 
-async function fetchMergedPrs(client: GqlClient, login: string): Promise<MergedPr[]> {
+async function fetchMergedPrs(
+  client: GqlClient,
+  login: string,
+): Promise<MergedPr[]> {
   const out: MergedPr[] = [];
   let cursor: string | null = null;
 
@@ -223,6 +237,13 @@ async function fetchMergedPrs(client: GqlClient, login: string): Promise<MergedP
 
     const pageInfo = data.user.pullRequests.pageInfo;
     if (!pageInfo.hasNextPage || !pageInfo.endCursor) break;
+    if (page === PR_MAX_PAGES - 1) {
+      // Newest-first pagination: everything older than the cap is missing, so
+      // older windowed cards and all-time repo lists are incomplete.
+      console.warn(
+        `GitBanner: merged-PR history truncated at ${PR_MAX_PAGES * PR_PAGE_SIZE} newest PRs; older contributions are not counted.`,
+      );
+    }
     cursor = pageInfo.endCursor;
   }
 
@@ -249,7 +270,8 @@ function yearWindows(createdAt: string, now: Date): YearWindow[] {
   const out: YearWindow[] = [];
   for (let year = startYear; year <= endYear; year++) {
     const from = year === startYear ? start : new Date(Date.UTC(year, 0, 1));
-    const to = year === endYear ? now : new Date(Date.UTC(year, 11, 31, 23, 59, 59));
+    const to =
+      year === endYear ? now : new Date(Date.UTC(year, 11, 31, 23, 59, 59));
     out.push({ year, from: from.toISOString(), to: to.toISOString() });
   }
   return out;
@@ -271,7 +293,7 @@ function reviewQuery(windows: YearWindow[]): string {
         }
       }`,
     )
-    .join('');
+    .join("");
   return `query Reviews($login: String!) { user(login: $login) { ${fields} } }`;
 }
 
@@ -282,7 +304,11 @@ interface ReviewYearNode {
   totalPullRequestContributions: number;
   totalPullRequestReviewContributions: number;
   pullRequestReviewContributionsByRepository: Array<{
-    repository: { nameWithOwner: string; stargazerCount: number; owner: { login: string } };
+    repository: {
+      nameWithOwner: string;
+      stargazerCount: number;
+      owner: { login: string };
+    };
     contributions: { totalCount: number };
   }>;
 }
@@ -353,7 +379,10 @@ const OWN_REPOS_QUERY = /* GraphQL */ `
   }
 `;
 
-async function fetchOwnRepos(client: GqlClient, login: string): Promise<OwnRepo[]> {
+async function fetchOwnRepos(
+  client: GqlClient,
+  login: string,
+): Promise<OwnRepo[]> {
   const out: OwnRepo[] = [];
   let cursor: string | null = null;
 

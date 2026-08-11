@@ -265,6 +265,7 @@ describe('date windows', () => {
     expect(() => buildWindow('2020-01-01', '2026-01-01')).toThrow(/one year or less/);
     expect(() => buildWindow('2026-08-09', '2026-08-01')).toThrow(/after/);
     expect(() => buildWindow('not-a-date')).toThrow(/not a valid date/);
+    expect(() => buildWindow(undefined, '2026-08-09')).toThrow(/--until requires --since/);
     expect(buildWindow(undefined, undefined)).toBeNull();
   });
 
