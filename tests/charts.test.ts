@@ -103,30 +103,41 @@ describe('renderHexCluster', () => {
 });
 
 
-describe('renderStream', () => {
-  it('renders a single period as a lens, not the empty state', async () => {
-    const { renderStream } = await import('../src/render/tiles/stream.js');
-    // A windowed card (or an account created this year) yields one station.
-    const svg = renderStream({
-      w: 440, h: 226,
-      stations: [{ label: '2026', value: 40 }],
-      accent: '#199e70', gradId: 'gbi-test', theme: dark,
-      emptyText: 'no issue history in range',
-    });
-    expect(svg).not.toContain('no issue history in range');
-    expect(svg).toContain('<ellipse');
-    expect(svg).toContain('>40<');
-    expect(svg).toContain('2026');
+describe('renderColumns caps and custom stops', () => {
+  const base = {
+    w: 440, h: 226, gradId: 'gbi-test', theme: dark,
+    data: [
+      { label: '2025', count: 17 },
+      { label: '2026', count: 6 },
+    ],
+  };
+
+  it('draws a bright cap slab per bar when capColor is set', async () => {
+    const { renderColumns } = await import('../src/render/tiles/columns.js');
+    const svg = renderColumns({ ...base, capColor: '#d2a8ff' });
+    const caps = [...svg.matchAll(/#d2a8ff/g)];
+    expect(caps.length).toBe(2); // one cap per bar, never more
+    expect(svg).toContain('>17<');
+    expect(svg).toContain('>6<');
   });
 
-  it('keeps the empty state for zero values', async () => {
-    const { renderStream } = await import('../src/render/tiles/stream.js');
-    const svg = renderStream({
-      w: 440, h: 226,
-      stations: [{ label: '2026', value: 0 }],
-      accent: '#199e70', gradId: 'gbi-test', theme: dark,
-      emptyText: 'no issue history in range',
+  it('uses the custom gradient stops instead of the default ramp', async () => {
+    const { renderColumns } = await import('../src/render/tiles/columns.js');
+    const stops = [[0, '#a371f7', 1], [1, '#4b2a80', 0.4]] as const;
+    const svg = renderColumns({ ...base, stops });
+    expect(svg).toContain('#a371f7');
+    expect(svg).not.toContain('#2fd08a'); // default green ramp not present
+  });
+
+  it('renders a single period as one bar, not an empty state', async () => {
+    const { renderColumns } = await import('../src/render/tiles/columns.js');
+    const svg = renderColumns({
+      ...base,
+      data: [{ label: '2026', count: 40 }],
+      capColor: '#d2a8ff',
+      emptyText: 'nothing yet',
     });
-    expect(svg).toContain('no issue history in range');
+    expect(svg).not.toContain('nothing yet');
+    expect(svg).toContain('>40<');
   });
 });

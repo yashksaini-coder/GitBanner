@@ -45,16 +45,25 @@ describe('toSvg', () => {
     expect(svg).toContain(`top repo · ${yearTop.value.toLocaleString('en-US')} merged`);
   });
 
-  it('shows the issues resolution rate below the yearly stream', () => {
-    const pct = Math.round((stats.issuesClosed! / stats.issuesOpened) * 100);
+  it('issues card charts resolved external issues as capped purple columns', () => {
+    const pct = Math.round((stats.issuesClosed / stats.issuesOpened) * 100);
     expect(svg).toContain(`${pct}%`);
-    expect(svg).toContain('url(#gbi-stream)');
-    // one measure-line pill per year carries its exact count
+    expect(svg).toContain('url(#gbi-cols)');
+    // GitHub's closed-as-completed purple: ramp top and bright cap slab
+    expect(svg).toContain('#a371f7');
+    expect(svg).toContain('#d2a8ff');
+    // one value label per year carries the exact resolved count
     for (const y of stats.issuesByYear) {
-      expect(svg).toContain(`>${y.opened}<`);
+      expect(svg).toContain(`>${y.closed}<`);
     }
-    expect(svg).toContain('finishing what you file');
+    expect(svg).toContain('resolution rate');
     expect(svg).not.toContain('Contributing since');
+  });
+
+  it('card copy speaks in the first person, never the second', () => {
+    expect(svg).toContain('issues I filed');
+    expect(svg).toContain('filed by me');
+    expect(svg).not.toMatch(/\byou\b|\byour\b/);
   });
 
   it('card headers carry a title, not an icon box or beside-icon value', () => {
@@ -95,7 +104,7 @@ describe('toSvg', () => {
 
   it('every card ends in a stat row, not dot rows', () => {
     expect(svg).not.toContain('Opened'); // folded into the issues stat trio
-    expect(svg).toContain(`of ${stats.issuesOpened.toLocaleString('en-US')} opened`);
+    expect(svg).toContain(`>${stats.issuesOpened.toLocaleString('en-US')}<`);
   });
 
   it('renders the pure-black theme', () => {
@@ -209,7 +218,7 @@ describe('tile selection', () => {
     expect(neededData(['merged-prs', 'projects', 'ships-in']).has('ownRepos')).toBe(false);
     expect('reach' in TILES).toBe(false);
     expect(neededData(['own-stars']).has('ownRepos')).toBe(true);
-    expect(neededData(['issues'])).toEqual(new Set(['issues', 'reviews']));
+    expect(neededData(['issues'])).toEqual(new Set(['issues']));
     expect(neededData(DEFAULT_TILES)).toEqual(new Set(['prs', 'reviews', 'issues', 'ownRepos']));
   });
 
@@ -225,8 +234,9 @@ describe('date windows', () => {
     ...raw,
     window: { since: '2026-08-01T00:00:00Z', until: '2026-08-09T23:59:59Z', label: '1-9 Aug 2026' },
     reviewYears: [
-      { year: 2026, reviews: 4, commits: 30, totalContributions: 60, issuesOpened: 3, prsOpened: 6, byRepo: [] },
+      { year: 2026, reviews: 4, commits: 30, totalContributions: 60, prsOpened: 6, byRepo: [] },
     ],
+    issueYears: [{ year: 2026, opened: 3, closed: 2 }],
   };
 
   it('keeps only PRs merged inside the range', () => {
@@ -238,12 +248,12 @@ describe('date windows', () => {
     expect(scoped.prsMergedExternal).toBeLessThanOrEqual(aggregate(raw).prsMergedExternal);
   });
 
-  it('takes windowed PR and issue totals from contributions, not all-time counts', () => {
+  it('takes windowed PR totals from contributions and issues from the search', () => {
     const scoped = aggregate(week);
     expect(scoped.prsOpened).toBe(6);
+    // Issue search supports date ranges, so a windowed card shows resolution too.
     expect(scoped.issuesOpened).toBe(3);
-    // GitHub exposes issues opened in a window but not issues closed in one.
-    expect(scoped.issuesClosed).toBeNull();
+    expect(scoped.issuesClosed).toBe(2);
   });
 
   it('labels the period and shows it on the card', () => {

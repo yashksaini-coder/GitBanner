@@ -96,7 +96,7 @@ function printReport(
   console.log(`  ${padEnd("Reviews on others' repos", 34)} ${pad(n(stats.reviewsExternal), 9)}`);
   console.log(`  ${padEnd('Merge rate', 34)} ${pad(`${stats.mergeRatePct}%`, 9)}`);
   console.log(`  ${padEnd('Merged in last 12 months', 34)} ${pad(n(stats.recentExternalPrs), 9)}`);
-  console.log(`  ${padEnd('Issue resolution', 34)} ${pad(stats.issuesClosed === null ? 'n/a' : `${Math.round((stats.issuesClosed / Math.max(1, stats.issuesOpened)) * 100)}%`, 9)}`);
+  console.log(`  ${padEnd('Issue resolution (external, resolved)', 34)} ${pad(`${Math.round((stats.issuesClosed / Math.max(1, stats.issuesOpened)) * 100)}%`, 9)}`);
 
   section('own work (for contrast)');
   console.log(`  ${padEnd('PRs merged total', 34)} ${pad(n(stats.prsMerged), 9)}`);

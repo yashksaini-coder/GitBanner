@@ -11,10 +11,6 @@
     "merged": 85,
     "open": 7
   },
-  "issueTotals": {
-    "opened": 74,
-    "closed": 61
-  },
   "mergedPrs": [
     {
       "mergedAt": "2026-08-08T13:10:26Z",
@@ -2908,5 +2904,32 @@
       "stars": 9
     }
   ],
-  "window": null
+  "window": null,
+  "issueYears": [
+    {
+      "year": 2022,
+      "opened": 2,
+      "closed": 1
+    },
+    {
+      "year": 2023,
+      "opened": 9,
+      "closed": 5
+    },
+    {
+      "year": 2024,
+      "opened": 31,
+      "closed": 24
+    },
+    {
+      "year": 2025,
+      "opened": 22,
+      "closed": 17
+    },
+    {
+      "year": 2026,
+      "opened": 10,
+      "closed": 6
+    }
+  ]
 }

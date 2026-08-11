@@ -27,7 +27,7 @@ function syntheticRaw(mergedAts: string[]): RawData {
       repo: { nameWithOwner: 'acme/proj', owner: 'acme', stars: 5, isPrivate: false, languages: [] },
     })),
     prTotals: { opened: 0, merged: 0, open: 0 },
-    issueTotals: { opened: 0, closed: 0 },
+    issueYears: [],
     reviewYears: [],
     ownRepos: [],
     window: null,

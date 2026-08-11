@@ -204,13 +204,18 @@ export function aggregate(
         ),
       );
 
-  // On a windowed card the all-time PR/issue totals were never fetched; the
-  // window equivalents come from contributionsCollection instead.
-  const period = raw.window ? sumPeriods(raw.reviewYears) : null;
-  const prsOpened = period ? period.prsOpened : raw.prTotals.opened;
-  const prsMerged = period ? usablePrs.length : raw.prTotals.merged;
-  const issuesOpened = period ? period.issuesOpened : raw.issueTotals.opened;
-  const issuesClosed = period ? null : raw.issueTotals.closed;
+  // On a windowed card the all-time PR totals were never fetched; the window
+  // equivalent comes from contributionsCollection instead.
+  const prsOpened = raw.window
+    ? raw.reviewYears.reduce((sum, y) => sum + y.prsOpened, 0)
+    : raw.prTotals.opened;
+  const prsMerged = raw.window ? usablePrs.length : raw.prTotals.merged;
+
+  // Issues the user filed in others' public repos, already external and
+  // window-scoped at the query. closed = resolved (closed as completed) only.
+  const issueYears = raw.issueYears ?? [];
+  const issuesOpened = issueYears.reduce((sum, y) => sum + y.opened, 0);
+  const issuesClosed = issueYears.reduce((sum, y) => sum + y.closed, 0);
 
   return {
     username: raw.profile.login,
@@ -218,7 +223,7 @@ export function aggregate(
 
     prsOpened,
     prsMerged,
-    prsOpen: period ? 0 : raw.prTotals.open,
+    prsOpen: raw.window ? 0 : raw.prTotals.open,
     prsMergedExternal: externalPrs.length,
     mergeRatePct: percent(prsMerged, prsOpened),
 
@@ -240,9 +245,10 @@ export function aggregate(
     topExternalThisYear: thisYearRepos
       .slice(0, 8)
       .map((r) => ({ name: r.name, value: r.mergedPrs })),
-    issuesByYear: raw.reviewYears.map((y) => ({
+    issuesByYear: issueYears.map((y) => ({
       year: y.year,
-      opened: y.issuesOpened,
+      opened: y.opened,
+      closed: y.closed,
     })),
     recentExternalRepoCount: recentRepos.size,
 
@@ -270,19 +276,6 @@ export function aggregate(
     bestYear: pickBestYear(raw.reviewYears),
     periodLabel: raw.window?.label ?? null,
   };
-}
-
-function sumPeriods(years: ReviewYear[]): {
-  prsOpened: number;
-  issuesOpened: number;
-} {
-  return years.reduce(
-    (acc, y) => ({
-      prsOpened: acc.prsOpened + y.prsOpened,
-      issuesOpened: acc.issuesOpened + y.issuesOpened,
-    }),
-    { prsOpened: 0, issuesOpened: 0 },
-  );
 }
 
 const MONTH_LETTERS = [

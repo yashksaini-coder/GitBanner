@@ -11,7 +11,7 @@ const base: RawData = {
   profile: { login: 'me', name: null, createdAt: '2020-01-01T00:00:00Z', followers: 0, following: 0 },
   mergedPrs: [],
   prTotals: { opened: 0, merged: 0, open: 0 },
-  issueTotals: { opened: 0, closed: 0 },
+  issueYears: [],
   reviewYears: [],
   ownRepos: [],
   window: null,
@@ -22,7 +22,6 @@ const year = (y: number, byRepo: ReviewYear['byRepo']): ReviewYear => ({
   reviews: byRepo.reduce((s, r) => s + r.count, 0),
   commits: 0,
   totalContributions: 0,
-  issuesOpened: 0,
   prsOpened: 0,
   byRepo,
 });

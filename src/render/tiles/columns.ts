@@ -14,6 +14,10 @@ export interface ColumnsProps {
   gradId: string;
   theme: Theme;
   emptyText?: string;
+  /** Override the body gradient (offset, colour, opacity), top to bottom. */
+  stops?: readonly (readonly [number, string, number])[];
+  /** Bright slab on each bar top, reference style; omit for plain bars. */
+  capColor?: string;
 }
 
 /** Reference ramp: bright green cap fading through blue toward the base. */
@@ -47,20 +51,32 @@ export function renderColumns(p: ColumnsProps): string {
   const max = Math.max(...data.map((d) => d.count));
   const zone = baseline - VALUE_BAND;
 
-  const gradient = `<linearGradient id="${escapeXml(gradId)}" x1="0" y1="0" x2="0" y2="1">${GRAD_STOPS.map(
-    ([off, color, op]) => `<stop offset="${off}" stop-color="${color}" stop-opacity="${op}"/>`,
-  ).join('')}</linearGradient>`;
+  const gradient = `<linearGradient id="${escapeXml(gradId)}" x1="0" y1="0" x2="0" y2="1">${(p.stops ?? GRAD_STOPS)
+    .map(
+      ([off, color, op]) => `<stop offset="${off}" stop-color="${color}" stop-opacity="${op}"/>`,
+    )
+    .join('')}</linearGradient>`;
+
+  // Rounded data-end, square baseline: cap radius only at the top.
+  const barPath = (x: number, yTop: number, height: number): string => {
+    const r = Math.min(7, bw / 2, height);
+    const yBot = yTop + height;
+    return `M ${x} ${r2(yBot)} L ${x} ${r2(yTop + r)} A ${r} ${r} 0 0 1 ${r2(x + r)} ${r2(yTop)} L ${r2(x + bw - r)} ${r2(yTop)} A ${r} ${r} 0 0 1 ${r2(x + bw)} ${r2(yTop + r)} L ${r2(x + bw)} ${r2(yBot)} Z`;
+  };
 
   const bars = data
     .map((d, i) => {
       const bh = Math.max(6, Math.round((d.count / max) * zone));
       const x = x0 + i * (bw + gap);
       const y = baseline - bh;
-      const rTop = Math.min(7, bw / 2, bh);
-      // Rounded data-end, square baseline: cap radius only at the top.
-      const path = `M ${x} ${r2(baseline)} L ${x} ${r2(y + rTop)} A ${rTop} ${rTop} 0 0 1 ${r2(x + rTop)} ${r2(y)} L ${r2(x + bw - rTop)} ${r2(y)} A ${rTop} ${rTop} 0 0 1 ${r2(x + bw)} ${r2(y + rTop)} L ${r2(x + bw)} ${r2(baseline)} Z`;
+      // Bright cap slab at the data end, reference style — clearly part of
+      // the bar, never taller than it.
+      const cap = p.capColor
+        ? `<path d="${barPath(x, y, Math.min(5, bh))}" fill="${escapeXml(p.capColor)}"/>`
+        : '';
       return (
-        `<path d="${path}" fill="url(#${escapeXml(gradId)})"/>` +
+        `<path d="${barPath(x, y, bh)}" fill="url(#${escapeXml(gradId)})"/>` +
+        cap +
         `<text x="${r2(x + bw / 2)}" y="${r2(y - 6)}" text-anchor="middle" class="gb-mono" font-size="11" fill="${theme.textPrimary}">${d.count}</text>` +
         `<text x="${r2(x + bw / 2)}" y="${h - 3}" text-anchor="middle" class="gb-mono" font-size="9" fill="${theme.textMuted}">${escapeXml(d.label)}</text>`
       );

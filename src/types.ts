@@ -44,7 +44,13 @@ export interface PrTotals {
   open: number;
 }
 
-export interface IssueTotals {
+/**
+ * Issues the user filed in public repos they don't own, per calendar year
+ * (or per window on a scoped card). `closed` counts only issues closed as
+ * completed — GitHub's "properly resolved" state, not closed-as-not-planned.
+ */
+export interface IssueYear {
+  year: number;
   opened: number;
   closed: number;
 }
@@ -62,7 +68,6 @@ export interface ReviewYear {
   reviews: number;
   commits: number;
   totalContributions: number;
-  issuesOpened: number;
   prsOpened: number;
   byRepo: ReviewRepoRef[];
 }
@@ -85,7 +90,7 @@ export interface RawData {
   profile: Profile;
   mergedPrs: MergedPr[];
   prTotals: PrTotals;
-  issueTotals: IssueTotals;
+  issueYears: IssueYear[];
   reviewYears: ReviewYear[];
   ownRepos: OwnRepo[];
   /** Non-null when the card is scoped to a date range rather than all time. */
@@ -147,8 +152,11 @@ export interface StatsPayload {
    * ending with the current month, oldest first. label = month's first letter.
    */
   monthlyExternalMerges: { label: string; month: number; count: number }[];
-  /** Issues you opened per calendar year, oldest first; empty when not fetched. */
-  issuesByYear: { year: number; opened: number }[];
+  /**
+   * Issues the user filed in others' public repos per calendar year, oldest
+   * first, with how many were resolved; empty when not fetched.
+   */
+  issuesByYear: { year: number; opened: number; closed: number }[];
   /**
    * Merged external PRs bucketed by the target repo's star magnitude —
    * fixed log decades, so the x-axis is stable across users. Scoped to the
@@ -166,10 +174,10 @@ export interface StatsPayload {
   /** Reviews per year for the top 6 external repos, for the ridgeline. */
   reviewRidges: ReviewRidges;
 
-  // Issues. issuesClosed is null for a windowed card: GitHub exposes issues
-  // *opened* in a window, but not issues closed in one.
+  // Issues the user filed in public repos they don't own. Closed counts only
+  // the resolved state (closed as completed), never closed-as-not-planned.
   issuesOpened: number;
-  issuesClosed: number | null;
+  issuesClosed: number;
 
   // Languages of the external repos the user ships in
   languages: LanguageSummary[];

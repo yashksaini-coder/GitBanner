@@ -1,7 +1,6 @@
 import { topExternalByPrs } from './compute.js';
 import { renderColumns } from './render/tiles/columns.js';
 import { renderWave } from './render/tiles/wave.js';
-import { renderStream } from './render/tiles/stream.js';
 import { renderHexCluster } from './render/tiles/hex.js';
 import { renderLanguagesChart } from './render/tiles/languages-tile.js';
 import { renderMiniTile } from './render/tiles/mini-tile.js';
@@ -26,16 +25,18 @@ export interface TileDef {
 
 const n = (value: number): string => value.toLocaleString('en-US');
 
-/** "in the last week" vs "all time" — keeps captions honest on a scoped card. */
-function scope(p: StatsPayload): string {
-  return p.periodLabel ?? 'all time';
-}
-
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 /** Chart zone shared by the card tiles, in card-local coordinates. */
 const PAD = 28;
 const CHART_H = CHART_BOTTOM - CHART_TOP;
+
+/** Issues ramp: GitHub's closed-as-completed purple, bright cap to dark base. */
+const ISSUE_STOPS = [
+  [0, '#a371f7', 1],
+  [0.55, '#8957e5', 0.95],
+  [1, '#4b2a80', 0.4],
+] as const;
 
 function chartGroup(_w: number, inner: string): string {
   return `<g transform="translate(${PAD}, ${CHART_TOP})">${inner}</g>`;
@@ -209,46 +210,30 @@ export const TILES: Record<string, TileDef> = {
 
   issues: {
     kind: 'card',
-    // Yearly issue counts ride on the contributions query, hence 'reviews'.
-    needs: ['issues', 'reviews'],
+    needs: ['issues'],
     render: (p, theme, box) => {
-      const closed = p.issuesClosed;
-      const wave = chartGroup(box.w, renderStream({
-        w: box.w - 2 * PAD,
-        h: CHART_H,
-        stations: p.issuesByYear.map((y) => ({
-          label: String(y.year),
-          value: y.opened,
-        })),
-        accent: theme.accents.issues,
-        gradId: 'gbi-stream',
-        emptyText: 'no issue history in range',
-        theme,
-      }));
-      // Windowed cards can't show resolution: GitHub exposes issues opened in
-      // a range but not issues closed in one.
-      if (closed === null) {
-        return renderStatTile({
-          ...box,
-          accent: theme.accents.issues,
-          title: 'Issues',
-          caption: `opened by you · ${scope(p)}`,
-          chart: wave,
-          stats: [{ value: n(p.issuesOpened), label: 'opened in range' }],
-          theme,
-        });
-      }
-      const pct = p.issuesOpened === 0 ? 0 : Math.round((closed / p.issuesOpened) * 100);
+      const pct =
+        p.issuesOpened === 0 ? '—' : `${Math.round((p.issuesClosed / p.issuesOpened) * 100)}%`;
       return renderStatTile({
         ...box,
         accent: theme.accents.issues,
         title: 'Issues',
-        caption: 'opened by you, per year · finishing what you file',
-        chart: wave,
+        caption: `issues I filed in others' projects that got resolved · ${p.periodLabel ?? 'per year'}`,
+        // Bars = resolved counts, in GitHub's own closed-as-completed purple.
+        chart: chartGroup(box.w, renderColumns({
+          w: box.w - 2 * PAD,
+          h: CHART_H,
+          data: p.issuesByYear.map((y) => ({ label: String(y.year), count: y.closed })),
+          gradId: 'gbi-cols',
+          stops: ISSUE_STOPS,
+          capColor: '#d2a8ff',
+          emptyText: "no issues I filed have been resolved yet",
+          theme,
+        })),
         stats: [
-          { value: `${pct}%`, label: 'resolved' },
-          { value: n(closed), label: `of ${n(p.issuesOpened)} opened` },
-          { value: n(Math.max(0, p.issuesOpened - closed)), label: 'still open' },
+          { value: n(p.issuesClosed), label: 'resolved' },
+          { value: pct, label: 'resolution rate' },
+          { value: n(p.issuesOpened), label: 'filed by me' },
         ],
         theme,
       });
@@ -302,7 +287,7 @@ export const TILES: Record<string, TileDef> = {
         accent: theme.accents.languages,
         title: `Stars earned · ${n(p.ownStars)} total`,
         value: n(p.ownStars),
-        subLine: p.ownTopRepos.length === 0 ? `across ${n(p.ownRepoCount)} repos you built` : '',
+        subLine: p.ownTopRepos.length === 0 ? `across ${n(p.ownRepoCount)} repos I built` : '',
         list: p.ownTopRepos.slice(0, 3).map((r) => ({ label: r.name, value: `${n(r.stars)} stars` })),
         spark: p.ownTopRepos.map((r) => r.stars),
         theme,

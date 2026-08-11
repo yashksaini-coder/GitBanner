@@ -2,7 +2,7 @@ import { graphql } from "@octokit/graphql";
 import type {
   DataNeed,
   DateWindow,
-  IssueTotals,
+  IssueYear,
   MergedPr,
   OwnRepo,
   PrTotals,
@@ -37,16 +37,18 @@ export async function fetchAll(opts: FetchOptions): Promise<RawData> {
   // contributionsCollection instead.
   const head = await fetchProfileHead(client, username, needs, window);
 
-  // A windowed card reads its issue counts — and its PRs-opened total, which
-  // the merge rate divides by — off the contributions query too.
+  // A windowed card reads its PRs-opened total — which the merge rate
+  // divides by — off the contributions query too.
   const wantContributions =
-    needs.has("reviews") ||
-    (window !== null && (needs.has("issues") || needs.has("prs")));
+    needs.has("reviews") || (window !== null && needs.has("prs"));
 
-  const [mergedPrs, reviewYears, ownRepos] = await Promise.all([
+  const [mergedPrs, reviewYears, issueYears, ownRepos] = await Promise.all([
     needs.has("prs") ? fetchMergedPrs(client, username) : Promise.resolve([]),
     wantContributions
       ? fetchReviewYears(client, username, head.profile.createdAt, window)
+      : Promise.resolve([]),
+    needs.has("issues")
+      ? fetchIssueYears(client, username, head.profile.createdAt, window)
       : Promise.resolve([]),
     needs.has("ownRepos")
       ? fetchOwnRepos(client, username)
@@ -56,7 +58,7 @@ export async function fetchAll(opts: FetchOptions): Promise<RawData> {
   return {
     profile: head.profile,
     prTotals: head.prTotals,
-    issueTotals: head.issueTotals,
+    issueYears,
     mergedPrs,
     reviewYears,
     ownRepos,
@@ -71,7 +73,6 @@ export async function fetchAll(opts: FetchOptions): Promise<RawData> {
 interface ProfileHead {
   profile: RawData["profile"];
   prTotals: PrTotals;
-  issueTotals: IssueTotals;
 }
 
 async function fetchProfileHead(
@@ -86,11 +87,6 @@ async function fetchProfileHead(
        prsMerged: pullRequests(states: [MERGED]) { totalCount }
        prsOpen:   pullRequests(states: [OPEN]) { totalCount }`
       : "";
-  const issueFields =
-    needs.has("issues") && !window
-      ? `issuesOpened: issues { totalCount }
-       issuesClosed: issues(states: [CLOSED]) { totalCount }`
-      : "";
 
   const query = `
     query ProfileHead($login: String!) {
@@ -101,7 +97,6 @@ async function fetchProfileHead(
         followers { totalCount }
         following { totalCount }
         ${prFields}
-        ${issueFields}
       }
     }
   `;
@@ -126,10 +121,6 @@ async function fetchProfileHead(
       opened: user.prsOpened?.totalCount ?? 0,
       merged: user.prsMerged?.totalCount ?? 0,
       open: user.prsOpen?.totalCount ?? 0,
-    },
-    issueTotals: {
-      opened: user.issuesOpened?.totalCount ?? 0,
-      closed: user.issuesClosed?.totalCount ?? 0,
     },
   };
 }
@@ -284,7 +275,6 @@ function reviewQuery(windows: YearWindow[]): string {
       y${w.year}: contributionsCollection(from: "${w.from}", to: "${w.to}") {
         contributionCalendar { totalContributions }
         totalCommitContributions
-        totalIssueContributions
         totalPullRequestContributions
         totalPullRequestReviewContributions
         pullRequestReviewContributionsByRepository(maxRepositories: 100) {
@@ -300,7 +290,6 @@ function reviewQuery(windows: YearWindow[]): string {
 interface ReviewYearNode {
   contributionCalendar: { totalContributions: number };
   totalCommitContributions: number;
-  totalIssueContributions: number;
   totalPullRequestContributions: number;
   totalPullRequestReviewContributions: number;
   pullRequestReviewContributionsByRepository: Array<{
@@ -343,7 +332,6 @@ async function fetchReviewYears(
       reviews: node.totalPullRequestReviewContributions,
       commits: node.totalCommitContributions,
       totalContributions: node.contributionCalendar.totalContributions,
-      issuesOpened: node.totalIssueContributions,
       prsOpened: node.totalPullRequestContributions,
       byRepo: node.pullRequestReviewContributionsByRepository.map((e) => ({
         nameWithOwner: e.repository.nameWithOwner,
@@ -354,6 +342,64 @@ async function fetchReviewYears(
     });
   }
   return out;
+}
+
+// --- issues -------------------------------------------------------------
+// Issues the user filed in public repos they don't own, and how many of those
+// were resolved. contributionsCollection can't answer this (it has no closed
+// state and no ownership split), but issue search can: `-user:<login>` is
+// exactly the banner's external rule (owner != login), `is:public` keeps the
+// open-source claim honest, and `reason:completed` counts only issues closed
+// as resolved — closed-as-not-planned never counts. One aliased request for
+// every year.
+
+function issueSearch(login: string, extra: string, from: string, to: string): string {
+  // JSON.stringify produces a valid, fully-escaped GraphQL string literal.
+  return JSON.stringify(
+    `author:${login} is:issue is:public -user:${login} ${extra}created:${from}..${to}`.replace('  ', ' '),
+  );
+}
+
+function issueQuery(login: string, windows: YearWindow[]): string {
+  const fields = windows
+    .map((w) => {
+      const from = w.from.slice(0, 10);
+      const to = w.to.slice(0, 10);
+      return `
+      o${w.year}: search(query: ${issueSearch(login, '', from, to)}, type: ISSUE) { issueCount }
+      c${w.year}: search(query: ${issueSearch(login, 'is:closed reason:completed ', from, to)}, type: ISSUE) { issueCount }`;
+    })
+    .join('');
+  return `query Issues { ${fields} }`;
+}
+
+async function fetchIssueYears(
+  client: GqlClient,
+  login: string,
+  createdAt: string,
+  window: DateWindow | null,
+): Promise<IssueYear[]> {
+  const windows: YearWindow[] = window
+    ? [
+        {
+          year: new Date(window.since).getUTCFullYear(),
+          from: new Date(window.since).toISOString(),
+          to: new Date(window.until).toISOString(),
+        },
+      ]
+    : yearWindows(createdAt, new Date());
+
+  const data = (await client<Record<string, { issueCount: number }>>(
+    issueQuery(login, windows),
+  )) as Record<string, { issueCount: number }>;
+
+  return windows
+    .map((w) => ({
+      year: w.year,
+      opened: data[`o${w.year}`]?.issueCount ?? 0,
+      closed: data[`c${w.year}`]?.issueCount ?? 0,
+    }))
+    .filter((y) => y.opened > 0 || y.closed > 0 || window !== null);
 }
 
 // --- own repos ----------------------------------------------------------

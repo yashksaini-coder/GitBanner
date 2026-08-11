@@ -110,7 +110,7 @@ describe('aggregate — external contribution metrics', () => {
         { mergedAt: '2026-02-01T00:00:00Z', repo: { nameWithOwner: 'acme/one', owner: 'acme', stars: 10, isPrivate: false, languages: [] } },
         { mergedAt: '2026-03-01T00:00:00Z', repo: { nameWithOwner: 'acme/two', owner: 'acme', stars: 20, isPrivate: false, languages: [] } },
       ],
-      reviewYears: [{ year: 2026, reviews: 0, commits: 0, totalContributions: 0, issuesOpened: 0, prsOpened: 1, byRepo: [] }],
+      reviewYears: [{ year: 2026, reviews: 0, commits: 0, totalContributions: 0, prsOpened: 1, byRepo: [] }],
     };
     expect(aggregate(crossed).mergeRatePct).toBe(100);
   });
@@ -299,7 +299,7 @@ describe('aggregate — empty inputs', () => {
     profile: { login: 'nobody', name: null, createdAt: '2024-01-01T00:00:00Z', followers: 0, following: 0 },
     mergedPrs: [],
     prTotals: { opened: 0, merged: 0, open: 0 },
-    issueTotals: { opened: 0, closed: 0 },
+    issueYears: [],
     reviewYears: [],
     ownRepos: [],
     window: null,

@@ -20,7 +20,10 @@ export const dark: Theme = {
     reviews: '#d95926', // slot 2
     projects: '#199e70', // slot 3
     reach: '#199e70', // same footprint story as projects
-    issues: '#199e70', // the resolution meter is a "good" story, same hue as projects
+    // GitHub's own closed-as-completed purple (Primer done.fg, dark) — the
+    // card charts resolved issues, so it borrows the platform's colour for
+    // that exact state. Deliberate exception to the three-hue set above.
+    issues: '#a371f7',
     languages: '#199e70',
     neutral: '#8b949e',
   },
