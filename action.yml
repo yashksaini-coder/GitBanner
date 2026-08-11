@@ -49,15 +49,22 @@ inputs:
 
   tiles:
     description: |
-      Comma-separated report cards to render, in order. Only the GraphQL
-      queries the selected cards need are issued.
+      Comma-separated tiles to render, in order. Only the GraphQL queries the
+      selected tiles need are issued — dropping `own-stars`, for example, skips
+      repository pagination entirely.
 
-      Cards:
-        pull-requests  merged-for-others bars, merge rate, project highlights
-        code-review    review bars, issue resolution, opened/resolved table
-        footprint      language cell grid, stars earned, followers
+      Stat tiles (tall, with a top-3 list):
+        merged-prs  PRs merged into repos you don't own
+        reviews     code reviews you gave on others' repos
+        projects    distinct external projects you've landed work in
+        reach       combined stargazers of those projects
+        issues      issues opened / closed
+        languages   languages of the external projects you ship in (pills)
+      Mini tiles (short):
+        biggest-project, merge-rate, ships-in, own-stars, since
 
-      Default: pull-requests,code-review,footprint
+      Default: merged-prs,reviews,projects,reach,issues,
+               biggest-project,merge-rate,ships-in,own-stars,since
     required: false
     default: ''
 
@@ -73,7 +80,7 @@ inputs:
 
   ignore-languages:
     description: |
-      Comma-separated language names to hide from the footprint language grid,
+      Comma-separated language names to hide from the ships-in language tiles,
       matched case-insensitively. Linguist already excludes vendored and
       generated files automatically; use this for languages you legitimately
       ship but don't want leading your card (e.g. `HTML,CSS`).
