@@ -2,7 +2,7 @@ import { topExternalByPrs } from './compute.js';
 import { renderHexCluster } from './render/tiles/hex.js';
 import { renderLanguagesChart } from './render/tiles/languages-tile.js';
 import { renderMiniTile } from './render/tiles/mini-tile.js';
-import { renderScatter3D } from './render/tiles/scatter3d.js';
+import { renderRidgeline } from './render/tiles/ridgeline.js';
 import { CHART_BOTTOM, CHART_TOP, renderStatTile } from './render/tiles/stat-tile.js';
 import { renderWave } from './render/tiles/wave.js';
 import type { DataNeed, StatsPayload, Theme } from './types.js';
@@ -57,7 +57,7 @@ export const TILES: Record<string, TileDef> = {
         ...box,
         accent: theme.accents.prs,
         title: 'Pull requests',
-        caption: `merged PRs across the popularity spectrum · ${scope(p)}`,
+        caption: `merged PRs across the popularity spectrum · ${p.periodLabel ?? new Date().getUTCFullYear()}`,
         // Area under the curve = your merged work, laid out by how popular
         // the receiving project is (fixed log-decade star buckets).
         chart: chartGroup(box.w, renderWave({
@@ -152,40 +152,21 @@ export const TILES: Record<string, TileDef> = {
   reviews: {
     kind: 'card',
     needs: ['reviews'],
-    render: (p, theme, box) => {
-      // Three honest axes per dot: x = repo stars (log), z = year, y = reviews.
-      const pts = p.reviewPoints;
-      const maxReviews = Math.max(1, ...pts.map((r) => r.reviews));
-      const maxStars = Math.max(1, ...pts.map((r) => r.stars));
-      const years = [...new Set(pts.map((r) => r.year))].sort((a, b) => a - b);
-      const yearSpan = Math.max(1, years[years.length - 1] - years[0]);
-      const top = pts[0];
-      const compact = (v: number): string =>
-        v >= 1000 ? `${Math.round(v / 1000)}k` : String(v);
-      return renderStatTile({
+    render: (p, theme, box) =>
+      renderStatTile({
         ...box,
         accent: theme.accents.reviews,
         title: 'Code review',
-        caption: 'each dot = one repo · one year of reviews',
-        chart: chartGroup(box.w, renderScatter3D({
+        caption: 'reviews per year · one ridge per repo',
+        chart: chartGroup(box.w, renderRidgeline({
           w: box.w - 2 * PAD,
           h: CHART_H,
-          points: pts.map((r) => ({
-            x: Math.log(1 + r.stars) / Math.log(1 + maxStars),
-            // sqrt spreads the skewed low end; the 0 and max axis labels
-            // remain exact since sqrt(0)=0 and sqrt(1)=1.
-            y: Math.sqrt(r.reviews / maxReviews),
-            z: years.length > 1 ? (r.year - years[0]) / yearSpan : 0.5,
-            value: r === top ? String(r.reviews) : undefined,
+          years: p.reviewRidges.years.map(String),
+          series: p.reviewRidges.series.map((r) => ({
+            name: r.name,
+            counts: r.counts,
           })),
-          xLabels: [
-            compact(Math.min(...pts.map((r) => r.stars))),
-            `${compact(maxStars)} stars`,
-          ],
-          yLabels: ['0', String(maxReviews)],
-          zLabels: years.map(String),
-          accent: theme.accents.reviews,
-          gradId: 'gbrv-sc',
+          gradId: 'gbrv-ridge',
           theme,
         })),
         stats: [
@@ -197,8 +178,7 @@ export const TILES: Record<string, TileDef> = {
           },
         ],
         theme,
-      });
-    },
+      }),
   },
 
   projects: {

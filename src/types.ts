@@ -100,12 +100,12 @@ export interface ExternalRepo {
   languages: RepoLang[];
 }
 
-/** One external repo × one year of reviews — a dot in the 3D scatter. */
-export interface ReviewPoint {
-  name: string;
-  year: number;
-  reviews: number;
-  stars: number;
+/** Reviews per external repo per year, aligned for the ridgeline tile. */
+export interface ReviewRidges {
+  /** Every year present in the raw data, ascending. */
+  years: number[];
+  /** Top external reviewed repos, most reviews first; counts align with years. */
+  series: { name: string; counts: number[] }[];
 }
 
 export interface TopRepo {
@@ -147,7 +147,9 @@ export interface StatsPayload {
   issuesByYear: { year: number; opened: number }[];
   /**
    * Merged external PRs bucketed by the target repo's star magnitude —
-   * fixed log decades, so the x-axis is stable across users.
+   * fixed log decades, so the x-axis is stable across users. Scoped to the
+   * current UTC calendar year (or to the window on a windowed card), so it
+   * sums to the current-year external merge count, not the all-time headline.
    */
   popularitySpectrum: { label: string; count: number }[];
 
@@ -155,8 +157,8 @@ export interface StatsPayload {
   reviewsTotal: number;
   reviewsExternal: number;
   topReviewedRepos: TopRepo[];
-  /** External review dots (repo × year), reviews desc, capped at 14. */
-  reviewPoints: ReviewPoint[];
+  /** Reviews per year for the top 6 external repos, for the ridgeline. */
+  reviewRidges: ReviewRidges;
 
   // Issues. issuesClosed is null for a windowed card: GitHub exposes issues
   // *opened* in a window, but not issues closed in one.

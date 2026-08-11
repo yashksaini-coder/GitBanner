@@ -3,7 +3,7 @@ import type {
   LanguageSummary,
   MergedPr,
   RawData,
-  ReviewPoint,
+  ReviewRidges,
   ReviewYear,
   StatsPayload,
   TopRepo,
@@ -214,10 +214,21 @@ export function aggregate(
     biggestProject,
     recentExternalPrs: recentPrs.length,
     monthlyExternalMerges: bucketByMonth(externalPrs),
-    // Built from ALL external repos (not the drive-by-filtered subset): the
-    // chart distributes prsMergedExternal, which counts every merged PR — and
-    // one-off PRs into huge repos belong in the top decade, honestly.
-    popularitySpectrum: bucketByPopularity(allExternalRepos),
+    // Built from ALL external repos (not the drive-by-filtered subset): one-off
+    // PRs into huge repos belong in the top decade, honestly. All-time cards
+    // scope to the current UTC year (the tile tells this year's story); a
+    // windowed card's PRs are already range-filtered, so no extra year filter.
+    popularitySpectrum: bucketByPopularity(
+      raw.window
+        ? allExternalRepos
+        : groupExternalRepos(
+            externalPrs.filter(
+              (pr) =>
+                new Date(pr.mergedAt).getUTCFullYear() ===
+                new Date().getUTCFullYear(),
+            ),
+          ),
+    ),
     issuesByYear: raw.reviewYears.map((y) => ({
       year: y.year,
       opened: y.issuesOpened,
@@ -227,7 +238,7 @@ export function aggregate(
     reviewsTotal: reviews.total,
     reviewsExternal: reviews.external,
     topReviewedRepos: reviews.top,
-    reviewPoints: buildReviewPoints(raw.reviewYears, login, isExcluded),
+    reviewRidges: buildReviewRidges(raw.reviewYears, login, isExcluded),
 
     issuesOpened,
     issuesClosed,
@@ -431,37 +442,48 @@ function summariseReviews(
   return { total, external, top };
 }
 
-/** How many dots the scatter can hold before it turns into noise. */
-const MAX_REVIEW_POINTS = 14;
+/** How many ridges fit before the ridgeline turns into noise. */
+const MAX_RIDGE_SERIES = 6;
 
 /**
- * One dot per external repo × year of reviews, for the 3D scatter. Same
- * external/excluded rules as summariseReviews, but years are never merged —
- * the year is an axis. On a windowed card reviewYears holds the single
- * window, so the card inherits the range for free.
+ * Reviews per external repo per year, aligned into one counts row per repo
+ * for the ridgeline tile. Same external/excluded rules as summariseReviews.
+ * On a windowed card reviewYears holds the single window, so the card
+ * inherits the range for free (a single-year years array).
  */
-function buildReviewPoints(
+function buildReviewRidges(
   years: ReviewYear[],
   login: string,
   isExcluded: (nameWithOwner: string) => boolean,
-): ReviewPoint[] {
-  const points: ReviewPoint[] = [];
+): ReviewRidges {
+  const yearList = years.map((y) => y.year).sort((a, b) => a - b);
+  const yearIdx = new Map(yearList.map((y, i) => [y, i]));
+  const byRepo = new Map<string, { total: number; counts: number[] }>();
+
   for (const year of years) {
     for (const entry of year.byRepo) {
       if (isExcluded(entry.nameWithOwner)) continue;
       if (entry.owner.toLowerCase() === login) continue;
       if (entry.count <= 0) continue;
-      points.push({
-        name: entry.nameWithOwner.split("/")[1] ?? entry.nameWithOwner,
-        year: year.year,
-        reviews: entry.count,
-        stars: entry.stars,
-      });
+      let rec = byRepo.get(entry.nameWithOwner);
+      if (!rec) {
+        rec = { total: 0, counts: yearList.map(() => 0) };
+        byRepo.set(entry.nameWithOwner, rec);
+      }
+      rec.total += entry.count;
+      rec.counts[yearIdx.get(year.year)!] += entry.count;
     }
   }
-  return points
-    .sort((a, b) => b.reviews - a.reviews || b.stars - a.stars)
-    .slice(0, MAX_REVIEW_POINTS);
+
+  const series = [...byRepo.entries()]
+    .sort((a, b) => b[1].total - a[1].total)
+    .slice(0, MAX_RIDGE_SERIES)
+    .map(([nameWithOwner, rec]) => ({
+      name: nameWithOwner.split("/")[1] ?? nameWithOwner,
+      counts: rec.counts,
+    }));
+
+  return { years: yearList, series };
 }
 
 function pickBestYear(years: ReviewYear[]): { year: number; commits: number } {
