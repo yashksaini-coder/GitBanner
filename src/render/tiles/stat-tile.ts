@@ -1,13 +1,10 @@
 import type { Theme } from '../../types.js';
-import { iconByKey, renderIcon } from '../icons.js';
-import { escapeXml, fitFontSize, truncate } from '../util.js';
+import { escapeXml, fitText } from '../util.js';
 
-export { escapeXml };
 
-export interface StatTileRow {
-  label: string;
+export interface StatTileStat {
   value: string;
-  color: string;
+  label: string;
 }
 
 export interface StatTileProps {
@@ -15,77 +12,60 @@ export interface StatTileProps {
   y: number;
   w: number;
   h: number;
-  iconKey: string;
-  iconBgColor: string;
-  iconStroke: string;
-  cornerIconKey?: string;
-  cornerIconColor?: string;
-  value: string;
-  label: string;
-  rows: StatTileRow[];
-  rowValueColor: string;
+  accent: string;
+  /** Card title, reference style: bold, top-left, no icon. */
+  title: string;
+  caption: string;
+  /** Chart markup in tile-local coordinates; the zone is CHART_TOP..CHART_BOTTOM. */
+  chart?: string;
+  /** Up to three stat columns BELOW the chart — the reference's number placement. */
+  stats: StatTileStat[];
   theme: Theme;
 }
 
+const PAD = 28;
+// Shared card grid, hyper-chart anatomy: title, chart, stats, rows.
+const TITLE_Y = 42;
+const CAPTION_Y = 62;
+export const CHART_TOP = 74;
+export const CHART_BOTTOM = 300;
+const STAT_LABEL_Y = 322;
+const STAT_VALUE_Y = 356;
+
+/**
+ * The one card scaffold every chart card uses: bold title (no icon — the
+ * chart is the identity), the chart given the freed space, the headline
+ * numbers below it, and metric rows at the bottom.
+ */
 export function renderStatTile(p: StatTileProps): string {
-  const { x, y, w, h, theme, value, label, rows } = p;
+  const { x, y, w, h, theme, title, caption, stats } = p;
 
-  const icon = renderIcon({
-    path: iconByKey(p.iconKey),
-    size: 26,
-    stroke: p.iconStroke,
-    strokeWidth: 2.2,
-  });
+  const fittedTitle = fitText(title, w - 2 * PAD, [19, 17, 15]);
+  const fittedCaption = fitText(caption, w - 2 * PAD, [12, 11]);
 
-  const cornerIcon = p.cornerIconKey
-    ? renderIcon({
-        path: iconByKey(p.cornerIconKey),
-        size: 22,
-        stroke: p.cornerIconColor ?? theme.textMuted,
-        strokeWidth: 1.8,
-      })
-    : '';
-
-  const dividerY = 218;
-  const rowsStartY = 250;
-  const rowGap = 34;
-
-  const labelFontSize = 16;
-  const valueRowFontSize = 17;
-  const rowGutter = 12;
-
-  const rowsSvg = rows
-    .map((row, i) => {
-      const rowY = rowsStartY + i * rowGap;
-      // Estimate the value column width and reserve the rest for the label.
-      const valueWidth = row.value ? row.value.length * valueRowFontSize * 0.6 : 0;
-      const labelPxAvail = w - 64 - valueWidth - (row.value ? rowGutter : 0);
-      const labelMaxChars = Math.max(8, Math.floor(labelPxAvail / (labelFontSize * 0.55)));
-      return `
-      <text x="32" y="${rowY}" class="gb-text" font-size="${labelFontSize}" fill="${theme.textSecondary}">${escapeXml(truncate(row.label, labelMaxChars))}</text>
-      <text x="${w - 32}" y="${rowY}" text-anchor="end" class="gb-mono" font-size="${valueRowFontSize}" fill="${row.color}">${escapeXml(row.value)}</text>
-    `;
+  const cols = Math.max(1, Math.min(3, stats.length));
+  const colW = (w - 2 * PAD) / cols;
+  const statsSvg = stats
+    .slice(0, 3)
+    .map((stat, i) => {
+      const colX = PAD + i * colW;
+      const fittedValue = fitText(stat.value, colW - 18, [26, 22, 19, 16], 0.6);
+      const fittedLabel = fitText(stat.label, colW - 30, [11, 10], 0.55);
+      return (
+        `<rect x="${colX}" y="${STAT_LABEL_Y - 6}" width="6" height="6" rx="2" fill="${p.accent}"/>` +
+        `<text x="${colX + 12}" y="${STAT_LABEL_Y}" class="gb-text" font-size="${fittedLabel.size}" fill="${theme.textMuted}">${escapeXml(fittedLabel.text)}</text>` +
+        `<text x="${colX}" y="${STAT_VALUE_Y}" class="gb-display" font-size="${fittedValue.size}" fill="${theme.textPrimary}">${escapeXml(fittedValue.text)}</text>`
+      );
     })
     .join('');
 
-  const valueFontSize = fitFontSize(value, w - 64, [64, 56, 48, 42, 36, 32]);
-
   return `
     <g transform="translate(${x}, ${y})">
-      <rect width="${w}" height="${h}" rx="24" fill="${theme.tile}" stroke="${theme.tileBorder}" stroke-width="1.5"/>
-      <g transform="translate(28, 28)">
-        <rect width="56" height="56" rx="14" fill="${p.iconBgColor}" fill-opacity="0.18"/>
-        <g transform="translate(15, 15)">${icon}</g>
-      </g>
-      ${cornerIcon ? `<g transform="translate(${w - 56}, 36)">${cornerIcon}</g>` : ''}
-
-      <text x="32" y="148" class="gb-display" font-size="${valueFontSize}" fill="${theme.textPrimary}">${escapeXml(value)}</text>
-      <text x="32" y="186" class="gb-text" font-size="22" fill="${theme.textSecondary}">${escapeXml(label)}</text>
-
-      <line x1="32" y1="${dividerY}" x2="${w - 32}" y2="${dividerY}" stroke="${theme.divider}" stroke-width="1"/>
-
-      ${rowsSvg}
+      <rect width="${w}" height="${h}" rx="24" fill="${theme.tile}" stroke="${theme.tileBorder}" stroke-width="1"/>
+      <text x="${PAD}" y="${TITLE_Y}" class="gb-text-bold" font-size="${fittedTitle.size}" fill="${theme.textPrimary}">${escapeXml(fittedTitle.text)}</text>
+      <text x="${PAD}" y="${CAPTION_Y}" class="gb-text" font-size="${fittedCaption.size}" fill="${theme.textMuted}">${escapeXml(fittedCaption.text)}</text>
+      ${p.chart ?? ''}
+      ${statsSvg}
     </g>
   `;
 }
-

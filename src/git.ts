@@ -21,9 +21,20 @@ export async function commitIfChanged(
   }
 
   await git('commit', '-m', message, '--', ...paths);
-  const sha = (await git('rev-parse', 'HEAD')).trim();
-  await git('push');
 
+  try {
+    await git('push');
+  } catch (err) {
+    // A scheduled run and a manual dispatch can land together; rebase onto
+    // whatever won the race and push again. A second failure is a real error —
+    // and the first is logged so a permissions/protected-branch failure isn't
+    // masked by whatever the retry dies on.
+    console.warn(`git push failed, retrying after pull --rebase: ${(err as Error).message}`);
+    await git('pull', '--rebase');
+    await git('push');
+  }
+
+  const sha = (await git('rev-parse', 'HEAD')).trim();
   return { committed: true, sha };
 }
 

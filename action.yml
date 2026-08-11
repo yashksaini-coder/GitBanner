@@ -1,5 +1,5 @@
 name: GitBanner Profile Card
-description: 'Generate a personalized GitHub stats banner: commits, stars, languages, persona, top projects (SVG + PNG).'
+description: 'Generate an open-source contribution banner: PRs merged into other people''s repos, reviews given, projects shipped to and their reach (SVG + PNG).'
 author: yashksaini-coder
 branding:
   icon: bar-chart-2
@@ -47,14 +47,60 @@ inputs:
     required: false
     default: ''
 
+  tiles:
+    description: |
+      Comma-separated tiles to render, in order. Only the GraphQL queries the
+      selected tiles need are issued — dropping `own-stars`, for example, skips
+      repository pagination entirely.
+
+      Chart cards (tall):
+        merged-prs  PRs merged into repos you don't own, by project popularity
+        activity    external merges per month, trailing 12 months
+        ships-in    languages of the external projects you ship in
+        reviews     code reviews you gave on others' repos
+        projects    distinct external projects you've landed work in
+        issues      issues opened per year, resolution rate
+      Mini tiles (short):
+        biggest-project, merge-rate, own-stars
+
+      Default: merged-prs,activity,ships-in,reviews,projects,issues,
+               biggest-project,merge-rate,own-stars
+    required: false
+    default: ''
+
+  min-merged-prs:
+    description: |
+      How many merged PRs a repository needs before it counts as one you have
+      contributed to. Guards the projects, biggest-project and ships-in tiles
+      against one-off drive-by PRs — a single PR into a 55k-star tutorial
+      repo would otherwise dominate your project claims.
+      Set to 1 to count every repository you have ever landed a PR in.
+    required: false
+    default: '2'
+
   ignore-languages:
     description: |
-      Comma-separated list of language names to exclude from the
-      "Languages Used" count, the top-languages list, and the
-      "Go-to language" pick. Matched case-insensitively. Useful for
-      hiding auto-generated content like "Jupyter Notebook" outputs
-      or vendored code that GitHub's detection counts but you don't
-      write.
+      Comma-separated language names to hide from the ships-in language tiles,
+      matched case-insensitively. Linguist already excludes vendored and
+      generated files automatically; use this for languages you legitimately
+      ship but don't want leading your card (e.g. `HTML,CSS`).
+    required: false
+    default: ''
+
+  since:
+    description: |
+      Scope the card to work done on or after this date (YYYY-MM-DD, UTC).
+      Combine with `until` for a weekly or monthly card. Omit both for all time.
+      GitHub caps contribution windows at one year.
+    required: false
+    default: ''
+
+  until:
+    description: |
+      Scope the card to work done on or before this date (YYYY-MM-DD, UTC,
+      inclusive of the whole day). Requires `since` — contribution windows
+      are capped at one year, so an open-ended "everything before" range
+      cannot be answered honestly.
     required: false
     default: ''
 

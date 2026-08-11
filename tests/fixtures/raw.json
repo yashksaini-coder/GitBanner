@@ -1,273 +1,2912 @@
 {
   "profile": {
     "login": "yashksaini-coder",
-    "name": "Yash K Saini",
-    "createdAt": "2022-01-15T00:00:00Z",
-    "followers": 245,
-    "following": 87
+    "name": "Yash Kumar Saini",
+    "createdAt": "2022-10-13T13:30:41Z",
+    "followers": 326,
+    "following": 156
   },
-  "repos": [
+  "prTotals": {
+    "opened": 101,
+    "merged": 85,
+    "open": 7
+  },
+  "issueTotals": {
+    "opened": 74,
+    "closed": 61
+  },
+  "mergedPrs": [
     {
-      "name": "yashksaini-coder",
-      "isPrivate": false,
-      "isFork": false,
-      "createdAt": "2023-06-01T00:00:00Z",
-      "pushedAt": "2026-04-01T00:00:00Z",
-      "stargazerCount": 12,
-      "forkCount": 2,
-      "primaryLanguage": "TypeScript",
-      "languages": [
-        {
-          "name": "TypeScript",
-          "size": 800000,
-          "color": "#3178c6"
-        },
-        {
-          "name": "Python",
-          "size": 80000,
-          "color": "#3572a5"
-        }
-      ],
-      "userCommits": 1000
+      "mergedAt": "2026-08-08T13:10:26Z",
+      "repo": {
+        "nameWithOwner": "yashksaini-coder/portfolio",
+        "owner": "yashksaini-coder",
+        "stars": 1,
+        "isPrivate": true,
+        "languages": [
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 100000
+          },
+          {
+            "name": "MDX",
+            "color": "#fcb32c",
+            "size": 30000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 12000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 6000
+          }
+        ]
+      }
     },
     {
-      "name": "Leetcode",
-      "isPrivate": false,
-      "isFork": false,
-      "createdAt": "2024-09-01T00:00:00Z",
-      "pushedAt": "2025-12-22T00:00:00Z",
-      "stargazerCount": 18,
-      "forkCount": 4,
-      "primaryLanguage": "Python",
-      "languages": [
-        {
-          "name": "Python",
-          "size": 600000,
-          "color": "#3572a5"
-        },
-        {
-          "name": "Jupyter Notebook",
-          "size": 200000,
-          "color": "#DA5B0B"
-        }
-      ],
-      "userCommits": 541
+      "mergedAt": "2026-07-30T16:04:39Z",
+      "repo": {
+        "nameWithOwner": "yashksaini-coder/portfolio",
+        "owner": "yashksaini-coder",
+        "stars": 1,
+        "isPrivate": true,
+        "languages": [
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 100000
+          },
+          {
+            "name": "MDX",
+            "color": "#fcb32c",
+            "size": 30000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 12000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 6000
+          }
+        ]
+      }
     },
     {
-      "name": "py-libp2p",
-      "isPrivate": false,
-      "isFork": false,
-      "createdAt": "2024-02-10T00:00:00Z",
-      "pushedAt": "2025-08-01T00:00:00Z",
-      "stargazerCount": 4,
-      "forkCount": 1,
-      "primaryLanguage": "Python",
-      "languages": [
-        {
-          "name": "Python",
-          "size": 400000,
-          "color": "#3572a5"
-        }
-      ],
-      "userCommits": 273
+      "mergedAt": "2026-07-16T15:55:19Z",
+      "repo": {
+        "nameWithOwner": "libp2p/py-libp2p",
+        "owner": "libp2p",
+        "stars": 621,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 100000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 30000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 12000
+          },
+          {
+            "name": "PowerShell",
+            "color": "#012456",
+            "size": 6000
+          },
+          {
+            "name": "Makefile",
+            "color": "#427819",
+            "size": 2000
+          }
+        ]
+      }
     },
     {
-      "name": "Leetcode-Journal",
-      "isPrivate": false,
-      "isFork": false,
-      "createdAt": "2024-04-01T00:00:00Z",
-      "pushedAt": "2025-03-22T00:00:00Z",
-      "stargazerCount": 26,
-      "forkCount": 5,
-      "primaryLanguage": "TypeScript",
-      "languages": [
-        {
-          "name": "TypeScript",
-          "size": 300000,
-          "color": "#3178c6"
-        },
-        {
-          "name": "JavaScript",
-          "size": 50000,
-          "color": "#f1e05a"
-        },
-        {
-          "name": "HTML",
-          "size": 30000,
-          "color": "#e34c26"
-        }
-      ],
-      "userCommits": 145
+      "mergedAt": "2026-07-16T13:27:58Z",
+      "repo": {
+        "nameWithOwner": "libp2p/py-libp2p",
+        "owner": "libp2p",
+        "stars": 621,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 100000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 30000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 12000
+          },
+          {
+            "name": "PowerShell",
+            "color": "#012456",
+            "size": 6000
+          },
+          {
+            "name": "Makefile",
+            "color": "#427819",
+            "size": 2000
+          }
+        ]
+      }
     },
     {
-      "name": "Prodigy-InfoTech",
-      "isPrivate": false,
-      "isFork": false,
-      "createdAt": "2024-06-01T00:00:00Z",
-      "pushedAt": "2025-02-01T00:00:00Z",
-      "stargazerCount": 25,
-      "forkCount": 8,
-      "primaryLanguage": "C++",
-      "languages": [
-        {
-          "name": "C++",
-          "size": 200000,
-          "color": "#f34b7d"
-        },
-        {
-          "name": "Java",
-          "size": 50000,
-          "color": "#b07219"
-        }
-      ],
-      "userCommits": 98
+      "mergedAt": "2026-07-06T13:52:19Z",
+      "repo": {
+        "nameWithOwner": "pie-314/trx",
+        "owner": "pie-314",
+        "stars": 42,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Rust",
+            "color": "#dea584",
+            "size": 100000
+          },
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 30000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 12000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 6000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 2000
+          }
+        ]
+      }
     },
     {
-      "name": "CodePen",
-      "isPrivate": false,
-      "isFork": false,
-      "createdAt": "2024-03-01T00:00:00Z",
-      "pushedAt": "2025-01-15T00:00:00Z",
-      "stargazerCount": 23,
-      "forkCount": 3,
-      "primaryLanguage": "HTML",
-      "languages": [
-        {
-          "name": "HTML",
-          "size": 150000,
-          "color": "#e34c26"
-        },
-        {
-          "name": "CSS",
-          "size": 80000,
-          "color": "#563d7c"
-        },
-        {
-          "name": "JavaScript",
-          "size": 40000,
-          "color": "#f1e05a"
-        }
-      ],
-      "userCommits": 71
+      "mergedAt": "2026-06-28T16:42:48Z",
+      "repo": {
+        "nameWithOwner": "libp2p/py-libp2p",
+        "owner": "libp2p",
+        "stars": 621,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 100000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 30000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 12000
+          },
+          {
+            "name": "PowerShell",
+            "color": "#012456",
+            "size": 6000
+          },
+          {
+            "name": "Makefile",
+            "color": "#427819",
+            "size": 2000
+          }
+        ]
+      }
     },
     {
-      "name": "C_coding",
-      "isPrivate": false,
-      "isFork": false,
-      "createdAt": "2023-01-01T00:00:00Z",
-      "pushedAt": "2024-08-23T00:00:00Z",
-      "stargazerCount": 5,
-      "forkCount": 1,
-      "primaryLanguage": "C",
-      "languages": [
-        {
-          "name": "C",
-          "size": 250000,
-          "color": "#555555"
-        }
-      ],
-      "userCommits": 88
+      "mergedAt": "2026-06-23T12:30:06Z",
+      "repo": {
+        "nameWithOwner": "yashksaini-coder/portfolio",
+        "owner": "yashksaini-coder",
+        "stars": 1,
+        "isPrivate": true,
+        "languages": [
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 100000
+          },
+          {
+            "name": "MDX",
+            "color": "#fcb32c",
+            "size": 30000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 12000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 6000
+          }
+        ]
+      }
     },
     {
-      "name": "Turbine_Q1_26",
-      "isPrivate": false,
-      "isFork": false,
-      "createdAt": "2026-01-25T00:00:00Z",
-      "pushedAt": "2026-04-20T00:00:00Z",
-      "stargazerCount": 3,
-      "forkCount": 0,
-      "primaryLanguage": "Rust",
-      "languages": [
-        {
-          "name": "Rust",
-          "size": 180000,
-          "color": "#dea584"
-        },
-        {
-          "name": "Cairo",
-          "size": 40000,
-          "color": "#ff4a48"
-        }
-      ],
-      "userCommits": 84
+      "mergedAt": "2026-05-26T17:51:17Z",
+      "repo": {
+        "nameWithOwner": "pie-314/trx",
+        "owner": "pie-314",
+        "stars": 42,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Rust",
+            "color": "#dea584",
+            "size": 100000
+          },
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 30000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 12000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 6000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 2000
+          }
+        ]
+      }
     },
     {
-      "name": "lua-experiments",
-      "isPrivate": false,
-      "isFork": false,
-      "createdAt": "2024-12-01T00:00:00Z",
-      "pushedAt": "2025-03-12T00:00:00Z",
-      "stargazerCount": 2,
-      "forkCount": 0,
-      "primaryLanguage": "Lua",
-      "languages": [
-        {
-          "name": "Lua",
-          "size": 30000,
-          "color": "#000080"
-        }
-      ],
-      "userCommits": 21
+      "mergedAt": "2026-05-26T17:51:09Z",
+      "repo": {
+        "nameWithOwner": "pie-314/trx",
+        "owner": "pie-314",
+        "stars": 42,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Rust",
+            "color": "#dea584",
+            "size": 100000
+          },
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 30000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 12000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 6000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 2000
+          }
+        ]
+      }
     },
     {
-      "name": "starter-fork",
-      "isPrivate": false,
-      "isFork": true,
-      "createdAt": "2024-05-01T00:00:00Z",
-      "pushedAt": "2024-05-02T00:00:00Z",
-      "stargazerCount": 0,
-      "forkCount": 0,
-      "primaryLanguage": "JavaScript",
-      "languages": [
-        {
-          "name": "JavaScript",
-          "size": 1000,
-          "color": "#f1e05a"
-        }
-      ],
-      "userCommits": 0
+      "mergedAt": "2026-05-26T17:50:59Z",
+      "repo": {
+        "nameWithOwner": "pie-314/trx",
+        "owner": "pie-314",
+        "stars": 42,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Rust",
+            "color": "#dea584",
+            "size": 100000
+          },
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 30000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 12000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 6000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2026-05-26T17:50:36Z",
+      "repo": {
+        "nameWithOwner": "pie-314/trx",
+        "owner": "pie-314",
+        "stars": 42,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Rust",
+            "color": "#dea584",
+            "size": 100000
+          },
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 30000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 12000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 6000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2026-05-08T12:07:11Z",
+      "repo": {
+        "nameWithOwner": "Tracer-Cloud/opensre",
+        "owner": "Tracer-Cloud",
+        "stars": 10253,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 100000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 30000
+          },
+          {
+            "name": "PowerShell",
+            "color": "#012456",
+            "size": 12000
+          },
+          {
+            "name": "HCL",
+            "color": "#844FBA",
+            "size": 6000
+          },
+          {
+            "name": "Makefile",
+            "color": "#427819",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2026-05-08T10:38:17Z",
+      "repo": {
+        "nameWithOwner": "Tracer-Cloud/opensre",
+        "owner": "Tracer-Cloud",
+        "stars": 10253,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 100000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 30000
+          },
+          {
+            "name": "PowerShell",
+            "color": "#012456",
+            "size": 12000
+          },
+          {
+            "name": "HCL",
+            "color": "#844FBA",
+            "size": 6000
+          },
+          {
+            "name": "Makefile",
+            "color": "#427819",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2026-05-08T06:17:47Z",
+      "repo": {
+        "nameWithOwner": "Tracer-Cloud/opensre",
+        "owner": "Tracer-Cloud",
+        "stars": 10253,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 100000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 30000
+          },
+          {
+            "name": "PowerShell",
+            "color": "#012456",
+            "size": 12000
+          },
+          {
+            "name": "HCL",
+            "color": "#844FBA",
+            "size": 6000
+          },
+          {
+            "name": "Makefile",
+            "color": "#427819",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2026-05-08T05:59:20Z",
+      "repo": {
+        "nameWithOwner": "Tracer-Cloud/opensre",
+        "owner": "Tracer-Cloud",
+        "stars": 10253,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 100000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 30000
+          },
+          {
+            "name": "PowerShell",
+            "color": "#012456",
+            "size": 12000
+          },
+          {
+            "name": "HCL",
+            "color": "#844FBA",
+            "size": 6000
+          },
+          {
+            "name": "Makefile",
+            "color": "#427819",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2026-05-07T13:59:29Z",
+      "repo": {
+        "nameWithOwner": "Tracer-Cloud/opensre",
+        "owner": "Tracer-Cloud",
+        "stars": 10253,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 100000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 30000
+          },
+          {
+            "name": "PowerShell",
+            "color": "#012456",
+            "size": 12000
+          },
+          {
+            "name": "HCL",
+            "color": "#844FBA",
+            "size": 6000
+          },
+          {
+            "name": "Makefile",
+            "color": "#427819",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2026-04-22T15:49:21Z",
+      "repo": {
+        "nameWithOwner": "libp2p/py-libp2p",
+        "owner": "libp2p",
+        "stars": 621,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 100000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 30000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 12000
+          },
+          {
+            "name": "PowerShell",
+            "color": "#012456",
+            "size": 6000
+          },
+          {
+            "name": "Makefile",
+            "color": "#427819",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2026-04-22T14:59:42Z",
+      "repo": {
+        "nameWithOwner": "libp2p/py-libp2p",
+        "owner": "libp2p",
+        "stars": 621,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 100000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 30000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 12000
+          },
+          {
+            "name": "PowerShell",
+            "color": "#012456",
+            "size": 6000
+          },
+          {
+            "name": "Makefile",
+            "color": "#427819",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2026-03-11T00:08:44Z",
+      "repo": {
+        "nameWithOwner": "Nano-Collective/nanocoder",
+        "owner": "Nano-Collective",
+        "stars": 2334,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 100000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 30000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 12000
+          },
+          {
+            "name": "HTML",
+            "color": "#e34c26",
+            "size": 6000
+          },
+          {
+            "name": "Nix",
+            "color": "#7e7eff",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2026-03-10T00:15:10Z",
+      "repo": {
+        "nameWithOwner": "Nano-Collective/nanocoder",
+        "owner": "Nano-Collective",
+        "stars": 2334,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 100000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 30000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 12000
+          },
+          {
+            "name": "HTML",
+            "color": "#e34c26",
+            "size": 6000
+          },
+          {
+            "name": "Nix",
+            "color": "#7e7eff",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2026-02-24T11:26:00Z",
+      "repo": {
+        "nameWithOwner": "yashksaini-coder/portfolio",
+        "owner": "yashksaini-coder",
+        "stars": 1,
+        "isPrivate": true,
+        "languages": [
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 100000
+          },
+          {
+            "name": "MDX",
+            "color": "#fcb32c",
+            "size": 30000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 12000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 6000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2026-02-23T21:44:48Z",
+      "repo": {
+        "nameWithOwner": "yashksaini-coder/portfolio",
+        "owner": "yashksaini-coder",
+        "stars": 1,
+        "isPrivate": true,
+        "languages": [
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 100000
+          },
+          {
+            "name": "MDX",
+            "color": "#fcb32c",
+            "size": 30000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 12000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 6000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2026-02-22T22:08:21Z",
+      "repo": {
+        "nameWithOwner": "Nano-Collective/nanocoder",
+        "owner": "Nano-Collective",
+        "stars": 2334,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 100000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 30000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 12000
+          },
+          {
+            "name": "HTML",
+            "color": "#e34c26",
+            "size": 6000
+          },
+          {
+            "name": "Nix",
+            "color": "#7e7eff",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2026-02-17T16:54:25Z",
+      "repo": {
+        "nameWithOwner": "ratatui/awesome-ratatui",
+        "owner": "ratatui",
+        "stars": 1930,
+        "isPrivate": false,
+        "languages": []
+      }
+    },
+    {
+      "mergedAt": "2025-12-23T10:46:27Z",
+      "repo": {
+        "nameWithOwner": "Nano-Collective/nanocoder",
+        "owner": "Nano-Collective",
+        "stars": 2334,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 100000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 30000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 12000
+          },
+          {
+            "name": "HTML",
+            "color": "#e34c26",
+            "size": 6000
+          },
+          {
+            "name": "Nix",
+            "color": "#7e7eff",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2025-12-23T10:45:47Z",
+      "repo": {
+        "nameWithOwner": "Nano-Collective/nanocoder",
+        "owner": "Nano-Collective",
+        "stars": 2334,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 100000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 30000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 12000
+          },
+          {
+            "name": "HTML",
+            "color": "#e34c26",
+            "size": 6000
+          },
+          {
+            "name": "Nix",
+            "color": "#7e7eff",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2025-07-06T06:10:22Z",
+      "repo": {
+        "nameWithOwner": "Arindam200/awesome-ai-apps",
+        "owner": "Arindam200",
+        "stars": 13353,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 100000
+          },
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 30000
+          },
+          {
+            "name": "Jupyter Notebook",
+            "color": "#DA5B0B",
+            "size": 12000
+          },
+          {
+            "name": "HTML",
+            "color": "#e34c26",
+            "size": 6000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2025-06-28T21:21:28Z",
+      "repo": {
+        "nameWithOwner": "yashksaini-coder/HackQuery",
+        "owner": "yashksaini-coder",
+        "stars": 0,
+        "isPrivate": true,
+        "languages": [
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 100000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 30000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2025-06-28T20:42:08Z",
+      "repo": {
+        "nameWithOwner": "yashksaini-coder/HackQuery",
+        "owner": "yashksaini-coder",
+        "stars": 0,
+        "isPrivate": true,
+        "languages": [
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 100000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 30000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2025-06-28T19:55:36Z",
+      "repo": {
+        "nameWithOwner": "yashksaini-coder/HackQuery",
+        "owner": "yashksaini-coder",
+        "stars": 0,
+        "isPrivate": true,
+        "languages": [
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 100000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 30000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2025-06-28T19:29:35Z",
+      "repo": {
+        "nameWithOwner": "yashksaini-coder/HackQuery",
+        "owner": "yashksaini-coder",
+        "stars": 0,
+        "isPrivate": true,
+        "languages": [
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 100000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 30000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2025-06-28T19:15:12Z",
+      "repo": {
+        "nameWithOwner": "yashksaini-coder/HackQuery",
+        "owner": "yashksaini-coder",
+        "stars": 0,
+        "isPrivate": true,
+        "languages": [
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 100000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 30000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2025-06-22T15:46:16Z",
+      "repo": {
+        "nameWithOwner": "vanshchauhan21/CryptoTracker",
+        "owner": "vanshchauhan21",
+        "stars": 34,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 100000
+          },
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 30000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 12000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2025-06-18T18:15:06Z",
+      "repo": {
+        "nameWithOwner": "vanshchauhan21/CryptoTracker",
+        "owner": "vanshchauhan21",
+        "stars": 34,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 100000
+          },
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 30000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 12000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2025-04-04T13:55:15Z",
+      "repo": {
+        "nameWithOwner": "yashksaini-coder/Leetcode-Journal",
+        "owner": "yashksaini-coder",
+        "stars": 26,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 100000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 30000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 12000
+          },
+          {
+            "name": "Dockerfile",
+            "color": "#384d54",
+            "size": 6000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2025-04-04T06:26:35Z",
+      "repo": {
+        "nameWithOwner": "yashksaini-coder/Leetcode-Journal",
+        "owner": "yashksaini-coder",
+        "stars": 26,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 100000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 30000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 12000
+          },
+          {
+            "name": "Dockerfile",
+            "color": "#384d54",
+            "size": 6000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2025-03-15T20:13:37Z",
+      "repo": {
+        "nameWithOwner": "yashksaini-coder/Leetcode-Journal",
+        "owner": "yashksaini-coder",
+        "stars": 26,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 100000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 30000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 12000
+          },
+          {
+            "name": "Dockerfile",
+            "color": "#384d54",
+            "size": 6000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2025-03-03T16:01:40Z",
+      "repo": {
+        "nameWithOwner": "yashksaini-coder/Leetcode-Journal",
+        "owner": "yashksaini-coder",
+        "stars": 26,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 100000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 30000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 12000
+          },
+          {
+            "name": "Dockerfile",
+            "color": "#384d54",
+            "size": 6000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2025-03-03T14:39:26Z",
+      "repo": {
+        "nameWithOwner": "yashksaini-coder/Leetcode-Journal",
+        "owner": "yashksaini-coder",
+        "stars": 26,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 100000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 30000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 12000
+          },
+          {
+            "name": "Dockerfile",
+            "color": "#384d54",
+            "size": 6000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-12-19T10:10:53Z",
+      "repo": {
+        "nameWithOwner": "daytonaio/daytona",
+        "owner": "daytonaio",
+        "stars": 72017,
+        "isPrivate": false,
+        "languages": []
+      }
+    },
+    {
+      "mergedAt": "2024-11-10T12:07:31Z",
+      "repo": {
+        "nameWithOwner": "sanjay-kv/Open-source-Practice",
+        "owner": "sanjay-kv",
+        "stars": 933,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Makefile",
+            "color": "#427819",
+            "size": 100000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-11-10T11:08:14Z",
+      "repo": {
+        "nameWithOwner": "vanshchauhan21/CryptoTracker",
+        "owner": "vanshchauhan21",
+        "stars": 34,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 100000
+          },
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 30000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 12000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-11-10T09:22:22Z",
+      "repo": {
+        "nameWithOwner": "vanshchauhan21/CryptoTracker",
+        "owner": "vanshchauhan21",
+        "stars": 34,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 100000
+          },
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 30000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 12000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-11-10T09:21:11Z",
+      "repo": {
+        "nameWithOwner": "vanshchauhan21/CryptoTracker",
+        "owner": "vanshchauhan21",
+        "stars": 34,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 100000
+          },
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 30000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 12000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-11-10T08:56:23Z",
+      "repo": {
+        "nameWithOwner": "UTSAVS26/PySnippets",
+        "owner": "UTSAVS26",
+        "stars": 42,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 100000
+          },
+          {
+            "name": "HTML",
+            "color": "#e34c26",
+            "size": 30000
+          },
+          {
+            "name": "Jupyter Notebook",
+            "color": "#DA5B0B",
+            "size": 12000
+          },
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 6000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-11-10T08:55:38Z",
+      "repo": {
+        "nameWithOwner": "UTSAVS26/PySnippets",
+        "owner": "UTSAVS26",
+        "stars": 42,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 100000
+          },
+          {
+            "name": "HTML",
+            "color": "#e34c26",
+            "size": 30000
+          },
+          {
+            "name": "Jupyter Notebook",
+            "color": "#DA5B0B",
+            "size": 12000
+          },
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 6000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-11-10T08:54:48Z",
+      "repo": {
+        "nameWithOwner": "UTSAVS26/PySnippets",
+        "owner": "UTSAVS26",
+        "stars": 42,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 100000
+          },
+          {
+            "name": "HTML",
+            "color": "#e34c26",
+            "size": 30000
+          },
+          {
+            "name": "Jupyter Notebook",
+            "color": "#DA5B0B",
+            "size": 12000
+          },
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 6000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-11-10T08:52:43Z",
+      "repo": {
+        "nameWithOwner": "UTSAVS26/PySnippets",
+        "owner": "UTSAVS26",
+        "stars": 42,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 100000
+          },
+          {
+            "name": "HTML",
+            "color": "#e34c26",
+            "size": 30000
+          },
+          {
+            "name": "Jupyter Notebook",
+            "color": "#DA5B0B",
+            "size": 12000
+          },
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 6000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-11-10T08:51:50Z",
+      "repo": {
+        "nameWithOwner": "UTSAVS26/PySnippets",
+        "owner": "UTSAVS26",
+        "stars": 42,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 100000
+          },
+          {
+            "name": "HTML",
+            "color": "#e34c26",
+            "size": 30000
+          },
+          {
+            "name": "Jupyter Notebook",
+            "color": "#DA5B0B",
+            "size": 12000
+          },
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 6000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-11-08T14:37:21Z",
+      "repo": {
+        "nameWithOwner": "AmateursLeague/sneaky-package",
+        "owner": "AmateursLeague",
+        "stars": 26,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 100000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 30000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-11-06T13:20:06Z",
+      "repo": {
+        "nameWithOwner": "ajay-dhangar/algo",
+        "owner": "ajay-dhangar",
+        "stars": 106,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 100000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 30000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 12000
+          },
+          {
+            "name": "MDX",
+            "color": "#fcb32c",
+            "size": 6000
+          },
+          {
+            "name": "Batchfile",
+            "color": "#C1F12E",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-11-04T14:21:24Z",
+      "repo": {
+        "nameWithOwner": "UTSAVS26/PyVerse",
+        "owner": "UTSAVS26",
+        "stars": 194,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Jupyter Notebook",
+            "color": "#DA5B0B",
+            "size": 100000
+          },
+          {
+            "name": "HTML",
+            "color": "#e34c26",
+            "size": 30000
+          },
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 12000
+          },
+          {
+            "name": "Solidity",
+            "color": "#AA6746",
+            "size": 6000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-11-04T03:08:56Z",
+      "repo": {
+        "nameWithOwner": "UTSAVS26/PyVerse",
+        "owner": "UTSAVS26",
+        "stars": 194,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Jupyter Notebook",
+            "color": "#DA5B0B",
+            "size": 100000
+          },
+          {
+            "name": "HTML",
+            "color": "#e34c26",
+            "size": 30000
+          },
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 12000
+          },
+          {
+            "name": "Solidity",
+            "color": "#AA6746",
+            "size": 6000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-11-03T15:47:35Z",
+      "repo": {
+        "nameWithOwner": "ajay-dhangar/algo",
+        "owner": "ajay-dhangar",
+        "stars": 106,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 100000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 30000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 12000
+          },
+          {
+            "name": "MDX",
+            "color": "#fcb32c",
+            "size": 6000
+          },
+          {
+            "name": "Batchfile",
+            "color": "#C1F12E",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-11-03T13:51:24Z",
+      "repo": {
+        "nameWithOwner": "UTSAVS26/PyVerse",
+        "owner": "UTSAVS26",
+        "stars": 194,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Jupyter Notebook",
+            "color": "#DA5B0B",
+            "size": 100000
+          },
+          {
+            "name": "HTML",
+            "color": "#e34c26",
+            "size": 30000
+          },
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 12000
+          },
+          {
+            "name": "Solidity",
+            "color": "#AA6746",
+            "size": 6000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-11-03T13:50:43Z",
+      "repo": {
+        "nameWithOwner": "UTSAVS26/PyVerse",
+        "owner": "UTSAVS26",
+        "stars": 194,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Jupyter Notebook",
+            "color": "#DA5B0B",
+            "size": 100000
+          },
+          {
+            "name": "HTML",
+            "color": "#e34c26",
+            "size": 30000
+          },
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 12000
+          },
+          {
+            "name": "Solidity",
+            "color": "#AA6746",
+            "size": 6000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-11-03T09:56:55Z",
+      "repo": {
+        "nameWithOwner": "AmateursLeague/sneaky-package",
+        "owner": "AmateursLeague",
+        "stars": 26,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 100000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 30000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-11-03T04:00:49Z",
+      "repo": {
+        "nameWithOwner": "UppuluriKalyani/ML-Nexus",
+        "owner": "UppuluriKalyani",
+        "stars": 84,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Jupyter Notebook",
+            "color": "#DA5B0B",
+            "size": 100000
+          },
+          {
+            "name": "HTML",
+            "color": "#e34c26",
+            "size": 30000
+          },
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 12000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 6000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-11-02T11:14:48Z",
+      "repo": {
+        "nameWithOwner": "AmateursLeague/sneaky-package",
+        "owner": "AmateursLeague",
+        "stars": 26,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 100000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 30000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-11-02T10:57:48Z",
+      "repo": {
+        "nameWithOwner": "ajay-dhangar/algo",
+        "owner": "ajay-dhangar",
+        "stars": 106,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 100000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 30000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 12000
+          },
+          {
+            "name": "MDX",
+            "color": "#fcb32c",
+            "size": 6000
+          },
+          {
+            "name": "Batchfile",
+            "color": "#C1F12E",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-11-02T10:33:48Z",
+      "repo": {
+        "nameWithOwner": "AlgoGenesis/C",
+        "owner": "AlgoGenesis",
+        "stars": 129,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "C",
+            "color": "#555555",
+            "size": 100000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 30000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 12000
+          },
+          {
+            "name": "Makefile",
+            "color": "#427819",
+            "size": 6000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-11-02T03:27:00Z",
+      "repo": {
+        "nameWithOwner": "ajay-dhangar/algo",
+        "owner": "ajay-dhangar",
+        "stars": 106,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 100000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 30000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 12000
+          },
+          {
+            "name": "MDX",
+            "color": "#fcb32c",
+            "size": 6000
+          },
+          {
+            "name": "Batchfile",
+            "color": "#C1F12E",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-11-01T10:38:10Z",
+      "repo": {
+        "nameWithOwner": "AmateursLeague/sneaky-package",
+        "owner": "AmateursLeague",
+        "stars": 26,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 100000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 30000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-10-31T13:17:27Z",
+      "repo": {
+        "nameWithOwner": "UTSAVS26/PyVerse",
+        "owner": "UTSAVS26",
+        "stars": 194,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Jupyter Notebook",
+            "color": "#DA5B0B",
+            "size": 100000
+          },
+          {
+            "name": "HTML",
+            "color": "#e34c26",
+            "size": 30000
+          },
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 12000
+          },
+          {
+            "name": "Solidity",
+            "color": "#AA6746",
+            "size": 6000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-10-30T13:59:53Z",
+      "repo": {
+        "nameWithOwner": "AlgoGenesis/C",
+        "owner": "AlgoGenesis",
+        "stars": 129,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "C",
+            "color": "#555555",
+            "size": 100000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 30000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 12000
+          },
+          {
+            "name": "Makefile",
+            "color": "#427819",
+            "size": 6000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-10-30T04:19:04Z",
+      "repo": {
+        "nameWithOwner": "ajay-dhangar/algo",
+        "owner": "ajay-dhangar",
+        "stars": 106,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "TypeScript",
+            "color": "#3178c6",
+            "size": 100000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 30000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 12000
+          },
+          {
+            "name": "MDX",
+            "color": "#fcb32c",
+            "size": 6000
+          },
+          {
+            "name": "Batchfile",
+            "color": "#C1F12E",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-10-29T13:51:04Z",
+      "repo": {
+        "nameWithOwner": "AlgoGenesis/C",
+        "owner": "AlgoGenesis",
+        "stars": 129,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "C",
+            "color": "#555555",
+            "size": 100000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 30000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 12000
+          },
+          {
+            "name": "Makefile",
+            "color": "#427819",
+            "size": 6000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-10-29T02:30:44Z",
+      "repo": {
+        "nameWithOwner": "UppuluriKalyani/ML-Nexus",
+        "owner": "UppuluriKalyani",
+        "stars": 84,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Jupyter Notebook",
+            "color": "#DA5B0B",
+            "size": 100000
+          },
+          {
+            "name": "HTML",
+            "color": "#e34c26",
+            "size": 30000
+          },
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 12000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 6000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-10-27T11:48:55Z",
+      "repo": {
+        "nameWithOwner": "UppuluriKalyani/ML-Nexus",
+        "owner": "UppuluriKalyani",
+        "stars": 84,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Jupyter Notebook",
+            "color": "#DA5B0B",
+            "size": 100000
+          },
+          {
+            "name": "HTML",
+            "color": "#e34c26",
+            "size": 30000
+          },
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 12000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 6000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-10-27T10:30:57Z",
+      "repo": {
+        "nameWithOwner": "AmateursLeague/sneaky-package",
+        "owner": "AmateursLeague",
+        "stars": 26,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 100000
+          },
+          {
+            "name": "Shell",
+            "color": "#89e051",
+            "size": 30000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-10-27T07:57:42Z",
+      "repo": {
+        "nameWithOwner": "AlgoGenesis/C",
+        "owner": "AlgoGenesis",
+        "stars": 129,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "C",
+            "color": "#555555",
+            "size": 100000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 30000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 12000
+          },
+          {
+            "name": "Makefile",
+            "color": "#427819",
+            "size": 6000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-10-26T05:21:40Z",
+      "repo": {
+        "nameWithOwner": "UppuluriKalyani/ML-Nexus",
+        "owner": "UppuluriKalyani",
+        "stars": 84,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Jupyter Notebook",
+            "color": "#DA5B0B",
+            "size": 100000
+          },
+          {
+            "name": "HTML",
+            "color": "#e34c26",
+            "size": 30000
+          },
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 12000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 6000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-10-21T02:43:49Z",
+      "repo": {
+        "nameWithOwner": "UppuluriKalyani/ML-Nexus",
+        "owner": "UppuluriKalyani",
+        "stars": 84,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Jupyter Notebook",
+            "color": "#DA5B0B",
+            "size": 100000
+          },
+          {
+            "name": "HTML",
+            "color": "#e34c26",
+            "size": 30000
+          },
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 12000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 6000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 2000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-10-17T09:37:23Z",
+      "repo": {
+        "nameWithOwner": "AlgoGenesis/C",
+        "owner": "AlgoGenesis",
+        "stars": 129,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "C",
+            "color": "#555555",
+            "size": 100000
+          },
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 30000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 12000
+          },
+          {
+            "name": "Makefile",
+            "color": "#427819",
+            "size": 6000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-08-16T10:34:05Z",
+      "repo": {
+        "nameWithOwner": "yashksaini-coder/Javascript-30Days",
+        "owner": "yashksaini-coder",
+        "stars": 14,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 100000
+          },
+          {
+            "name": "HTML",
+            "color": "#e34c26",
+            "size": 30000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 12000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-08-16T10:33:07Z",
+      "repo": {
+        "nameWithOwner": "yashksaini-coder/Javascript-30Days",
+        "owner": "yashksaini-coder",
+        "stars": 14,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 100000
+          },
+          {
+            "name": "HTML",
+            "color": "#e34c26",
+            "size": 30000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 12000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-08-16T09:48:04Z",
+      "repo": {
+        "nameWithOwner": "yashksaini-coder/Javascript-30Days",
+        "owner": "yashksaini-coder",
+        "stars": 14,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 100000
+          },
+          {
+            "name": "HTML",
+            "color": "#e34c26",
+            "size": 30000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 12000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-08-16T09:43:35Z",
+      "repo": {
+        "nameWithOwner": "yashksaini-coder/Javascript-30Days",
+        "owner": "yashksaini-coder",
+        "stars": 14,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 100000
+          },
+          {
+            "name": "HTML",
+            "color": "#e34c26",
+            "size": 30000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 12000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-07-25T06:18:14Z",
+      "repo": {
+        "nameWithOwner": "yashksaini-coder/Zomato-Data-Analysis",
+        "owner": "yashksaini-coder",
+        "stars": 20,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Jupyter Notebook",
+            "color": "#DA5B0B",
+            "size": 100000
+          },
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 30000
+          },
+          {
+            "name": "Dockerfile",
+            "color": "#384d54",
+            "size": 12000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-07-24T09:44:43Z",
+      "repo": {
+        "nameWithOwner": "yashksaini-coder/Zomato-Data-Analysis",
+        "owner": "yashksaini-coder",
+        "stars": 20,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Jupyter Notebook",
+            "color": "#DA5B0B",
+            "size": 100000
+          },
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 30000
+          },
+          {
+            "name": "Dockerfile",
+            "color": "#384d54",
+            "size": 12000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-07-24T09:35:08Z",
+      "repo": {
+        "nameWithOwner": "yashksaini-coder/Zomato-Data-Analysis",
+        "owner": "yashksaini-coder",
+        "stars": 20,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Jupyter Notebook",
+            "color": "#DA5B0B",
+            "size": 100000
+          },
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 30000
+          },
+          {
+            "name": "Dockerfile",
+            "color": "#384d54",
+            "size": 12000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-07-24T09:05:24Z",
+      "repo": {
+        "nameWithOwner": "yashksaini-coder/Zomato-Data-Analysis",
+        "owner": "yashksaini-coder",
+        "stars": 20,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Jupyter Notebook",
+            "color": "#DA5B0B",
+            "size": 100000
+          },
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 30000
+          },
+          {
+            "name": "Dockerfile",
+            "color": "#384d54",
+            "size": 12000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-07-23T09:31:56Z",
+      "repo": {
+        "nameWithOwner": "yashksaini-coder/Zomato-Data-Analysis",
+        "owner": "yashksaini-coder",
+        "stars": 20,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "Jupyter Notebook",
+            "color": "#DA5B0B",
+            "size": 100000
+          },
+          {
+            "name": "Python",
+            "color": "#3572A5",
+            "size": 30000
+          },
+          {
+            "name": "Dockerfile",
+            "color": "#384d54",
+            "size": 12000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-07-21T18:36:10Z",
+      "repo": {
+        "nameWithOwner": "yashksaini-coder/Javascript-30Days",
+        "owner": "yashksaini-coder",
+        "stars": 14,
+        "isPrivate": false,
+        "languages": [
+          {
+            "name": "JavaScript",
+            "color": "#f1e05a",
+            "size": 100000
+          },
+          {
+            "name": "HTML",
+            "color": "#e34c26",
+            "size": 30000
+          },
+          {
+            "name": "CSS",
+            "color": "#663399",
+            "size": 12000
+          }
+        ]
+      }
+    },
+    {
+      "mergedAt": "2024-01-30T19:04:06Z",
+      "repo": {
+        "nameWithOwner": "firstcontributions/first-contributions",
+        "owner": "firstcontributions",
+        "stars": 55416,
+        "isPrivate": false,
+        "languages": []
+      }
     }
   ],
-  "contributionsByYear": [
+  "reviewYears": [
     {
       "year": 2022,
-      "commits": 50,
-      "issues": 6,
-      "prs": 8,
-      "reviews": 3,
-      "restricted": 1
+      "reviews": 0,
+      "commits": 0,
+      "totalContributions": 1,
+      "issuesOpened": 0,
+      "prsOpened": 0,
+      "byRepo": []
     },
     {
       "year": 2023,
-      "commits": 800,
-      "issues": 96,
-      "prs": 120,
-      "reviews": 48,
-      "restricted": 8
+      "reviews": 0,
+      "commits": 51,
+      "totalContributions": 60,
+      "issuesOpened": 2,
+      "prsOpened": 0,
+      "byRepo": []
     },
     {
       "year": 2024,
-      "commits": 1700,
-      "issues": 204,
-      "prs": 255,
-      "reviews": 102,
-      "restricted": 17
+      "reviews": 31,
+      "commits": 1498,
+      "totalContributions": 2268,
+      "issuesOpened": 290,
+      "prsOpened": 342,
+      "byRepo": [
+        {
+          "nameWithOwner": "GitMetricsLab/github_tracker",
+          "owner": "GitMetricsLab",
+          "stars": 41,
+          "count": 5
+        },
+        {
+          "nameWithOwner": "yashksaini-coder/Javascript-30Days",
+          "owner": "yashksaini-coder",
+          "stars": 14,
+          "count": 3
+        },
+        {
+          "nameWithOwner": "recodehive/awesome-github-profiles",
+          "owner": "recodehive",
+          "stars": 146,
+          "count": 2
+        },
+        {
+          "nameWithOwner": "tannuiscoding/SeedySense",
+          "owner": "tannuiscoding",
+          "stars": 4,
+          "count": 2
+        },
+        {
+          "nameWithOwner": "Sakshidiwedi-28/MedCare_System",
+          "owner": "Sakshidiwedi-28",
+          "stars": 0,
+          "count": 2
+        },
+        {
+          "nameWithOwner": "yashksaini-coder/CodePen",
+          "owner": "yashksaini-coder",
+          "stars": 23,
+          "count": 2
+        }
+      ]
     },
     {
       "year": 2025,
-      "commits": 1500,
-      "issues": 180,
-      "prs": 225,
-      "reviews": 90,
-      "restricted": 15
+      "reviews": 112,
+      "commits": 865,
+      "totalContributions": 1369,
+      "issuesOpened": 131,
+      "prsOpened": 137,
+      "byRepo": [
+        {
+          "nameWithOwner": "yashksaini-coder/Leetcode-Journal",
+          "owner": "yashksaini-coder",
+          "stars": 26,
+          "count": 43
+        },
+        {
+          "nameWithOwner": "yashksaini-coder/git-graph",
+          "owner": "yashksaini-coder",
+          "stars": 9,
+          "count": 28
+        },
+        {
+          "nameWithOwner": "Muneerali199/Draftdeckai",
+          "owner": "Muneerali199",
+          "stars": 80,
+          "count": 13
+        },
+        {
+          "nameWithOwner": "yashksaini-coder/investo-glow",
+          "owner": "yashksaini-coder",
+          "stars": 1,
+          "count": 11
+        },
+        {
+          "nameWithOwner": "yashksaini-coder/investo-server",
+          "owner": "yashksaini-coder",
+          "stars": 2,
+          "count": 7
+        },
+        {
+          "nameWithOwner": "recodehive/Support",
+          "owner": "recodehive",
+          "stars": 15,
+          "count": 3
+        }
+      ]
     },
     {
       "year": 2026,
-      "commits": 557,
-      "issues": 67,
-      "prs": 84,
-      "reviews": 33,
-      "restricted": 6
+      "reviews": 92,
+      "commits": 1611,
+      "totalContributions": 1991,
+      "issuesOpened": 93,
+      "prsOpened": 119,
+      "byRepo": [
+        {
+          "nameWithOwner": "Tracer-Cloud/opensre",
+          "owner": "Tracer-Cloud",
+          "stars": 10253,
+          "count": 79
+        },
+        {
+          "nameWithOwner": "libp2p/py-libp2p",
+          "owner": "libp2p",
+          "stars": 621,
+          "count": 9
+        },
+        {
+          "nameWithOwner": "seetadev/awesome-py-libp2p-examples",
+          "owner": "seetadev",
+          "stars": 2,
+          "count": 2
+        },
+        {
+          "nameWithOwner": "pie-314/trx",
+          "owner": "pie-314",
+          "stars": 42,
+          "count": 1
+        },
+        {
+          "nameWithOwner": "ipld/py-ipld-dag",
+          "owner": "ipld",
+          "stars": 13,
+          "count": 1
+        }
+      ]
     }
-  ]
+  ],
+  "ownRepos": [
+    {
+      "name": "C_coding",
+      "isFork": false,
+      "isPrivate": false,
+      "stars": 5
+    },
+    {
+      "name": "Leetcode-Python-Solutions",
+      "isFork": false,
+      "isPrivate": false,
+      "stars": 14
+    },
+    {
+      "name": "Admission-Chances-Machine-Learning-Project",
+      "isFork": false,
+      "isPrivate": false,
+      "stars": 16
+    },
+    {
+      "name": "Bharat-Intern",
+      "isFork": false,
+      "isPrivate": false,
+      "stars": 15
+    },
+    {
+      "name": "Prodigy-InfoTech",
+      "isFork": false,
+      "isPrivate": false,
+      "stars": 25
+    },
+    {
+      "name": "Gemini-Bot",
+      "isFork": false,
+      "isPrivate": false,
+      "stars": 19
+    },
+    {
+      "name": "Credit-Card-Fraud-Detection-Project",
+      "isFork": true,
+      "isPrivate": false,
+      "stars": 15
+    },
+    {
+      "name": "CodePen",
+      "isFork": false,
+      "isPrivate": false,
+      "stars": 23
+    },
+    {
+      "name": "Github-Markdown-Beginner-Guide",
+      "isFork": false,
+      "isPrivate": false,
+      "stars": 15
+    },
+    {
+      "name": "Javascript-30Days",
+      "isFork": false,
+      "isPrivate": false,
+      "stars": 14
+    },
+    {
+      "name": "Zomato-Data-Analysis",
+      "isFork": false,
+      "isPrivate": false,
+      "stars": 20
+    },
+    {
+      "name": "Express-101",
+      "isFork": false,
+      "isPrivate": false,
+      "stars": 16
+    },
+    {
+      "name": "August-Leetcode-Daily-2024",
+      "isFork": false,
+      "isPrivate": false,
+      "stars": 15
+    },
+    {
+      "name": "Code-Whisper",
+      "isFork": false,
+      "isPrivate": false,
+      "stars": 17
+    },
+    {
+      "name": "Update-Leetcode-Gist",
+      "isFork": false,
+      "isPrivate": false,
+      "stars": 15
+    },
+    {
+      "name": "September-Leetcode-Daily-2024",
+      "isFork": false,
+      "isPrivate": false,
+      "stars": 13
+    },
+    {
+      "name": "Task-Tracker",
+      "isFork": false,
+      "isPrivate": false,
+      "stars": 14
+    },
+    {
+      "name": "Pet-Image-Classifier",
+      "isFork": false,
+      "isPrivate": false,
+      "stars": 11
+    },
+    {
+      "name": "Leetcode-monthly-template",
+      "isFork": false,
+      "isPrivate": false,
+      "stars": 9
+    },
+    {
+      "name": "October-Leetcode-Daily-2024",
+      "isFork": false,
+      "isPrivate": false,
+      "stars": 12
+    },
+    {
+      "name": "yashksaini-coder",
+      "isFork": false,
+      "isPrivate": false,
+      "stars": 14
+    },
+    {
+      "name": "copilot-vscode-codespace",
+      "isFork": false,
+      "isPrivate": false,
+      "stars": 8
+    },
+    {
+      "name": "React-fundamentals",
+      "isFork": false,
+      "isPrivate": false,
+      "stars": 10
+    },
+    {
+      "name": "web3-assignments",
+      "isFork": true,
+      "isPrivate": false,
+      "stars": 8
+    },
+    {
+      "name": "Cohort-3-assignments",
+      "isFork": true,
+      "isPrivate": false,
+      "stars": 9
+    }
+  ],
+  "window": null
 }
