@@ -1,6 +1,6 @@
 {
   "name": "gitbanner",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
   "description": "GitHub Marketplace Action that renders a personalized GitHub stats card (SVG + PNG) for your profile README.",
