@@ -285,6 +285,13 @@ describe('language chart', () => {
     expect(none).toContain('no language data');
   });
 
+  it('separates the count from the name with dx, immune to whitespace collapsing', () => {
+    const tile = render([lang('Rust', 4, '#dea584'), lang('Python', 18), lang('Go', 2, '#00add8')]);
+    // A literal "Rust4" (no gap) must never appear; the count rides a dx tspan.
+    expect(tile).toMatch(/>Rust<tspan[^>]*dx="5"/);
+    expect(tile).not.toMatch(/>Rust4</);
+  });
+
   it('colour-codes each label to its vertex dot, flipping dark colours to ink', () => {
     const tile = render([
       lang('Python', 18, '#3572a5'),

@@ -181,7 +181,9 @@ export function renderRadar(p: RadarProps): string {
             ? pos.x - p.labelLeft
             : 2 * Math.min(pos.x - p.labelLeft, p.labelRight - pos.x);
       const name = fitText(lang.name, Math.max(34, avail - countW), [11, 10, 9], 0.55);
-      return `<text x="${pos.x}" y="${pos.y}" text-anchor="${pos.anchor}" class="gb-text-bold" font-size="${name.size}" fill="${nameFill}">${escapeXml(name.text)}<tspan class="gb-mono" font-size="9" fill="${theme.textMuted}"> ${lang.repos}</tspan></text>`;
+      // dx, not a space character: SVG whitespace collapsing eats a lone
+      // space at a tspan boundary, gluing the count to the name.
+      return `<text x="${pos.x}" y="${pos.y}" text-anchor="${pos.anchor}" class="gb-text-bold" font-size="${name.size}" fill="${nameFill}">${escapeXml(name.text)}<tspan class="gb-mono" font-size="9" dx="5" dy="-1" fill="${theme.textSecondary}">${lang.repos}</tspan></text>`;
     })
     .join('');
 
