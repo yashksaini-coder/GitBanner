@@ -254,6 +254,31 @@ describe('language chart', () => {
     expect(none).toContain('no language data');
   });
 
+  it('colour-codes each label to its vertex dot, flipping dark colours to ink', () => {
+    const tile = render([
+      lang('Python', 18, '#3572a5'),
+      lang('PowerShell', 9, '#012456'), // too dark to read on the tile
+      lang('Go', 4, '#00add8'),
+    ]);
+    expect(tile).toMatch(/fill="#3572a5">Python</);
+    expect(tile).toMatch(/fill="#00add8">Go</);
+    // dark brand colour renders in ink, but its vertex dot keeps the colour
+    expect(tile).toMatch(/fill="#ffffff">PowerShell</);
+    expect(tile).toMatch(/class="gbr-dot"[^/]*fill="#012456"/);
+  });
+
+  it('keeps full language names visible instead of hard-truncating', () => {
+    const tile = render([
+      lang('JavaScript', 20, '#f1e05a'),
+      lang('TypeScript', 15, '#3178c6'),
+      lang('Dockerfile', 8, '#384d54'),
+      lang('PowerShell', 4, '#012456'),
+    ]);
+    for (const name of ['JavaScript', 'TypeScript', 'Dockerfile', 'PowerShell']) {
+      expect(tile).toContain(`>${name}<`);
+    }
+  });
+
   it('escapes hostile colour strings before interpolating them', () => {
     const tile = render([
       lang('A', 3, '"/><script>x</script>'),

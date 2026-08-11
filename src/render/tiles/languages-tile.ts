@@ -71,6 +71,8 @@ function chartFor(p: LanguagesTileProps, w: number, h: number, theme: Theme): st
       cx: w / 2,
       cy,
       rMax,
+      labelLeft: 10,
+      labelRight: w - 10,
       languages: p.languages.slice(0, RADAR_MAX_AXES),
       theme,
     });

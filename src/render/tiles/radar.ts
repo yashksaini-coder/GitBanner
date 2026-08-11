@@ -1,6 +1,6 @@
 import type { Theme } from '../../types.js';
 import { iconByKey, renderIcon } from '../icons.js';
-import { escapeXml, truncate } from '../util.js';
+import { escapeXml, fitText } from '../util.js';
 
 export interface RadarLanguage {
   name: string;
@@ -61,8 +61,20 @@ export interface RadarProps {
   cx: number;
   cy: number;
   rMax: number;
+  /** Horizontal bounds labels must stay inside (tile-local x). */
+  labelLeft: number;
+  labelRight: number;
   languages: RadarLanguage[];
   theme: Theme;
+}
+
+/** Perceived luminance 0..1; used to keep dark brand colours readable. */
+function luminance(hex: string): number {
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex);
+  if (!m) return 1;
+  const v = parseInt(m[1], 16);
+  const r = (v >> 16) & 255, g = (v >> 8) & 255, b = v & 255;
+  return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
 }
 
 /**
@@ -121,10 +133,19 @@ export function renderRadar(p: RadarProps): string {
       const sin = Math.sin(angle);
       const lx = r2(cx + (rMax + 9) * cos);
       const ly = r2(cy + (rMax + 9) * sin);
-      const anchor = cos > 0.35 ? 'start' : cos < -0.35 ? 'end' : 'middle';
-      const dy = sin > 0.35 ? 11 : sin < -0.35 ? -4 : 4;
-      const name = truncate(lang.name, 9);
-      return `<text x="${lx}" y="${ly + dy}" text-anchor="${anchor}" class="gb-text" font-size="10" fill="${theme.textSecondary}">${escapeXml(name)} <tspan class="gb-mono" font-size="9" fill="${theme.textMuted}">${lang.repos}</tspan></text>`;
+      // Every label is middle-anchored and pushed above or below its vertex
+      // by hemisphere: centring doubles the room before the tile edge, which
+      // is what lets 10-character names render whole on side spokes.
+      const dy = sin < -0.05 ? -6 : 13;
+      // The name is colour-coded to its vertex dot; dark brand colours flip
+      // to ink so they stay readable on the tile.
+      const nameFill =
+        luminance(lang.color) < 0.22 ? theme.textPrimary : escapeXml(lang.color);
+      // Clamp the label centre so half the fitted text always fits each side.
+      const countW = (String(lang.repos).length + 1) * 9 * 0.62;
+      const avail = 2 * Math.min(lx - p.labelLeft, p.labelRight - lx);
+      const name = fitText(lang.name, Math.max(34, avail - countW), [11, 10, 9], 0.55);
+      return `<text x="${lx}" y="${ly + dy}" text-anchor="middle" class="gb-text-bold" font-size="${name.size}" fill="${nameFill}">${escapeXml(name.text)}<tspan class="gb-mono" font-size="9" fill="${theme.textMuted}"> ${lang.repos}</tspan></text>`;
     })
     .join('');
 
