@@ -204,76 +204,48 @@ Flags: `-u/--user`, `-t/--token`, `-f/--fixture`, `--include-private`,
 
 ## What it shows
 
-Ten tiles by default, in two rows.
+Three portrait report cards, side by side:
 
-**Row 1** leads with one hero tile — `merged-prs`, at double width, with a bar
-chart of where that work landed — followed by supporting stat tiles. Exactly one
-hero renders per card; selecting two is an error.
-
-| Tile | Shows |
+| Card | Contents |
 |---|---|
-| `merged-prs` | **(hero)** PRs merged into repos you **don't** own, with a bar chart of the top 5 projects |
-| `reviews` | Code reviews you gave on other people's repos |
-| `projects` | Distinct external projects you've landed work in |
-| `ships-in` | Every language across the projects you ship to, as pills. Uses linguist's full language data, which excludes vendored and generated files (lockfiles, `dist/`, minified bundles) |
-| `issues` | Issue resolution rate — % of issues you filed that got resolved, with opened/resolved/still-open rows |
+| `pull-requests` | Gradient bar chart of the top 5 projects your PRs landed in · merged-for-others count with a trailing-12-month delta · merge rate · projects / biggest project / active-this-year table |
+| `code-review` | Bar chart of the repos you review most · reviews-for-others count · issue resolution rate · opened / resolved / still-open table |
+| `footprint` | Language cell grid (every language you ship in, generated files excluded) · language count · stars earned · top repo / followers table |
 
-**Row 2 — supporting context:** `biggest-project`, `merge-rate`, `own-stars`
-(stars earned on your own repos, with your highest-starred project), `momentum`
-(external merges in the trailing 12 months — proof you're shipping now, not
-just historically).
-
-## Scoping to a date range
-
-`since` / `until` produce a weekly or monthly card instead of an all-time one.
-The period appears in the footer and in the hero caption.
-
-```yaml
-# A "what I shipped last month" card
-- uses: yashksaini-coder/GitBanner@v1
-  with:
-    github-token: ${{ secrets.GITBANNER_PAT }}
-    since: 2026-07-01
-    until: 2026-07-31
-    output-path: out/gitbanner-july
-```
-
-Both bounds are inclusive whole UTC days. GitHub caps contribution windows at
-one year, so a longer range is rejected rather than silently truncated.
-
-Two things change on a windowed card:
-
-- **Issues show opened only.** GitHub exposes issues *opened* in a window but
-  not issues *closed* in one, so the closed count is omitted rather than
-  guessed.
-- **Merge rate is approximate.** It compares PRs merged in the window against
-  PRs opened in the window — a PR opened on the last day and merged the week
-  after counts against you. Over an all-time card the two line up.
+There is no footer line — each card carries its own context.
 
 ## Tiles
 
-`tiles` picks which tiles render, in order — and **decides which GraphQL
-queries run**. Each tile declares what data it needs; the fetcher unions those
+`tiles` picks which cards render, in order — and **decides which GraphQL
+queries run**. Each card declares what data it needs; the fetcher unions those
 needs and skips everything nothing asked for.
 
 ```yaml
-# Pure external-contribution banner. Skips repository pagination entirely,
-# because no selected tile needs your own repos.
+# Just the external-contribution story. Skips repository pagination entirely,
+# because no selected card needs your own repos.
 - uses: yashksaini-coder/GitBanner@v1
   with:
     github-token: ${{ secrets.GITBANNER_PAT }}
-    tiles: merged-prs,reviews,projects,reach,biggest-project,merge-rate
+    tiles: pull-requests,code-review
 ```
 
-| Tile | Needs |
+| Card | Needs |
 |---|---|
-| `merged-prs`, `projects`, `ships-in`, `biggest-project`, `merge-rate`, `momentum` | merged PR pages |
-| `reviews` | one aliased contributions request |
-| `issues` | two scalar counts on the profile request |
-| `own-stars` | repository pagination |
+| `pull-requests` | merged PR pages |
+| `code-review` | one aliased contributions request + two scalar counts |
+| `footprint` | merged PR pages + repository pagination |
 
-An unknown tile name is a hard error rather than a silent drop, so a typo in a
-workflow can't quietly delete a tile.
+An unknown card name is a hard error rather than a silent drop, so a typo in a
+workflow can't quietly delete a card.
+
+## Fonts
+
+Inter and JetBrains Mono subsets are embedded in every SVG as `@font-face`
+data URIs, and the PNG renderer loads the same subsets with system fonts
+disabled — the card renders identically on every machine and in every browser.
+Regenerate the subsets with `npm run build:fonts` after changing the glyph set
+in `scripts/build-fonts.mjs`. (U+2605 ★ is not in either face; rendered text
+spells out "stars" instead.)
 
 ## Why the drive-by filter exists
 
@@ -284,8 +256,8 @@ exactly one merged PR each — including
 **86% of a 162,316-star reach figure**.
 
 `min-merged-prs` (default `2`) is the guard. A repository only counts toward
-`projects`, `biggest-project` and `ships-in` once you've landed work there
-more than once:
+the project counts, biggest-project pick and language grid once you've landed
+work there more than once:
 
 | `min-merged-prs` | Projects | Combined reach | Biggest project |
 |---|---|---|---|

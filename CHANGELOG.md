@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed — three-card report layout
+
+- The banner is now three portrait report cards — Pull requests, Code review,
+  Footprint — each with a title, a chart (gradient bars or a language cell
+  grid), a stat pair with a delta line, and a small table. Canvas 1600x728.
+  The `tiles` input now takes card keys: `pull-requests`, `code-review`,
+  `footprint`.
+- **Fonts are embedded.** Inter and JetBrains Mono subsets ship inside every
+  SVG as data-URI @font-face rules, and PNG rendering uses the same subsets
+  with system fonts disabled — output is identical on every machine.
+  `npm run build:fonts` regenerates the subsets.
+- **The footer credit line is gone**, and with it the `bestYear` stat it
+  displayed. Followers/following moved into the footprint card's table.
+- Language cell text falls back to ink when a language's brand colour is too
+  dark to read on the card surface (e.g. PowerShell).
+- Star counts are written as "N stars" — U+2605 is absent from both embedded
+  faces and would render as nothing.
+
 ### Changed — banner now measures open-source contribution, not personal repos
 
 This is a breaking redesign. The banner previously counted stars, languages and
