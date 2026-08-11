@@ -4,6 +4,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { aggregate, DEFAULT_MIN_MERGED_PRS } from './compute.js';
 import { fetchAll } from './fetcher.js';
+import { resvgFontOptions } from './render/fonts.js';
 import { toSvg } from './render/svg.js';
 import { neededData, parseTiles, TILE_KEYS } from './tiles.js';
 import { buildWindow } from './window.js';
@@ -73,6 +74,7 @@ async function main(): Promise<void> {
     const png = new Resvg(svg, {
       fitTo: { mode: 'width', value: 1600 },
       background: 'transparent',
+      font: resvgFontOptions(),
     })
       .render()
       .asPng();
