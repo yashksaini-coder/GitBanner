@@ -1,6 +1,6 @@
 import type { Theme } from '../../types.js';
 import { escapeXml } from '../util.js';
-import { RADAR_MAX_AXES, RADAR_MIN_AXES, renderRadar } from './radar.js';
+import { RADAR_MAX_AXES, RADAR_MIN_AXES, renderBurst } from './radar.js';
 
 export interface LanguagesChartProps {
   /** Chart zone in card-local coordinates. */
@@ -10,6 +10,8 @@ export interface LanguagesChartProps {
   h: number;
   languages: { name: string; color: string; repos: number }[];
   overflow: number;
+  /** Total language count for the burst's centre hub. */
+  count: number;
   theme: Theme;
 }
 
@@ -24,12 +26,13 @@ export function renderLanguagesChart(p: LanguagesChartProps): string {
     // Horizontal bound reserves 78px each side for tip-anchored labels, so a
     // side label can never reach back into the ring nor leave the card.
     const rMax = Math.min(h / 2 - 15, w / 2 - 78);
-    inner = renderRadar({
+    inner = renderBurst({
       cx: w / 2,
       cy: h / 2,
       rMax,
       labelLeft: 4,
       labelRight: w - 4,
+      count: p.count,
       languages: p.languages.slice(0, RADAR_MAX_AXES),
       theme,
     });

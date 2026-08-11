@@ -1,5 +1,4 @@
 import type { Theme } from '../../types.js';
-import { iconByKey, renderIcon } from '../icons.js';
 import { escapeXml, fitText } from '../util.js';
 
 export interface RadarLanguage {
@@ -43,19 +42,6 @@ export function radarLayout(
   });
 }
 
-/**
- * Straight-edged closed polygon through the points. Straight chords between
- * points that all satisfy r ≤ rMax can never leave the outer ring — unlike a
- * smoothing spline, whose curve overshoots between knots.
- */
-export function polygonPath(pts: Pt[]): string {
-  return (
-    `M ${pts[0].x} ${pts[0].y} ` +
-    pts.slice(1).map((p) => `L ${p.x} ${p.y}`).join(' ') +
-    ' Z'
-  );
-}
-
 export interface RadarProps {
   /** Chart zone in tile-local coordinates. */
   cx: number;
@@ -64,6 +50,8 @@ export interface RadarProps {
   /** Horizontal bounds labels must stay inside (tile-local x). */
   labelLeft: number;
   labelRight: number;
+  /** Total language count, shown in the burst's centre hub. */
+  count: number;
   languages: RadarLanguage[];
   theme: Theme;
 }
@@ -115,63 +103,68 @@ function luminance(hex: string): number {
 }
 
 /**
- * The signature chart: a sharp closed polygon in the accent colour over
- * recessive polar grid rings, with a soft glow. Language identity is notation,
- * not stroke paint: a coloured dot sits on each vertex, ringed in the tile
- * colour so it stays legible where the shape crosses itself.
+ * Radial burst, reference style: one ray per language in its own colour,
+ * length = projects using it, glowing softly, with the total in a centre
+ * hub. Thin muted filler ticks between the data rays give the burst its
+ * density; uniform length and hairline weight keep them reading as
+ * structure, never data.
  * Caller guarantees RADAR_MIN_AXES ≤ languages.length ≤ RADAR_MAX_AXES.
  */
-export function renderRadar(p: RadarProps): string {
+export function renderBurst(p: RadarProps): string {
   const { cx, cy, rMax, theme } = p;
   const langs = p.languages;
   const n = langs.length;
-  const rMin = 10;
+  const HUB_R = 17;
 
-  const pts = radarLayout(langs.map((l) => l.repos), cx, cy, rMin, rMax);
-  const shape = polygonPath(pts);
+  const tips = radarLayout(langs.map((l) => l.repos), cx, cy, HUB_R + 14, rMax);
 
-  // Grid: three rings plus one hairline spoke per axis.
-  const rings = [1 / 3, 2 / 3, 1]
-    .map((t) => `<circle cx="${cx}" cy="${cy}" r="${r2(rMax * t)}" fill="none" stroke="${theme.divider}" stroke-width="1"/>`)
-    .join('');
-  const spokes = langs
-    .map((_, i) => {
-      const angle = -Math.PI / 2 + (i * 2 * Math.PI) / n;
-      return `<line x1="${cx}" y1="${cy}" x2="${r2(cx + rMax * Math.cos(angle))}" y2="${r2(cy + rMax * Math.sin(angle))}" stroke="${theme.divider}" stroke-width="1"/>`;
+  // Filler ticks: two hairlines between each pair of data rays, uniform
+  // length — radial grid texture, clearly not data.
+  const fillers: string[] = [];
+  for (let i = 0; i < n; i++) {
+    for (const f of [1 / 3, 2 / 3]) {
+      const angle = -Math.PI / 2 + ((i + f) * 2 * Math.PI) / n;
+      const x1 = r2(cx + (HUB_R + 8) * Math.cos(angle));
+      const y1 = r2(cy + (HUB_R + 8) * Math.sin(angle));
+      const x2 = r2(cx + rMax * 0.85 * Math.cos(angle));
+      const y2 = r2(cy + rMax * 0.85 * Math.sin(angle));
+      fillers.push(`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${theme.divider}" stroke-width="1"/>`);
+    }
+  }
+
+  // Padded region so the blur is not clipped at the thin ray bounds.
+  const glowFilter = `<filter id="gbr-ray-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="3"/></filter>`;
+
+  const rayStart = (i: number): Pt => {
+    const angle = -Math.PI / 2 + (i * 2 * Math.PI) / n;
+    return {
+      x: r2(cx + (HUB_R + 6) * Math.cos(angle)),
+      y: r2(cy + (HUB_R + 6) * Math.sin(angle)),
+    };
+  };
+  const glow = langs
+    .map((lang, i) => {
+      const a = rayStart(i);
+      const b = tips[i];
+      return `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="${escapeXml(lang.color)}" stroke-width="9" stroke-linecap="round" stroke-opacity="0.35"/>`;
     })
     .join('');
-
-  // Quiet neutral wash — the language dots carry the colour, not the shape.
-  const glowFill = `<radialGradient id="gbr-fill" gradientUnits="userSpaceOnUse" cx="${cx}" cy="${cy}" r="${rMax}"><stop offset="0" stop-color="#ffffff" stop-opacity="0.05"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>`;
-
-  // Connecting lines in ink, no neon, no glow: the polygon is structure,
-  // identity lives in the vertex dots.
-  const stroke = `<path d="${shape}" fill="none" stroke="${theme.textSecondary}" stroke-width="1.5" stroke-opacity="0.8" stroke-linejoin="miter"/>`;
-
-  // Colour notation: one large dot per vertex in the language's own colour,
-  // with a tile-coloured ring so overlapping geometry never swallows it.
-  const dots = pts
-    .map((pt, i) => `<circle class="gbr-dot" cx="${pt.x}" cy="${pt.y}" r="5.5" fill="${escapeXml(langs[i].color)}" stroke="${theme.tile}" stroke-width="2"/>`)
+  const rays = langs
+    .map((lang, i) => {
+      const a = rayStart(i);
+      const b = tips[i];
+      return `<line class="gbr-ray" x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="${escapeXml(lang.color)}" stroke-width="5" stroke-linecap="round"/>`;
+    })
     .join('');
-
-  // Centre hub: the code glyph in a quiet ring, like the reference's diamond.
-  const hubIcon = renderIcon({
-    path: iconByKey('code-brackets'),
-    size: 14,
-    stroke: theme.textMuted,
-    strokeWidth: 2,
-  });
 
   const positions = radarLabelLayout(n, cx, cy, rMax);
   const labels = langs
     .map((lang, i) => {
       const pos = positions[i];
-      // The name is colour-coded to its vertex dot; dark brand colours flip
-      // to ink so they stay readable on the tile.
+      // The name is colour-coded to its ray; dark brand colours flip to ink
+      // so they stay readable on the tile.
       const nameFill =
         luminance(lang.color) < 0.22 ? theme.textPrimary : escapeXml(lang.color);
-      // Clamp the fitted text to the room its anchor leaves before the card
-      // edge: side labels grow one way, centred labels split the room in two.
       const countW = (String(lang.repos).length + 1) * 9 * 0.62;
       const avail =
         pos.anchor === 'start'
@@ -186,15 +179,17 @@ export function renderRadar(p: RadarProps): string {
     })
     .join('');
 
+  // Centre hub: the total, reference style.
+  const hub =
+    `<circle cx="${cx}" cy="${cy}" r="${HUB_R}" fill="${theme.tile}" stroke="${theme.divider}" stroke-width="1"/>` +
+    `<text x="${cx}" y="${cy + 5}" text-anchor="middle" class="gb-mono" font-size="14" fill="${theme.textPrimary}">${p.count}</text>`;
+
   return (
-    `<defs>${glowFill}</defs>` +
-    rings +
-    spokes +
-    `<path d="${shape}" fill="url(#gbr-fill)"/>` +
-    stroke +
-    `<circle cx="${cx}" cy="${cy}" r="11" fill="${theme.tile}" stroke="${theme.divider}" stroke-width="1"/>` +
-    `<g transform="translate(${r2(cx - 7)}, ${r2(cy - 7)})">${hubIcon}</g>` +
-    dots +
+    `<defs>${glowFilter}</defs>` +
+    fillers.join('') +
+    `<g filter="url(#gbr-ray-glow)">${glow}</g>` +
+    rays +
+    hub +
     labels
   );
 }

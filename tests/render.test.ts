@@ -4,7 +4,7 @@ import { aggregate } from '../src/compute.js';
 import { toSvg } from '../src/render/svg.js';
 import { dark } from '../src/render/theme.js';
 import { renderLanguagesChart } from '../src/render/tiles/languages-tile.js';
-import { polygonPath, radarLabelLayout, radarLayout } from '../src/render/tiles/radar.js';
+import { radarLabelLayout, radarLayout } from '../src/render/tiles/radar.js';
 import { DEFAULT_TILES, neededData, parseTiles, TILE_KEYS, TILES } from '../src/tiles.js';
 import type { RawData } from '../src/types.js';
 
@@ -36,8 +36,13 @@ describe('toSvg', () => {
     for (const label of ['&lt;10', '10+', '100+', '1k+', '10k+']) {
       expect(svg).toContain(label);
     }
-    // the #1 repo's name survives in the stat trio
-    expect(svg).toContain(stats.externalRepos[0].name);
+    // the top-repo stat is the YEAR's leader (all-time fallback when empty)
+    const yearTop = stats.topExternalThisYear[0] ?? {
+      name: stats.externalRepos[0].name,
+      value: stats.externalRepos[0].mergedPrs,
+    };
+    expect(svg).toContain(yearTop.name);
+    expect(svg).toContain(`top repo · ${yearTop.value.toLocaleString('en-US')} merged`);
   });
 
   it('shows the issues resolution rate below a yearly issues wave', () => {
@@ -272,36 +277,37 @@ describe('language chart', () => {
       h: 160,
       languages,
       overflow,
+      count: languages.length + overflow,
       theme: dark,
     });
   }
 
   const lang = (name: string, repos: number, color = '#3178c6') => ({ name, color, repos });
 
-  it('renders a straight-edged radar with one colour dot per language at 3+ axes', () => {
+  it('renders a burst with one coloured ray per language and the total in the hub', () => {
     const tile = render([lang('Python', 18), lang('Rust', 9, '#dea584'), lang('Go', 4, '#00add8')]);
-    // no neon: the polygon strokes in ink with no glow filter, dots r5.5
-    expect(tile).not.toContain('gbr-glow');
-    expect(tile).toContain('stroke-opacity="0.8"');
-    expect([...tile.matchAll(/class="gbr-dot"[^/]*r="5.5"/g)]).toHaveLength(3);
+    expect([...tile.matchAll(/class="gbr-ray"/g)]).toHaveLength(3);
     expect(tile).toContain('#dea584');
-    // single accent stroke, not a per-segment gradient
-    expect(tile).not.toContain('<linearGradient');
+    expect(tile).toContain('gbr-ray-glow');
+    // hub shows the count (3 languages + 0 overflow)
+    expect(tile).toMatch(/font-size="14"[^>]*>3</);
+    // filler ticks: two per gap, uniform structure
+    expect([...tile.matchAll(/stroke-width="1"\/>/g)].length).toBeGreaterThanOrEqual(6);
     for (const name of ['Python', 'Rust', 'Go']) expect(tile).toContain(name);
-    // pills fallback must not render alongside the radar
+    // pills fallback must not render alongside the burst
     expect(tile).not.toContain('rx="8"');
   });
 
-  it('caps the radar at 8 axes however many languages exist', () => {
+  it('caps the burst at 8 rays however many languages exist', () => {
     const many = Array.from({ length: 14 }, (_, i) => lang(`L${i}`, 14 - i));
     const tile = render(many, 0);
-    expect([...tile.matchAll(/class="gbr-dot"/g)]).toHaveLength(8);
+    expect([...tile.matchAll(/class="gbr-ray"/g)]).toHaveLength(8);
     expect(tile).not.toContain('L9');
   });
 
   it('falls back to pills below 3 axes and to a message at zero', () => {
     const two = render([lang('Python', 3), lang('Go', 1)], 4);
-    expect(two).not.toContain('gbr-dot');
+    expect(two).not.toContain('gbr-ray');
     expect(two).toContain('+4');
     const none = render([], 0);
     expect(none).toContain('no language data');
@@ -314,7 +320,7 @@ describe('language chart', () => {
     expect(tile).not.toMatch(/>Rust4</);
   });
 
-  it('colour-codes each label to its vertex dot, flipping dark colours to ink', () => {
+  it('colour-codes each label to its ray, flipping dark colours to ink', () => {
     const tile = render([
       lang('Python', 18, '#3572a5'),
       lang('PowerShell', 9, '#012456'), // too dark to read on the tile
@@ -322,9 +328,9 @@ describe('language chart', () => {
     ]);
     expect(tile).toMatch(/fill="#3572a5">Python</);
     expect(tile).toMatch(/fill="#00add8">Go</);
-    // dark brand colour renders in ink, but its vertex dot keeps the colour
+    // dark brand colour renders in ink, but its ray keeps the colour
     expect(tile).toMatch(/fill="#ffffff">PowerShell</);
-    expect(tile).toMatch(/class="gbr-dot"[^/]*fill="#012456"/);
+    expect(tile).toMatch(/class="gbr-ray"[^/]*stroke="#012456"/);
   });
 
   it('keeps full language names visible instead of hard-truncating', () => {
@@ -367,16 +373,6 @@ describe('radar geometry', () => {
     expect(r(pts[2])).toBeGreaterThan(10 + 0.17 * 50);
   });
 
-  it('draws a closed straight-edged polygon through every point', () => {
-    const pts = radarLayout([3, 1, 4, 1, 5], 50, 50, 8, 40);
-    const d = polygonPath(pts);
-    expect(d.startsWith(`M ${pts[0].x} ${pts[0].y}`)).toBe(true);
-    expect(d.endsWith('Z')).toBe(true);
-    // straight lines only — a curve command would mean overshoot is possible
-    expect(d).not.toMatch(/[CQSTA]/);
-    expect([...d.matchAll(/L /g)]).toHaveLength(pts.length - 1);
-  });
-
   it('keeps every label clear of the ring: tip-anchored outward or in the vertical band', () => {
     // Real card geometry: w=498 → cx 249, rMax min(74, 139) = 74.
     const cx = 249, cy = 256, rMax = 74;
@@ -411,13 +407,6 @@ describe('radar geometry', () => {
       const pts = radarLayout(values, cx, cy, rMin, rMax);
       for (const pt of pts) {
         expect(Math.hypot(pt.x - cx, pt.y - cy)).toBeLessThanOrEqual(rMax + 0.01);
-      }
-      // A straight chord between two in-ring points stays in the ring; assert
-      // it anyway at midpoints so a future smoothing regression fails loudly.
-      for (let i = 0; i < pts.length; i++) {
-        const a = pts[i], b = pts[(i + 1) % pts.length];
-        const mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
-        expect(Math.hypot(mid.x - cx, mid.y - cy)).toBeLessThanOrEqual(rMax + 0.01);
       }
     }
   });

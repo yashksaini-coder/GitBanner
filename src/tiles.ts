@@ -48,7 +48,8 @@ export const TILES: Record<string, TileDef> = {
     kind: 'card',
     needs: ['prs'],
     render: (p, theme, box) => {
-      const top = topExternalByPrs(p, 1)[0];
+      // This year's leader, matching the chart's year scope; all-time fallback.
+      const top = p.topExternalThisYear[0] ?? topExternalByPrs(p, 1)[0];
       return renderStatTile({
         ...box,
         accent: theme.accents.prs,
@@ -132,6 +133,7 @@ export const TILES: Record<string, TileDef> = {
           h: box.h - CHART_TOP - 26,
           languages: p.languages.map((l) => ({ name: l.name, color: l.color, repos: l.repos })),
           overflow: Math.max(0, p.languageCount - p.languages.length),
+          count: p.languageCount,
           theme,
         }),
         stats: [],

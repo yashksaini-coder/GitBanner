@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed — language burst, year-scoped top repo
+
+- The ships-in chart becomes a radial burst, reference style: one glowing
+  ray per language in its own colour, length = projects using it, the total
+  in a centre hub, thin uniform filler ticks for density (structure, never
+  data). The polygon radar retires.
+- The Pull requests card's top-repo stat now names the CURRENT year's
+  leader, matching the chart's year scope (all-time fallback when the year
+  is empty). Nothing else on that card changed.
+
 ### Changed — weighted language counting, full-body radar
 
 - **A language now needs real weight to count for a repo**: at least 8% of
