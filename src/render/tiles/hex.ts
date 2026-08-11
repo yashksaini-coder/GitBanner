@@ -1,11 +1,11 @@
 import type { Theme } from '../../types.js';
+import { r2 } from '../util.js';
 
 export interface AxialHex {
   q: number;
   r: number;
 }
 
-const r2 = (v: number): number => Math.round(v * 100) / 100;
 const SQRT3 = Math.sqrt(3);
 
 /** Axial neighbour directions, pointy-top, ring-walk order. */

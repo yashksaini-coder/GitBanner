@@ -1,7 +1,6 @@
 import type { Theme } from '../../types.js';
 import { escapeXml, fitText } from '../util.js';
 
-export { escapeXml };
 
 export interface StatTileStat {
   value: string;

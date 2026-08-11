@@ -9,8 +9,6 @@ export interface MiniTileProps {
   accent: string;
   title: string;
   value: string;
-  /** Optional green delta rendered beside the value (e.g. "↑ 17 this year"). */
-  delta?: string;
   subLine: string;
   /**
    * Leaderboard mode: up to three ranked rows replace the big value and
@@ -23,16 +21,14 @@ export interface MiniTileProps {
 }
 
 const PAD = 24;
-const DELTA_COLOR = '#199e70';
 /** Sparkline zone geometry, reference style: rounded vertical bars, right side. */
 const SPARK_W = 170;
 const SPARK_TOP = 26;
 const SPARK_BOTTOM = 114;
 
 /**
- * Reference-style mini: title, big value with an optional green delta, a
- * muted sub-line, and a rounded-bar sparkline on the right. No icons — the
- * spark is the identity.
+ * Reference-style mini: title, big value, a muted sub-line, and a rounded-bar
+ * sparkline on the right. No icons — the spark is the identity.
  */
 export function renderMiniTile(p: MiniTileProps): string {
   const { x, y, w, h, theme, title, value, subLine, spark } = p;
@@ -62,12 +58,8 @@ export function renderMiniTile(p: MiniTileProps): string {
     </g>
   `;
   }
-  const fittedValue = fitText(value, textMax - (p.delta ? 90 : 0), [30, 26, 22, 18], 0.6);
+  const fittedValue = fitText(value, textMax, [30, 26, 22, 18], 0.6);
   const fittedSub = fitText(subLine, textMax, [12, 11], 0.55);
-
-  const deltaSvg = p.delta
-    ? `<text x="${PAD + Math.ceil(fittedValue.text.length * fittedValue.size * 0.62) + 10}" y="82" class="gb-mono" font-size="12" fill="${DELTA_COLOR}">${escapeXml(p.delta)}</text>`
-    : '';
 
   const sparkSvg = spark.length > 0 ? renderSpark(spark, w, p.accent) : '';
 
@@ -76,7 +68,6 @@ export function renderMiniTile(p: MiniTileProps): string {
       <rect width="${w}" height="${h}" rx="22" fill="${theme.tile}" stroke="${theme.tileBorder}" stroke-width="1"/>
       <text x="${PAD}" y="38" class="gb-text-bold" font-size="${fittedTitle.size}" fill="${theme.textPrimary}">${escapeXml(fittedTitle.text)}</text>
       <text x="${PAD}" y="84" class="gb-display" font-size="${fittedValue.size}" fill="${theme.textPrimary}">${escapeXml(fittedValue.text)}</text>
-      ${deltaSvg}
       <text x="${PAD}" y="${h - 26}" class="gb-text" font-size="${fittedSub.size}" fill="${theme.textMuted}">${escapeXml(fittedSub.text)}</text>
       ${sparkSvg}
     </g>

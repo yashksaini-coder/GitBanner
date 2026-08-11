@@ -1,7 +1,6 @@
 import type { Theme } from '../../types.js';
-import { escapeXml } from '../util.js';
+import { escapeXml, r2 } from '../util.js';
 
-const r2 = (v: number): number => Math.round(v * 100) / 100;
 
 export interface ColumnDatum {
   label: string;

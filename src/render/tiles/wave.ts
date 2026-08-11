@@ -1,12 +1,10 @@
 import type { Theme } from '../../types.js';
-import { escapeXml } from '../util.js';
+import { escapeXml, r2 } from '../util.js';
 
 export interface WavePoint {
   label: string;
   count: number;
 }
-
-const r2 = (v: number): number => Math.round(v * 100) / 100;
 
 /**
  * Open cubic path through the points using Fritsch–Carlson monotone tangents.
@@ -67,8 +65,6 @@ export interface WaveProps {
   accent: string;
   gradId: string;
   theme: Theme;
-  /** Extra hues for a horizontal ridge-style stroke gradient (left→right). */
-  strokeStops?: string[];
   /** Faint horizontal gridlines at thirds, hyper-chart style. */
   gridlines?: boolean;
   emptyText?: string;
@@ -111,18 +107,6 @@ export function renderWave(p: WaveProps): string {
   const area = `${curve} L ${r2(pts[n - 1].x)} ${baseline} L ${r2(pts[0].x)} ${baseline} Z`;
 
   const gradient = `<linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${accent}" stop-opacity="0.3"/><stop offset="1" stop-color="${accent}" stop-opacity="0"/></linearGradient>`;
-  // Optional ridge-style stroke: hues drift left→right like the reference.
-  const stops = p.strokeStops ?? [];
-  const strokeGrad =
-    stops.length > 1
-      ? `<linearGradient id="${gradId}-stroke" x1="0" y1="0" x2="1" y2="0">${stops
-          .map(
-            (c, i) =>
-              `<stop offset="${r2(i / (stops.length - 1))}" stop-color="${escapeXml(c)}"/>`,
-          )
-          .join('')}</linearGradient>`
-      : '';
-  const strokePaint = stops.length > 1 ? `url(#${gradId}-stroke)` : accent;
   // Generous filter region so the blur is not clipped at the group bounds.
   const glowFilter = `<filter id="${gradId}-glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4"/></filter>`;
   const grid = p.gridlines
@@ -157,12 +141,12 @@ export function renderWave(p: WaveProps): string {
     .join('');
 
   return (
-    `<defs>${gradient}${strokeGrad}${glowFilter}</defs>` +
+    `<defs>${gradient}${glowFilter}</defs>` +
     grid +
     `<path d="${area}" fill="url(#${gradId})"/>` +
     baselineLine +
-    `<g filter="url(#${gradId}-glow)"><path d="${curve}" fill="none" stroke="${strokePaint}" stroke-width="8" stroke-opacity="0.45" stroke-linecap="round"/></g>` +
-    `<path d="${curve}" fill="none" stroke="${strokePaint}" stroke-width="2.5" stroke-linecap="round"/>` +
+    `<g filter="url(#${gradId}-glow)"><path d="${curve}" fill="none" stroke="${accent}" stroke-width="8" stroke-opacity="0.45" stroke-linecap="round"/></g>` +
+    `<path d="${curve}" fill="none" stroke="${accent}" stroke-width="2.5" stroke-linecap="round"/>` +
     ticks +
     markers
   );

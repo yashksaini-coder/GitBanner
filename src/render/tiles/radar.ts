@@ -1,5 +1,5 @@
 import type { Theme } from '../../types.js';
-import { escapeXml, fitText } from '../util.js';
+import { escapeXml, fitText, r2 } from '../util.js';
 
 export interface RadarLanguage {
   name: string;
@@ -17,7 +17,6 @@ interface Pt {
   y: number;
 }
 
-const r2 = (v: number): number => Math.round(v * 100) / 100;
 
 /**
  * Place one point per value on spokes around (cx, cy). The first spoke points

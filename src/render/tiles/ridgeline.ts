@@ -1,8 +1,7 @@
 import type { Theme } from '../../types.js';
-import { escapeXml, fitText } from '../util.js';
+import { escapeXml, fitText, r2 } from '../util.js';
 import { monotonePath } from './wave.js';
 
-const r2 = (v: number): number => Math.round(v * 100) / 100;
 
 /** Depth step per ridge: deeper ridges shift right and up. */
 const DX = 14;
