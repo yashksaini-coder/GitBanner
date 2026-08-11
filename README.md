@@ -37,7 +37,7 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - uses: yashksaini-coder/GitBanner@v2
+      - uses: yashksaini-coder/GitBanner@v1
         with:
           github-token: ${{ secrets.GITBANNER_PAT }}
 ```
@@ -50,7 +50,7 @@ jobs:
 
 ### Pin to a commit SHA for stricter supply-chain safety
 
-`@v2` floats to the latest release in the v2 series. For full immutability, pin to a commit SHA:
+`@v1` floats to the latest release in the v1 series. For full immutability, pin to a commit SHA:
 
 ```yaml
 - uses: yashksaini-coder/GitBanner@<full-sha>
@@ -114,7 +114,7 @@ side by side under *own work (for contrast)*.
 
 ### The action fails with `Unrecognized named-value: 'github'`
 
-You're consuming a version `<v1.0.0` (development snapshot). Pin to `@v2`.
+You're consuming a version `<v1.0.0` (development snapshot). Pin to `@v1`.
 
 ### `dist/ is out of sync`
 
@@ -233,7 +233,7 @@ The period appears on the pull-requests and activity cards.
 
 ```yaml
 # A "what I shipped last month" card
-- uses: yashksaini-coder/GitBanner@v2
+- uses: yashksaini-coder/GitBanner@v1
   with:
     github-token: ${{ secrets.GITBANNER_PAT }}
     since: 2026-07-01
@@ -260,7 +260,7 @@ needs and skips everything nothing asked for.
 ```yaml
 # Pure external-contribution banner. Skips repository pagination entirely,
 # because no selected tile needs your own repos.
-- uses: yashksaini-coder/GitBanner@v2
+- uses: yashksaini-coder/GitBanner@v1
   with:
     github-token: ${{ secrets.GITBANNER_PAT }}
     tiles: merged-prs,activity,reviews
