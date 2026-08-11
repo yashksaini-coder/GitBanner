@@ -29,29 +29,9 @@
     <g transform="translate(32, 32)">
       <rect width="498" height="370" rx="24" fill="#0a0a0a" stroke="#1b1b1b" stroke-width="1"/>
       <text x="28" y="42" class="gb-text-bold" font-size="19" fill="#ffffff">Pull requests</text>
-      <text x="28" y="62" class="gb-text" font-size="12" fill="#6b7280">merged into other people&apos;s repos · all time</text>
-      <g transform="translate(28, 74)"><defs><linearGradient id="gbh-grad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#184f95"/><stop offset="1" stop-color="#3987e5"/></linearGradient></defs>
-      <text x="0" y="10" class="gb-text" font-size="13" fill="#9ca3af">PySnippets</text>
-      <path d="M0 14 H374 A4 4 0 0 1 378 18 V26 A4 4 0 0 1 374 30 H0 Z" fill="url(#gbh-grad)"/>
-      <text x="386" y="26" class="gb-mono" font-size="13" fill="#ffffff">71</text>
-    
-      <text x="0" y="54" class="gb-text" font-size="13" fill="#9ca3af">py-libp2p</text>
-      <path d="M0 58 H134 A4 4 0 0 1 138 62 V70 A4 4 0 0 1 134 74 H0 Z" fill="url(#gbh-grad)"/>
-      <text x="146" y="70" class="gb-mono" font-size="13" fill="#ffffff">26</text>
-    
-      <text x="0" y="98" class="gb-text" font-size="13" fill="#9ca3af">PyVerse</text>
-      <path d="M0 102 H113 A4 4 0 0 1 117 106 V114 A4 4 0 0 1 113 118 H0 Z" fill="url(#gbh-grad)"/>
-      <text x="125" y="114" class="gb-mono" font-size="13" fill="#ffffff">22</text>
-    
-      <text x="0" y="142" class="gb-text" font-size="13" fill="#9ca3af">opensre</text>
-      <path d="M0 146 H87 A4 4 0 0 1 91 150 V158 A4 4 0 0 1 87 162 H0 Z" fill="url(#gbh-grad)"/>
-      <text x="99" y="158" class="gb-mono" font-size="13" fill="#ffffff">17</text>
-    
-      <text x="0" y="186" class="gb-text" font-size="13" fill="#9ca3af">trx</text>
-      <path d="M0 190 H65 A4 4 0 0 1 69 194 V202 A4 4 0 0 1 65 206 H0 Z" fill="url(#gbh-grad)"/>
-      <text x="77" y="202" class="gb-mono" font-size="13" fill="#ffffff">13</text>
-    </g>
-      <rect x="28" y="316" width="6" height="6" rx="2" fill="#3987e5"/><text x="40" y="322" class="gb-text" font-size="11" fill="#6b7280">merged for others</text><text x="28" y="356" class="gb-display" font-size="26" fill="#ffffff">362</text><rect x="175.33333333333334" y="316" width="6" height="6" rx="2" fill="#3987e5"/><text x="187.33333333333334" y="322" class="gb-text" font-size="11" fill="#6b7280">merge rate</text><text x="175.33333333333334" y="356" class="gb-display" font-size="26" fill="#ffffff">82%</text><rect x="322.6666666666667" y="316" width="6" height="6" rx="2" fill="#3987e5"/><text x="334.6666666666667" y="322" class="gb-text" font-size="11" fill="#6b7280">last 12 months</text><text x="322.6666666666667" y="356" class="gb-display" font-size="26" fill="#ffffff">99</text>
+      <text x="28" y="62" class="gb-text" font-size="12" fill="#6b7280">merged PRs across the popularity spectrum · all time</text>
+      <g transform="translate(28, 74)"><defs><linearGradient id="gbh-wave" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3987e5" stop-opacity="0.3"/><stop offset="1" stop-color="#3987e5" stop-opacity="0"/></linearGradient><filter id="gbh-wave-glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4"/></filter></defs><line x1="0" y1="78.67" x2="442" y2="78.67" stroke="#161616" stroke-width="1"/><line x1="0" y1="145.33" x2="442" y2="145.33" stroke="#161616" stroke-width="1"/><path d="M 6 149.5 C 41.83 103.67 77.67 12 113.5 12 C 149.33 12 185.17 64.46 221 96.09 C 256.83 127.72 292.67 201.77 328.5 201.77 C 364.33 201.77 400.17 193.44 436 189.27 L 436 212 L 6 212 Z" fill="url(#gbh-wave)"/><line x1="0" y1="212" x2="442" y2="212" stroke="#161616" stroke-width="1"/><g filter="url(#gbh-wave-glow)"><path d="M 6 149.5 C 41.83 103.67 77.67 12 113.5 12 C 149.33 12 185.17 64.46 221 96.09 C 256.83 127.72 292.67 201.77 328.5 201.77 C 364.33 201.77 400.17 193.44 436 189.27" fill="none" stroke="#3987e5" stroke-width="8" stroke-opacity="0.45" stroke-linecap="round"/></g><path d="M 6 149.5 C 41.83 103.67 77.67 12 113.5 12 C 149.33 12 185.17 64.46 221 96.09 C 256.83 127.72 292.67 201.77 328.5 201.77 C 364.33 201.77 400.17 193.44 436 189.27" fill="none" stroke="#3987e5" stroke-width="2.5" stroke-linecap="round"/><text x="6" y="224" text-anchor="middle" class="gb-mono" font-size="9" fill="#6b7280">&lt;10</text><text x="113.5" y="224" text-anchor="middle" class="gb-mono" font-size="9" fill="#6b7280">10+</text><text x="221" y="224" text-anchor="middle" class="gb-mono" font-size="9" fill="#6b7280">100+</text><text x="328.5" y="224" text-anchor="middle" class="gb-mono" font-size="9" fill="#6b7280">1k+</text><text x="436" y="224" text-anchor="middle" class="gb-mono" font-size="9" fill="#6b7280">10k+</text><circle cx="113.5" cy="12" r="3.5" fill="#3987e5" stroke="#0a0a0a" stroke-width="2"/><text x="113.5" y="4" text-anchor="middle" class="gb-mono" font-size="10" fill="#ffffff">176</text><circle cx="436" cy="189.27" r="3.5" fill="#3987e5" stroke="#0a0a0a" stroke-width="2"/><text x="430" y="181.27" text-anchor="middle" class="gb-mono" font-size="10" fill="#ffffff">20</text></g>
+      <rect x="28" y="316" width="6" height="6" rx="2" fill="#3987e5"/><text x="40" y="322" class="gb-text" font-size="11" fill="#6b7280">merged for others</text><text x="28" y="356" class="gb-display" font-size="26" fill="#ffffff">362</text><rect x="175.33333333333334" y="316" width="6" height="6" rx="2" fill="#3987e5"/><text x="187.33333333333334" y="322" class="gb-text" font-size="11" fill="#6b7280">merge rate</text><text x="175.33333333333334" y="356" class="gb-display" font-size="26" fill="#ffffff">82%</text><rect x="322.6666666666667" y="316" width="6" height="6" rx="2" fill="#3987e5"/><text x="334.6666666666667" y="322" class="gb-text" font-size="10" fill="#6b7280">top repo · 71 merged</text><text x="322.6666666666667" y="356" class="gb-display" font-size="19" fill="#ffffff">PySnippets</text>
     </g>
   
     <g transform="translate(550, 32)">
