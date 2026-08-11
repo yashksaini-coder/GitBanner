@@ -31,7 +31,7 @@
       <text x="28" y="42" class="gb-text-bold" font-size="19" fill="#ffffff">Pull requests</text>
       <text x="28" y="62" class="gb-text" font-size="12" fill="#6b7280">merged PRs across the popularity spectrum · 1–9 Aug 2026</text>
       <g transform="translate(28, 74)"><line x1="0" y1="212" x2="442" y2="212" stroke="#161616" stroke-width="1"/><text x="221" y="106" text-anchor="middle" class="gb-text" font-size="13" fill="#6b7280">no external merges yet</text></g>
-      <rect x="28" y="316" width="6" height="6" rx="2" fill="#3987e5"/><text x="40" y="322" class="gb-text" font-size="11" fill="#6b7280">merged for others</text><text x="28" y="356" class="gb-display" font-size="26" fill="#ffffff">0</text><rect x="175.33333333333334" y="316" width="6" height="6" rx="2" fill="#3987e5"/><text x="187.33333333333334" y="322" class="gb-text" font-size="11" fill="#6b7280">merge rate</text><text x="175.33333333333334" y="356" class="gb-display" font-size="26" fill="#ffffff">33%</text><rect x="322.6666666666667" y="316" width="6" height="6" rx="2" fill="#3987e5"/><text x="334.6666666666667" y="322" class="gb-text" font-size="11" fill="#6b7280">top repo</text><text x="322.6666666666667" y="356" class="gb-display" font-size="26" fill="#ffffff">—</text>
+      <rect x="28" y="316" width="6" height="6" rx="2" fill="#3987e5"/><text x="40" y="322" class="gb-text" font-size="11" fill="#6b7280">merged for others</text><text x="28" y="356" class="gb-display" font-size="26" fill="#ffffff">0</text><rect x="175.33333333333334" y="316" width="6" height="6" rx="2" fill="#3987e5"/><text x="187.33333333333334" y="322" class="gb-text" font-size="11" fill="#6b7280">merge rate</text><text x="175.33333333333334" y="356" class="gb-display" font-size="26" fill="#ffffff">0%</text><rect x="322.6666666666667" y="316" width="6" height="6" rx="2" fill="#3987e5"/><text x="334.6666666666667" y="322" class="gb-text" font-size="11" fill="#6b7280">top repo</text><text x="322.6666666666667" y="356" class="gb-display" font-size="26" fill="#ffffff">—</text>
     </g>
   
     <g transform="translate(550, 32)">
@@ -63,14 +63,14 @@
       <text x="28" y="42" class="gb-text-bold" font-size="19" fill="#ffffff">Projects shipped to</text>
       <text x="28" y="62" class="gb-text" font-size="12" fill="#6b7280">one hex per open source project · heat = merged PRs</text>
       <g transform="translate(28, 74)"></g>
-      <rect x="28" y="316" width="6" height="6" rx="2" fill="#3987e5"/><text x="40" y="322" class="gb-text" font-size="11" fill="#6b7280">projects · 2+ PRs</text><text x="28" y="356" class="gb-display" font-size="26" fill="#ffffff">0</text><rect x="175.33333333333334" y="316" width="6" height="6" rx="2" fill="#3987e5"/><text x="187.33333333333334" y="322" class="gb-text" font-size="11" fill="#6b7280">maintainers &amp; orgs</text><text x="175.33333333333334" y="356" class="gb-display" font-size="26" fill="#ffffff">0</text><rect x="322.6666666666667" y="316" width="6" height="6" rx="2" fill="#3987e5"/><text x="334.6666666666667" y="322" class="gb-text" font-size="11" fill="#6b7280">most in one repo</text><text x="322.6666666666667" y="356" class="gb-display" font-size="26" fill="#ffffff">—</text>
+      <rect x="28" y="316" width="6" height="6" rx="2" fill="#3987e5"/><text x="40" y="322" class="gb-text" font-size="11" fill="#6b7280">projects · all PRs</text><text x="28" y="356" class="gb-display" font-size="26" fill="#ffffff">0</text><rect x="175.33333333333334" y="316" width="6" height="6" rx="2" fill="#3987e5"/><text x="187.33333333333334" y="322" class="gb-text" font-size="11" fill="#6b7280">maintainers &amp; orgs</text><text x="175.33333333333334" y="356" class="gb-display" font-size="26" fill="#ffffff">0</text><rect x="322.6666666666667" y="316" width="6" height="6" rx="2" fill="#3987e5"/><text x="334.6666666666667" y="322" class="gb-text" font-size="11" fill="#6b7280">most in one repo</text><text x="322.6666666666667" y="356" class="gb-display" font-size="26" fill="#ffffff">—</text>
     </g>
   
     <g transform="translate(1068, 422)">
       <rect width="498" height="370" rx="24" fill="#0a0a0a" stroke="#1b1b1b" stroke-width="1"/>
       <text x="28" y="42" class="gb-text-bold" font-size="19" fill="#ffffff">Issues</text>
       <text x="28" y="62" class="gb-text" font-size="12" fill="#6b7280">opened by you · 1–9 Aug 2026</text>
-      <g transform="translate(28, 74)"><text x="221" y="113" text-anchor="middle" class="gb-text" font-size="13" fill="#6b7280">no issue history in range</text></g>
+      <g transform="translate(28, 74)"><defs><linearGradient id="gbi-stream" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#199e70" stop-opacity="0.12"/><stop offset="0.5" stop-color="#199e70" stop-opacity="0.55"/><stop offset="1" stop-color="#199e70" stop-opacity="0.12"/></linearGradient><filter id="gbi-stream-glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5"/></filter></defs><ellipse cx="221" cy="105" rx="106.08" ry="75" fill="url(#gbi-stream)" filter="url(#gbi-stream-glow)"/><ellipse cx="221" cy="105" rx="106.08" ry="75" fill="url(#gbi-stream)"/><line x1="221" y1="14" x2="221" y2="196" stroke="#161616" stroke-width="1"/><rect x="204" y="2" width="34" height="20" rx="10" fill="#0d0d10" stroke="#1b1b1b" stroke-width="1"/><text x="221" y="16" text-anchor="middle" class="gb-mono" font-size="10" fill="#ffffff">3</text><text x="221" y="223" text-anchor="middle" class="gb-mono" font-size="9" fill="#6b7280">2026</text></g>
       <rect x="28" y="316" width="6" height="6" rx="2" fill="#199e70"/><text x="40" y="322" class="gb-text" font-size="11" fill="#6b7280">opened in range</text><text x="28" y="356" class="gb-display" font-size="26" fill="#ffffff">3</text>
     </g>
   
@@ -78,7 +78,6 @@
       <rect width="498" height="140" rx="22" fill="#0a0a0a" stroke="#1b1b1b" stroke-width="1"/>
       <text x="24" y="38" class="gb-text-bold" font-size="15" fill="#ffffff">Top projects · 1–9 Aug 2026</text>
       <text x="24" y="84" class="gb-display" font-size="30" fill="#ffffff">—</text>
-      
       <text x="24" y="114" class="gb-text" font-size="12" fill="#6b7280">no external merges yet</text>
       
     </g>
@@ -86,15 +85,14 @@
     <g transform="translate(550, 812)">
       <rect width="498" height="140" rx="22" fill="#0a0a0a" stroke="#1b1b1b" stroke-width="1"/>
       <text x="24" y="38" class="gb-text-bold" font-size="15" fill="#ffffff">Merge rate</text>
-      <text x="24" y="84" class="gb-display" font-size="30" fill="#ffffff">33%</text>
-      
-      <text x="24" y="114" class="gb-text" font-size="12" fill="#6b7280">1 of 3 PRs · spark: merges per month</text>
+      <text x="24" y="84" class="gb-display" font-size="30" fill="#ffffff">0%</text>
+      <text x="24" y="114" class="gb-text" font-size="12" fill="#6b7280">0 of 3 PRs · spark: merges per month</text>
       <rect x="312" y="108" width="8" height="6" rx="4" fill="#3987e5" fill-opacity="1"/><rect x="326" y="108" width="8" height="6" rx="4" fill="#3987e5" fill-opacity="0.75"/><rect x="340" y="108" width="8" height="6" rx="4" fill="#3987e5" fill-opacity="0.75"/><rect x="354" y="108" width="8" height="6" rx="4" fill="#3987e5" fill-opacity="0.75"/><rect x="368" y="108" width="8" height="6" rx="4" fill="#3987e5" fill-opacity="0.75"/><rect x="382" y="108" width="8" height="6" rx="4" fill="#3987e5" fill-opacity="0.75"/><rect x="396" y="108" width="8" height="6" rx="4" fill="#3987e5" fill-opacity="0.75"/><rect x="410" y="108" width="8" height="6" rx="4" fill="#3987e5" fill-opacity="0.75"/><rect x="424" y="108" width="8" height="6" rx="4" fill="#3987e5" fill-opacity="0.75"/><rect x="438" y="108" width="8" height="6" rx="4" fill="#3987e5" fill-opacity="0.75"/><rect x="452" y="108" width="8" height="6" rx="4" fill="#3987e5" fill-opacity="0.75"/><rect x="466" y="108" width="8" height="6" rx="4" fill="#3987e5" fill-opacity="0.75"/>
     </g>
   
     <g transform="translate(1068, 812)">
       <rect width="498" height="140" rx="22" fill="#0a0a0a" stroke="#1b1b1b" stroke-width="1"/>
-      <text x="24" y="38" class="gb-text-bold" font-size="15" fill="#ffffff">Stars earned · 815 total</text>
+      <text x="24" y="38" class="gb-text-bold" font-size="15" fill="#ffffff">Stars earned · 806 total</text>
       <text x="24" y="68" class="gb-mono" font-size="12" fill="#199e70">1</text><text x="42" y="68" class="gb-text" font-size="13" fill="#9ca3af">Rustlens</text><text x="288" y="68" text-anchor="end" class="gb-mono" font-size="13" fill="#ffffff">158 stars</text><text x="24" y="94" class="gb-mono" font-size="12" fill="#199e70">2</text><text x="42" y="94" class="gb-text" font-size="13" fill="#9ca3af">Leetcode-Journal</text><text x="288" y="94" text-anchor="end" class="gb-mono" font-size="13" fill="#ffffff">26 stars</text><text x="24" y="120" class="gb-mono" font-size="12" fill="#199e70">3</text><text x="42" y="120" class="gb-text" font-size="13" fill="#9ca3af">Prodigy-InfoTech</text><text x="288" y="120" text-anchor="end" class="gb-mono" font-size="13" fill="#ffffff">25 stars</text>
       <rect x="360" y="26" width="9" height="88" rx="4.5" fill="#199e70" fill-opacity="1"/><rect x="375" y="100" width="9" height="14" rx="4.5" fill="#199e70" fill-opacity="0.75"/><rect x="390" y="100" width="9" height="14" rx="4.5" fill="#199e70" fill-opacity="0.75"/><rect x="405" y="100" width="9" height="14" rx="4.5" fill="#199e70" fill-opacity="0.75"/><rect x="420" y="101" width="9" height="13" rx="4.5" fill="#199e70" fill-opacity="0.75"/><rect x="435" y="103" width="9" height="11" rx="4.5" fill="#199e70" fill-opacity="0.75"/><rect x="450" y="103" width="9" height="11" rx="4.5" fill="#199e70" fill-opacity="0.75"/><rect x="465" y="103" width="9" height="11" rx="4.5" fill="#199e70" fill-opacity="0.75"/>
     </g>
