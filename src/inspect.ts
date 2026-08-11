@@ -255,7 +255,7 @@ Options
 Examples
   npm run inspect -- -u yashksaini-coder
   npm run inspect -- -u yashksaini-coder --tiles merged-prs,reviews
-  npm run --silent inspect -- -u yashksaini-coder --json | jq '.stats.combinedReach'
+  npm run --silent inspect -- -u yashksaini-coder --json | jq '.stats.prsMergedExternal'
 `);
 }
 
