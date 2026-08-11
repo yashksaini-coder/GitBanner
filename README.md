@@ -25,7 +25,10 @@ Inspired by the [githubtimeline.com](https://githubtimeline.com) layout.
 name: Refresh GitBanner
 on:
   schedule:
-    - cron: '0 6 * * 0'   # every Sunday at 06:00 UTC
+    # Daily at an off-peak odd minute — GitHub delays crons scheduled at
+    # popular times. The card only commits when your numbers actually changed,
+    # so quiet days cost nothing.
+    - cron: '47 2 * * *'
   workflow_dispatch:
 jobs:
   refresh:
@@ -236,6 +239,23 @@ The period appears on the pull-requests and activity cards.
     since: 2026-07-01
     until: 2026-07-31
     output-path: out/gitbanner-july
+```
+
+Hardcoded dates go stale. For a card that always shows your recent work,
+compute a rolling window in the workflow instead:
+
+```yaml
+- name: Compute the rolling 30-day window
+  id: window
+  run: |
+    echo "since=$(date -u -d '29 days ago' +%F)" >> "$GITHUB_OUTPUT"
+    echo "until=$(date -u +%F)" >> "$GITHUB_OUTPUT"
+- uses: yashksaini-coder/GitBanner@v1
+  with:
+    github-token: ${{ secrets.GITBANNER_PAT }}
+    since: ${{ steps.window.outputs.since }}
+    until: ${{ steps.window.outputs.until }}
+    output-path: out/gitbanner-30d
 ```
 
 Both bounds are inclusive whole UTC days. GitHub caps contribution windows at

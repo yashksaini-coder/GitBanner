@@ -2,8 +2,17 @@ name: Refresh GitBanner
 
 on:
   schedule:
-    - cron: '0 6 * * 0'
+    # Daily, off-peak odd minute: GitHub delays or drops crons scheduled at
+    # popular times (top of the hour, especially midnight UTC). The output is
+    # byte-stable, so quiet days produce no commit — the cost of daily is zero
+    # and the headline numbers are never more than a day stale.
+    - cron: '47 2 * * *'
   workflow_dispatch:
+  push:
+    branches: [main]
+    # A released code change refreshes the cards immediately. The refresh
+    # commit below touches only out/, so this cannot loop.
+    paths: ['dist/**']
 
 jobs:
   refresh:
@@ -12,12 +21,47 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - uses: ./
+
+      - name: Compute the rolling 30-day window
+        id: window
+        run: |
+          # buildWindow treats both bounds as inclusive whole UTC days,
+          # so 29 days ago .. today is exactly 30 days.
+          echo "since=$(date -u -d '29 days ago' +%F)" >> "$GITHUB_OUTPUT"
+          echo "until=$(date -u +%F)" >> "$GITHUB_OUTPUT"
+
+      - name: All-time card
+        uses: ./
         with:
           github-token: ${{ secrets.GITBANNER_PAT }}
           username: ${{ github.repository_owner }}
           theme: dark
           format: both
           include-private: true
-          commit: true
+          commit: false
           output-path: out/gitbanner
+
+      - name: Rolling 30-day card
+        uses: ./
+        with:
+          github-token: ${{ secrets.GITBANNER_PAT }}
+          username: ${{ github.repository_owner }}
+          theme: dark
+          format: both
+          include-private: true
+          since: ${{ steps.window.outputs.since }}
+          until: ${{ steps.window.outputs.until }}
+          commit: false
+          output-path: out/gitbanner-30d
+
+      - name: Commit refreshed cards
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add out/
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "chore: refresh GitBanner cards"
+          git push || { git pull --rebase && git push; }
