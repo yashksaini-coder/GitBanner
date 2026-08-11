@@ -102,3 +102,31 @@ describe('renderHexCluster', () => {
   });
 });
 
+
+describe('renderStream', () => {
+  it('renders a single period as a lens, not the empty state', async () => {
+    const { renderStream } = await import('../src/render/tiles/stream.js');
+    // A windowed card (or an account created this year) yields one station.
+    const svg = renderStream({
+      w: 440, h: 226,
+      stations: [{ label: '2026', value: 40 }],
+      accent: '#199e70', gradId: 'gbi-test', theme: dark,
+      emptyText: 'no issue history in range',
+    });
+    expect(svg).not.toContain('no issue history in range');
+    expect(svg).toContain('<ellipse');
+    expect(svg).toContain('>40<');
+    expect(svg).toContain('2026');
+  });
+
+  it('keeps the empty state for zero values', async () => {
+    const { renderStream } = await import('../src/render/tiles/stream.js');
+    const svg = renderStream({
+      w: 440, h: 226,
+      stations: [{ label: '2026', value: 0 }],
+      accent: '#199e70', gradId: 'gbi-test', theme: dark,
+      emptyText: 'no issue history in range',
+    });
+    expect(svg).toContain('no issue history in range');
+  });
+});
