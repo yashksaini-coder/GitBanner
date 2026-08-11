@@ -191,6 +191,17 @@ export function aggregate(
     null as (typeof ownRepos)[number] | null,
   );
 
+  // The current calendar year's external repo ranking; on a windowed card the
+  // window already scopes the PRs, so the "year" is the window itself.
+  const thisYearRepos = raw.window
+    ? allExternalRepos
+    : groupExternalRepos(
+        externalPrs.filter(
+          (pr) =>
+            new Date(pr.mergedAt).getUTCFullYear() === new Date().getUTCFullYear(),
+        ),
+      );
+
   // On a windowed card the all-time PR/issue totals were never fetched; the
   // window equivalents come from contributionsCollection instead.
   const period = raw.window ? sumPeriods(raw.reviewYears) : null;
@@ -218,17 +229,12 @@ export function aggregate(
     // PRs into huge repos belong in the top decade, honestly. All-time cards
     // scope to the current UTC year (the tile tells this year's story); a
     // windowed card's PRs are already range-filtered, so no extra year filter.
-    popularitySpectrum: bucketByPopularity(
-      raw.window
-        ? allExternalRepos
-        : groupExternalRepos(
-            externalPrs.filter(
-              (pr) =>
-                new Date(pr.mergedAt).getUTCFullYear() ===
-                new Date().getUTCFullYear(),
-            ),
-          ),
-    ),
+    popularitySpectrum: bucketByPopularity(thisYearRepos),
+    // This year's ranking for the top-projects mini; falls back to the
+    // all-time list at the tile when the year is empty.
+    topExternalThisYear: thisYearRepos
+      .slice(0, 8)
+      .map((r) => ({ name: r.name, value: r.mergedPrs })),
     issuesByYear: raw.reviewYears.map((y) => ({
       year: y.year,
       opened: y.issuesOpened,
@@ -249,6 +255,10 @@ export function aggregate(
     ownStars,
     ownRepoCount: ownRepos.length,
     ownTopRepo: ownTop ? { name: ownTop.name, stars: ownTop.stars } : null,
+    ownTopRepos: [...ownRepos]
+      .sort((a, b) => b.stars - a.stars)
+      .slice(0, 8)
+      .map((r) => ({ name: r.name, stars: r.stars })),
 
     followers: raw.profile.followers,
     following: raw.profile.following,

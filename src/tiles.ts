@@ -24,10 +24,6 @@ export interface TileDef {
 
 const n = (value: number): string => value.toLocaleString('en-US');
 
-function trunc(s: string, max: number): string {
-  return s.length <= max ? s : s.slice(0, max - 1) + '…';
-}
-
 /** "in the last week" vs "all time" — keeps captions honest on a scoped card. */
 function scope(p: StatsPayload): string {
   return p.periodLabel ?? 'all time';
@@ -265,18 +261,29 @@ export const TILES: Record<string, TileDef> = {
   'biggest-project': {
     kind: 'mini',
     needs: ['prs'],
-    render: (p, theme, box) =>
-      renderMiniTile({
+    render: (p, theme, box) => {
+      // This year's ranking; an empty year falls back to all time, labelled.
+      const year = new Date().getUTCFullYear();
+      const thisYear = p.topExternalThisYear;
+      const list = thisYear.length > 0 ? thisYear : topExternalByPrs(p, 8);
+      const scopeLabel = p.periodLabel ?? (thisYear.length > 0 ? String(year) : 'all time');
+      const [first, second, third] = list;
+      return renderMiniTile({
         ...box,
-        iconKey: 'trophy',
-        iconColor: theme.textMuted,
-        label: 'Biggest project',
-        value: p.biggestProject?.name ?? '—',
-        subLine: p.biggestProject
-          ? `${n(p.biggestProject.stars)} stars · ${n(p.biggestProject.mergedPrs)} merged`
-          : 'no external merges yet',
+        accent: theme.accents.prs,
+        title: `Top projects · ${scopeLabel}`,
+        value: first?.name ?? '—',
+        delta: first ? `↑ ${n(first.value)} merged` : undefined,
+        subLine:
+          second || third
+            ? ['2nd ' + (second?.name ?? '—'), third ? '3rd ' + third.name : '']
+                .filter(Boolean)
+                .join(' · ')
+            : 'no external merges yet',
+        spark: list.map((r) => r.value),
         theme,
-      }),
+      });
+    },
   },
 
   'merge-rate': {
@@ -285,11 +292,11 @@ export const TILES: Record<string, TileDef> = {
     render: (p, theme, box) =>
       renderMiniTile({
         ...box,
-        iconKey: 'check-circle',
-        iconColor: theme.textMuted,
-        label: 'Merge rate',
+        accent: theme.accents.prs,
+        title: 'Merge rate',
         value: `${p.mergeRatePct}%`,
-        subLine: `${n(p.prsMerged)} of ${n(p.prsOpened)} PRs`,
+        subLine: `${n(p.prsMerged)} of ${n(p.prsOpened)} PRs · spark: merges per month`,
+        spark: p.monthlyExternalMerges.map((m) => m.count),
         theme,
       }),
   },
@@ -297,18 +304,22 @@ export const TILES: Record<string, TileDef> = {
   'own-stars': {
     kind: 'mini',
     needs: ['ownRepos'],
-    render: (p, theme, box) =>
-      renderMiniTile({
+    render: (p, theme, box) => {
+      const [first, second] = p.ownTopRepos;
+      return renderMiniTile({
         ...box,
-        iconKey: 'star',
-        iconColor: theme.textMuted,
-        label: 'Stars earned',
+        accent: theme.accents.languages,
+        title: 'Stars earned',
         value: n(p.ownStars),
-        subLine: p.ownTopRepo
-          ? `top: ${trunc(p.ownTopRepo.name, 16)} · ${n(p.ownTopRepo.stars)} stars`
+        subLine: first
+          ? [`top ${first.name} ${n(first.stars)}`, second ? `2nd ${second.name}` : '']
+              .filter(Boolean)
+              .join(' · ')
           : `across ${n(p.ownRepoCount)} repos you built`,
+        spark: p.ownTopRepos.map((r) => r.stars),
         theme,
-      }),
+      });
+    },
   },
 };
 

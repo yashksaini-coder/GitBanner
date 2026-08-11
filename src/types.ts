@@ -152,6 +152,8 @@ export interface StatsPayload {
    * sums to the current-year external merge count, not the all-time headline.
    */
   popularitySpectrum: { label: string; count: number }[];
+  /** This calendar year's external repos ranked by merged PRs (top 8). */
+  topExternalThisYear: TopRepo[];
 
   // Reviews
   reviewsTotal: number;
@@ -174,6 +176,8 @@ export interface StatsPayload {
   ownRepoCount: number;
   /** The user's highest-starred own repo (never a private name unless asked). */
   ownTopRepo: { name: string; stars: number } | null;
+  /** Top own repos by stars (same visibility rules), for the mini sparkline. */
+  ownTopRepos: { name: string; stars: number }[];
 
   followers: number;
   following: number;

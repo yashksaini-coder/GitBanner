@@ -90,9 +90,14 @@ describe('toSvg', () => {
     expect(svg).toContain('#0a0a0a');
   });
 
-  it('shows stars earned with the highest-starred own repo', () => {
+  it('minis carry sparklines, top-3 names and honest deltas', () => {
     expect(svg).toContain('Stars earned');
     expect(svg).toContain(stats.ownTopRepo!.name);
+    expect(svg).toContain('Top projects ·');
+    // spark bars render (rounded rects) and the year list drives the delta
+    const list = stats.topExternalThisYear.length > 0 ? stats.topExternalThisYear : stats.externalRepos.map((r) => ({ name: r.name, value: r.mergedPrs }));
+    expect(svg).toContain(`↑ ${list[0].value.toLocaleString('en-US')} merged`);
+    expect(svg).toContain('spark: merges per month');
   });
 
   it('ships-in lists all languages with a +N overflow, never just the primary', () => {

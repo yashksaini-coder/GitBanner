@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed — reference-style mini row
+
+- The three bottom minis adopt the compact reference anatomy: bold title,
+  big value with an honest green delta where one exists, muted sub-line,
+  and a rounded-bar sparkline on the right (bottom-anchored — the candle
+  look without centre-anchored bars misstating values). Icons removed.
+- **Top projects** replaces Biggest project: this calendar year's external
+  ranking (falls back to all time when the year is empty, labelled), top-3
+  named in the card, top-8 as the sparkline, the #1's merge count as the
+  delta.
+- **Merge rate** sparks the last 12 months of external merges.
+- **Stars earned** names the top-2 own repos and sparks the top 8 by stars.
+
 ### Changed — year-scoped spectrum, review ridgeline
 
 - The Pull requests popularity spectrum now charts the CURRENT year's merges
