@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed — reference card anatomy
+
+- Chart cards adopt the hyper-chart anatomy end to end: bold title (icons
+  removed — the chart is the identity), the chart given the freed space, the
+  headline numbers BELOW the chart as a two-column stat pair, metric rows at
+  the bottom.
+- **Projects hex goes heat**: cold slate → ember → gold core, log-scaled,
+  with the scale legend that licenses a multi-hue sequential ramp. Its rows
+  now show merged-PR counts instead of stars.
+- **Issues card gets a yearly wave** of issues you opened (the resolution
+  rate and still-open count sit below it); the arc meter is retired.
+- **Activity wave** gains faint gridlines and a ridge-style green→blue→violet
+  stroke gradient, plus a best-month stat.
+
 ### Changed — hyper-chart cards on pure black
 
 - **Three-column card grid** (1600x964): six chart cards in two rows plus a
