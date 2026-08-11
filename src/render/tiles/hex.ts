@@ -1,5 +1,4 @@
 import type { Theme } from '../../types.js';
-import { escapeXml } from '../util.js';
 
 export interface AxialHex {
   q: number;
@@ -45,8 +44,7 @@ export function hexSpiral(n: number): AxialHex[] {
 
 /**
  * Heat ramp, reference style: cool dark slate → ember red → gold core.
- * A multi-hue sequential ramp is legal only as semantic heat WITH a scale
- * legend — renderHexCluster always draws one.
+ * The card caption carries the scale meaning ('heat = merged PRs').
  */
 const HEAT_STOPS: readonly (readonly [number, number, number])[] = [
   [0x25, 0x2b, 0x45], // low: dark slate
@@ -116,10 +114,8 @@ export function renderHexCluster(p: {
   h: number;
   values: number[];
   theme: Theme;
-  /** Unique id prefix for the legend gradient. */
-  gradId: string;
 }): string {
-  const { w, h, values, theme } = p;
+  const { w, h, values } = p;
   if (values.length === 0) return '';
   const cells = hexSpiral(values.length);
 
@@ -139,25 +135,11 @@ export function renderHexCluster(p: {
   const oy = h / 2 - (b.minY + b.maxY) / 2;
   const max = Math.max(...values);
 
-  const hexes = cells
+  return cells
     .map((c, i) => {
       const { x, y } = cellCenter(c, size);
       return `<polygon points="${hexPoints(x + ox, y + oy, size)}" fill="${intensityColor(values[i], max)}" stroke="#000000" stroke-opacity="0.6" stroke-width="1"/>`;
     })
     .join('');
-
-  // The scale legend that licenses the multi-hue heat ramp: a small gradient
-  // strip with the min and max values, bottom-right of the zone.
-  const lw = 56;
-  const lx = w - lw - 30;
-  const ly = h - 10;
-  const min = Math.min(...values);
-  const legendGrad = `<linearGradient id="${escapeXml(p.gradId)}-legend" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="${intensityColor(min, max)}"/><stop offset="0.5" stop-color="${intensityColor(Math.exp(Math.log(1 + max) / 2) - 1, max)}"/><stop offset="1" stop-color="${intensityColor(max, max)}"/></linearGradient>`;
-  const legend =
-    `<defs>${legendGrad}</defs>` +
-    `<text x="${r2(lx - 6)}" y="${ly + 3}" text-anchor="end" class="gb-mono" font-size="9" fill="${theme.textMuted}">${min}</text>` +
-    `<rect x="${lx}" y="${ly - 6}" width="${lw}" height="7" rx="3.5" fill="url(#${escapeXml(p.gradId)}-legend)"/>` +
-    `<text x="${r2(lx + lw + 6)}" y="${ly + 3}" class="gb-mono" font-size="9" fill="${theme.textMuted}">${max}</text>`;
-
-  return hexes + legend;
 }
+

@@ -54,19 +54,25 @@ describe('toSvg', () => {
     expect(TILES['momentum']).toBeUndefined();
   });
 
-  it('draws the heat hex cluster with its scale legend', () => {
+  it('draws the heat hex cluster, no legend strip, no per-repo rows', () => {
     expect(svg).toContain('<polygon points=');
-    expect(svg).toContain('one hex per project');
-    expect(svg).toContain('gbx-hex-legend');
+    expect(svg).toContain('one hex per open source project');
+    // the legend strip and dot-rows were removed by design
+    expect(svg).not.toContain('-legend');
     // heat ramp endpoints: cold slate low, gold core high
     expect(svg.toLowerCase()).toContain('#f2c14e');
   });
 
-  it('rows carry merged-PR counts, not stars, on the projects card', () => {
-    expect(svg).toMatch(/\d+ merged</);
-    // stars survive only in the mini row (stars earned / biggest project)
+  it('projects card carries collective open-source metrics, not stars', () => {
+    expect(svg).toContain('maintainers &amp; orgs');
+    expect(svg).toContain('most in one repo');
     const projectsCard = svg.slice(svg.indexOf('Projects shipped to'), svg.indexOf('Issues'));
     expect(projectsCard).not.toContain('stars');
+  });
+
+  it('every card ends in a stat row, not dot rows', () => {
+    expect(svg).not.toContain('Opened'); // folded into the issues stat trio
+    expect(svg).toContain(`of ${stats.issuesOpened.toLocaleString('en-US')} opened`);
   });
 
   it('renders the pure-black theme', () => {

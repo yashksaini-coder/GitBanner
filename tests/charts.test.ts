@@ -30,7 +30,7 @@ describe('hexSpiral', () => {
 describe('renderHexCluster', () => {
   it('emits one polygon per value with the strongest (first) value brightest', () => {
     const values = [40, 9, 3, 1, 1];
-    const svg = renderHexCluster({ gradId: 'thex', w: 440, h: 128, values, theme: dark });
+    const svg = renderHexCluster({ w: 440, h: 128, values, theme: dark });
     const fills = [...svg.matchAll(/<polygon [^>]*fill="(#[0-9a-f]{6})"/g)].map((m) => m[1]);
     expect(fills).toHaveLength(values.length);
     // max value → t=1 → exact bright end of the ramp, at the spiral centre.
@@ -48,7 +48,7 @@ describe('renderHexCluster', () => {
   });
 
   it('stays inside the zone and keeps hexes at least radius 5', () => {
-    const svg = renderHexCluster({ gradId: 'thex', w: 200, h: 60, values: Array(30).fill(2), theme: dark });
+    const svg = renderHexCluster({ w: 200, h: 60, values: Array(30).fill(2), theme: dark });
     const coords = [...svg.matchAll(/points="([^"]+)"/g)]
       .flatMap((m) => m[1].split(' '))
       .map((pair) => pair.split(',').map(Number));
@@ -61,7 +61,7 @@ describe('renderHexCluster', () => {
   });
 
   it('renders nothing for an empty value list', () => {
-    expect(renderHexCluster({ gradId: 'thex', w: 100, h: 100, values: [], theme: dark })).toBe('');
+    expect(renderHexCluster({ w: 100, h: 100, values: [], theme: dark })).toBe('');
   });
 });
 

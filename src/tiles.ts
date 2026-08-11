@@ -58,9 +58,9 @@ export const TILES: Record<string, TileDef> = {
         title: 'Pull requests',
         caption: `merged into other people's repos · ${scope(p)}`,
         chart: chartGroup(box.w, renderBars({
-          entries: topExternalByPrs(p, 4).map((r) => ({ label: r.name, value: r.value })),
+          entries: topExternalByPrs(p, 5).map((r) => ({ label: r.name, value: r.value })),
           w: box.w - 2 * PAD,
-          pitch: 40,
+          pitch: 44,
           gradId: 'gbh-grad',
           gradFrom: '#184f95',
           gradTo: '#3987e5',
@@ -69,15 +69,7 @@ export const TILES: Record<string, TileDef> = {
         stats: [
           { value: n(p.prsMergedExternal), label: 'merged for others' },
           { value: `${p.mergeRatePct}%`, label: 'merge rate' },
-        ],
-        rows: [
-          p.biggestProject
-            ? {
-                label: `Biggest · ${trunc(p.biggestProject.name, 14)}`,
-                value: `${n(p.biggestProject.mergedPrs)} merged`,
-              }
-            : { label: 'Biggest project', value: '—' },
-          { label: 'Active this year', value: `${n(p.recentExternalRepoCount)} projects` },
+          { value: n(p.recentExternalPrs), label: 'last 12 months' },
         ],
         theme,
       }),
@@ -112,8 +104,8 @@ export const TILES: Record<string, TileDef> = {
             value: n(peak.count),
             label: peak.count > 0 ? `best month · ${MONTHS[peak.month]}` : 'best month',
           },
+          { value: n(Math.round(p.recentExternalPrs / 12)), label: 'avg per month' },
         ],
-        rows: [],
         theme,
       });
     },
@@ -140,8 +132,11 @@ export const TILES: Record<string, TileDef> = {
         stats: [
           { value: n(p.languageCount), label: 'languages' },
           { value: p.languages[0]?.name ?? '—', label: 'most used' },
+          {
+            value: p.languages[0] ? n(p.languages[0].repos) : '—',
+            label: 'projects use it',
+          },
         ],
-        rows: [],
         theme,
       }),
   },
@@ -158,7 +153,7 @@ export const TILES: Record<string, TileDef> = {
         chart: chartGroup(box.w, renderBars({
           entries: p.topReviewedRepos.slice(0, 4).map((r) => ({ label: r.name, value: r.value })),
           w: box.w - 2 * PAD,
-          pitch: 40,
+          pitch: 50,
           gradId: 'gbrv-grad',
           gradFrom: '#8a3416',
           gradTo: '#d95926',
@@ -167,8 +162,11 @@ export const TILES: Record<string, TileDef> = {
         stats: [
           { value: n(p.reviewsExternal), label: 'for others' },
           { value: n(p.reviewsTotal), label: 'total reviews' },
+          {
+            value: p.reviewsTotal > 0 ? `${Math.round((p.reviewsExternal / p.reviewsTotal) * 100)}%` : '—',
+            label: 'external share',
+          },
         ],
-        rows: [],
         theme,
       }),
   },
@@ -178,26 +176,25 @@ export const TILES: Record<string, TileDef> = {
     needs: ['prs'],
     render: (p, theme, box) => {
       const most = p.externalRepos[0];
+      const maintainers = new Set(
+        p.externalRepos.map((r) => r.nameWithOwner.split('/')[0].toLowerCase()),
+      ).size;
       return renderStatTile({
         ...box,
         accent: theme.accents.prs,
         title: 'Projects shipped to',
-        caption: 'one hex per project · heat = merged PRs',
+        caption: 'one hex per open source project · heat = merged PRs',
         chart: chartGroup(box.w, renderHexCluster({
           w: box.w - 2 * PAD,
           h: CHART_H,
           values: p.externalRepos.map((r) => r.mergedPrs),
-          gradId: 'gbx-hex',
           theme,
         })),
         stats: [
-          { value: n(p.externalRepoCount), label: 'projects · 2+ merged PRs' },
+          { value: n(p.externalRepoCount), label: 'projects · 2+ PRs' },
+          { value: n(maintainers), label: 'maintainers & orgs' },
           { value: most ? n(most.mergedPrs) : '—', label: 'most in one repo' },
         ],
-        rows: topExternalByPrs(p, 2).map((r) => ({
-          label: trunc(r.name, 18),
-          value: `${n(r.value)} merged`,
-        })),
         theme,
       });
     },
@@ -234,7 +231,6 @@ export const TILES: Record<string, TileDef> = {
           caption: `opened by you · ${scope(p)}`,
           chart: wave,
           stats: [{ value: n(p.issuesOpened), label: 'opened in range' }],
-          rows: [],
           theme,
         });
       }
@@ -247,11 +243,8 @@ export const TILES: Record<string, TileDef> = {
         chart: wave,
         stats: [
           { value: `${pct}%`, label: 'resolved' },
+          { value: n(closed), label: `of ${n(p.issuesOpened)} opened` },
           { value: n(Math.max(0, p.issuesOpened - closed)), label: 'still open' },
-        ],
-        rows: [
-          { label: 'Opened', value: n(p.issuesOpened) },
-          { label: 'Resolved', value: n(closed) },
         ],
         theme,
       });
