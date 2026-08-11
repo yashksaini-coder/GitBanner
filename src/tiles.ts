@@ -1,6 +1,6 @@
 import { topExternalByPrs } from './compute.js';
 import { renderColumns } from './render/tiles/columns.js';
-import { renderDashRows } from './render/tiles/dashes.js';
+import { renderWave } from './render/tiles/wave.js';
 import { renderStream } from './render/tiles/stream.js';
 import { renderHexCluster } from './render/tiles/hex.js';
 import { renderLanguagesChart } from './render/tiles/languages-tile.js';
@@ -47,26 +47,32 @@ export const TILES: Record<string, TileDef> = {
     kind: 'card',
     needs: ['prs'],
     render: (p, theme, box) => {
+      // This year's leader, matching the chart's year scope; all-time fallback.
+      const top = p.topExternalThisYear[0] ?? topExternalByPrs(p, 1)[0];
       return renderStatTile({
         ...box,
         accent: theme.accents.prs,
         title: 'Pull requests',
-        caption: `top repos by merged PRs · ${p.periodLabel ?? new Date().getUTCFullYear()}`,
-        chart: chartGroup(box.w, renderDashRows({
+        caption: `merged PRs across the popularity spectrum · ${p.periodLabel ?? new Date().getUTCFullYear()}`,
+        // Area under the curve = your merged work, laid out by how popular
+        // the receiving project is (fixed log-decade star buckets).
+        chart: chartGroup(box.w, renderWave({
           w: box.w - 2 * PAD,
           h: CHART_H,
-          rows: (p.topExternalThisYear.length > 0
-            ? p.topExternalThisYear
-            : topExternalByPrs(p, 5)
-          ).slice(0, 5).map((r) => ({ label: r.name, value: r.value })),
+          points: p.popularitySpectrum,
           accent: theme.accents.prs,
+          gradId: 'gbh-wave',
+          gridlines: true,
+          tickEvery: 1,
           emptyText: 'no external merges yet',
           theme,
         })),
         stats: [
           { value: n(p.prsMergedExternal), label: 'merged for others' },
           { value: `${p.mergeRatePct}%`, label: 'merge rate' },
-          { value: n(p.recentExternalRepoCount), label: 'projects this year' },
+          top
+            ? { value: top.name, label: `top repo · ${n(top.value)} merged` }
+            : { value: '—', label: 'top repo' },
         ],
         theme,
       });
