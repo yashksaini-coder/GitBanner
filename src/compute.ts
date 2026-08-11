@@ -12,6 +12,30 @@ const TOP_LANGUAGES = 10;
 const FALLBACK_LANGUAGE_COLOR = '#94a3b8';
 
 /**
+ * Linguist's markup / data / prose classifications — the languages a "ships
+ * in" claim shouldn't count. GitHub's GraphQL Language object doesn't expose
+ * linguist's `type` field, so the classification ships here. Shell,
+ * PowerShell, Dockerfile and Makefile stay: linguist classes them as
+ * programming. Kept lowercase; compared case-insensitively.
+ */
+export const NON_PROGRAMMING_LANGUAGES = new Set([
+  // markup
+  'html', 'css', 'scss', 'sass', 'less', 'stylus', 'postcss',
+  'jupyter notebook', 'svg', 'xml', 'tex', 'bibtex',
+  'twig', 'handlebars', 'mustache', 'pug', 'haml', 'slim', 'liquid',
+  'blade', 'ejs', 'nunjucks', 'smarty', 'vue', 'svelte', 'astro',
+  'html+erb', 'html+django', 'html+php', 'html+razor',
+  // prose
+  'markdown', 'mdx', 'restructuredtext', 'asciidoc', 'org', 'rich text format',
+  'roff', 'roff manpage', 'text',
+  // data
+  'json', 'json5', 'json with comments', 'jsonld', 'yaml', 'toml', 'ini',
+  'csv', 'tsv', 'graphql', 'protocol buffer', 'diff', 'dotenv',
+  'editorconfig', 'git attributes', 'git config', 'gettext catalog',
+  'pip requirements', 'xml property list', 'public key',
+]);
+
+/**
  * How many merged PRs make you a contributor to a project rather than a
  * drive-by. Two is enough to exclude one-off tutorial PRs (a single PR into a
  * 55k-star "first contributions" repo would otherwise dominate combined reach)
@@ -184,10 +208,11 @@ function pickBiggest(repos: ExternalRepo[]): ExternalRepo | null {
 }
 
 /**
- * Every language the user ships in, measured by how many external projects use
- * each one. Uses the full linguist language list per repo (not just the primary
- * language), which already excludes vendored and generated files — lockfiles,
- * dist/, minified bundles never count. Rides along free on the merged-PR pages.
+ * Every programming language the user ships in, measured by how many external
+ * projects use each one. Uses the full linguist language list per repo (which
+ * already excludes vendored and generated files), then drops linguist's
+ * markup/data/prose classes — HTML, CSS, notebooks, JSON and friends are not
+ * a "ships in" claim. Rides along free on the merged-PR pages.
  */
 function summariseLanguages(
   repos: ExternalRepo[],
@@ -200,7 +225,9 @@ function summariseLanguages(
 
   for (const repo of repos) {
     for (const lang of repo.languages) {
-      if (ignored.has(lang.name.toLowerCase())) continue;
+      const key = lang.name.toLowerCase();
+      if (NON_PROGRAMMING_LANGUAGES.has(key)) continue;
+      if (ignored.has(key)) continue;
       const entry = totals.get(lang.name) ?? { repos: 0, color: lang.color };
       entry.repos++;
       if (!entry.color && lang.color) entry.color = lang.color;

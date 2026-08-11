@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { aggregate, topExternalByPrs, topExternalByStars } from '../src/compute.js';
+import { aggregate, NON_PROGRAMMING_LANGUAGES, topExternalByPrs, topExternalByStars } from '../src/compute.js';
 import type { RawData } from '../src/types.js';
 
 const raw = JSON.parse(
@@ -144,18 +144,39 @@ describe('aggregate — external contribution metrics', () => {
     }
   });
 
-  it('counts every linguist language per project, not just the primary one', () => {
+  it('counts every programming language per project, not just the primary one', () => {
     const distinct = new Set(
-      stats.externalRepos.flatMap((r) => r.languages.map((l) => l.name)),
+      stats.externalRepos
+        .flatMap((r) => r.languages.map((l) => l.name))
+        .filter((name) => !NON_PROGRAMMING_LANGUAGES.has(name.toLowerCase())),
     );
     expect(stats.languageCount).toBe(distinct.size);
-    // Multi-language repos mean the count exceeds a primary-only tally.
-    expect(stats.languageCount).toBeGreaterThan(
-      new Set(stats.externalRepos.map((r) => r.languages[0]?.name).filter(Boolean)).size,
-    );
     const counts = stats.languages.map((l) => l.repos);
     expect(counts).toEqual([...counts].sort((a, b) => b - a));
     for (const lang of stats.languages) expect(lang.color).toMatch(/^#/);
+  });
+
+  it('drops markup, data and prose languages from the ships-in claim', () => {
+    // The fixture is real data and carries all three classes.
+    const all = new Set(
+      stats.externalRepos.flatMap((r) => r.languages.map((l) => l.name)),
+    );
+    expect(all.has('CSS') || all.has('HTML') || all.has('Jupyter Notebook')).toBe(true);
+    const shown = stats.languages.map((l) => l.name);
+    for (const name of ['CSS', 'HTML', 'Jupyter Notebook', 'Markdown', 'JSON']) {
+      expect(shown).not.toContain(name);
+    }
+    // Linguist classes shells and build files as programming; they stay.
+    for (const lang of stats.languages) {
+      expect(NON_PROGRAMMING_LANGUAGES.has(lang.name.toLowerCase())).toBe(false);
+    }
+  });
+
+  it('ignore-languages stacks on top of the programming filter', () => {
+    const top = stats.languages[0].name;
+    const both = aggregate(raw, { ignoreLanguages: [top] });
+    expect(both.languages.map((l) => l.name)).not.toContain(top);
+    expect(both.languages.map((l) => l.name)).not.toContain('CSS');
   });
 
   it('ignoreLanguages hides languages from the tiles, case-insensitively', () => {
