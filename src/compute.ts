@@ -142,6 +142,7 @@ export function aggregate(raw: RawData, options: AggregateOptions = {}): StatsPa
     externalRepoCount: externalRepos.length,
     biggestProject,
     recentExternalPrs: recentPrs.length,
+    monthlyExternalMerges: bucketByMonth(externalPrs),
     recentExternalRepoCount: recentRepos.size,
 
     reviewsTotal: reviews.total,
@@ -173,6 +174,31 @@ function sumPeriods(years: ReviewYear[]): { prsOpened: number; issuesOpened: num
     }),
     { prsOpened: 0, issuesOpened: 0 },
   );
+}
+
+const MONTH_LETTERS = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
+
+/**
+ * External merges bucketed into the trailing 12 calendar months (UTC), ending
+ * with the current month, oldest first. Fed the same externalPrs list every
+ * other external stat uses, so a windowed card inherits the window naturally.
+ */
+function bucketByMonth(prs: MergedPr[]): { label: string; count: number }[] {
+  const now = new Date();
+  // Months indexed as year*12+month so subtraction gives the bucket offset.
+  const last = now.getUTCFullYear() * 12 + now.getUTCMonth();
+  const first = last - 11;
+  const buckets = Array.from({ length: 12 }, (_, i) => ({
+    label: MONTH_LETTERS[(first + i) % 12],
+    count: 0,
+  }));
+  for (const pr of prs) {
+    const at = new Date(pr.mergedAt);
+    if (Number.isNaN(at.getTime())) continue;
+    const idx = at.getUTCFullYear() * 12 + at.getUTCMonth() - first;
+    if (idx >= 0 && idx < 12) buckets[idx].count++;
+  }
+  return buckets;
 }
 
 /** One entry per external repo, ranked by how much of the user's work it took. */

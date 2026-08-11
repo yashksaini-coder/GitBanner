@@ -130,6 +130,11 @@ export interface StatsPayload {
   /** External merges in the trailing 12 months — the momentum story. */
   recentExternalPrs: number;
   recentExternalRepoCount: number;
+  /**
+   * External merges bucketed by calendar month (UTC), trailing 12 months
+   * ending with the current month, oldest first. label = month's first letter.
+   */
+  monthlyExternalMerges: { label: string; count: number }[];
 
   // Reviews
   reviewsTotal: number;
