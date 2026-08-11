@@ -8,7 +8,7 @@ const CANVAS_W = 1600;
 const MARGIN = 32;
 const GAP = 20;
 const COLS = 3;
-const CARD_H = 360;
+const CARD_H = 370;
 const MINI_H = 140;
 /** Every card is the same width: three equal columns. */
 const CARD_W = Math.floor((CANVAS_W - 2 * MARGIN - (COLS - 1) * GAP) / COLS);

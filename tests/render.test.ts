@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { aggregate } from '../src/compute.js';
 import { toSvg } from '../src/render/svg.js';
 import { dark } from '../src/render/theme.js';
-import { renderLanguagesTile } from '../src/render/tiles/languages-tile.js';
+import { renderLanguagesChart } from '../src/render/tiles/languages-tile.js';
 import { polygonPath, radarLabelLayout, radarLayout } from '../src/render/tiles/radar.js';
 import { DEFAULT_TILES, neededData, parseTiles, TILE_KEYS, TILES } from '../src/tiles.js';
 import type { RawData } from '../src/types.js';
@@ -25,16 +25,24 @@ describe('toSvg', () => {
 
   it('renders the external contribution headline numbers', () => {
     expect(svg).toContain(stats.prsMergedExternal.toLocaleString('en-US'));
-    expect(svg).toContain("Merged into other people&apos;s repos");
+    expect(svg).toContain('Pull requests');
     expect(svg).toContain('Projects shipped to');
     expect(svg).not.toContain('Combined reach');
   });
 
-  it('leads the issues tile with the resolution rate', () => {
-    expect(svg).toContain('Issues resolved');
+  it('shows the issues resolution rate below a yearly issues wave', () => {
     const pct = Math.round((stats.issuesClosed! / stats.issuesOpened) * 100);
     expect(svg).toContain(`${pct}%`);
+    expect(svg).toContain('url(#gbi-wave)');
+    expect(svg).toContain('finishing what you file');
     expect(svg).not.toContain('Contributing since');
+  });
+
+  it('card headers carry a title, not an icon box or beside-icon value', () => {
+    // The 48px icon boxes are gone from chart cards; minis keep small icons.
+    expect(svg).not.toContain('width="48" height="48"');
+    expect(svg).toContain('Code review');
+    expect(svg).toContain('Activity');
   });
 
   it('replaces the momentum mini with the Activity wave card', () => {
@@ -46,11 +54,19 @@ describe('toSvg', () => {
     expect(TILES['momentum']).toBeUndefined();
   });
 
-  it('draws the hex cluster and the issues arc meter', () => {
+  it('draws the heat hex cluster with its scale legend', () => {
     expect(svg).toContain('<polygon points=');
-    expect(svg).toContain('hex intensity = merged PRs');
-    expect(svg).toContain('gbm-glow');
-    expect(svg).toContain('A 78 78');
+    expect(svg).toContain('one hex per project');
+    expect(svg).toContain('gbx-hex-legend');
+    // heat ramp endpoints: cold slate low, gold core high
+    expect(svg.toLowerCase()).toContain('#f2c14e');
+  });
+
+  it('rows carry merged-PR counts, not stars, on the projects card', () => {
+    expect(svg).toMatch(/\d+ merged</);
+    // stars survive only in the mini row (stars earned / biggest project)
+    const projectsCard = svg.slice(svg.indexOf('Projects shipped to'), svg.indexOf('Issues'));
+    expect(projectsCard).not.toContain('stars');
   });
 
   it('renders the pure-black theme', () => {
@@ -101,12 +117,11 @@ describe('toSvg', () => {
   });
 
   it('honours tile order', () => {
-    const hero = "Merged into other people&apos;s repos";
     const svgA = toSvg(stats, 'dark', ['merged-prs', 'reviews']);
     const svgB = toSvg(stats, 'dark', ['reviews', 'merged-prs']);
     expect(svgA).not.toContain('Projects shipped to');
-    expect(svgA.indexOf(hero)).toBeLessThan(svgA.indexOf('Reviews for others'));
-    expect(svgB.indexOf('Reviews for others')).toBeLessThan(svgB.indexOf(hero));
+    expect(svgA.indexOf('Pull requests')).toBeLessThan(svgA.indexOf('Code review'));
+    expect(svgB.indexOf('Code review')).toBeLessThan(svgB.indexOf('Pull requests'));
   });
 
   it('registers six equal cards and three minis, momentum gone', () => {
@@ -118,7 +133,7 @@ describe('toSvg', () => {
   });
 
   it('gives every card the same 498px column width', () => {
-    const widths = [...svg.matchAll(/<rect width="(\d+)" height="360"/g)].map((m) =>
+    const widths = [...svg.matchAll(/<rect width="(\d+)" height="370"/g)].map((m) =>
       Number(m[1]),
     );
     expect(widths).toHaveLength(6);
@@ -155,6 +170,7 @@ describe('tile selection', () => {
     expect(neededData(['merged-prs', 'projects', 'ships-in']).has('ownRepos')).toBe(false);
     expect('reach' in TILES).toBe(false);
     expect(neededData(['own-stars']).has('ownRepos')).toBe(true);
+    expect(neededData(['issues'])).toEqual(new Set(['issues', 'reviews']));
     expect(neededData(DEFAULT_TILES)).toEqual(new Set(['prs', 'reviews', 'issues', 'ownRepos']));
   });
 
@@ -222,19 +238,12 @@ describe('date windows', () => {
 });
 
 describe('language chart', () => {
-  const TILE_H = 410;
-
   function render(languages: { name: string; color: string; repos: number }[], overflow = 0): string {
-    return renderLanguagesTile({
+    return renderLanguagesChart({
       x: 0,
       y: 0,
-      w: 296,
-      h: TILE_H,
-      iconKey: 'code-brackets',
-      accent: '#3987e5',
-      count: languages.length + overflow,
-      label: 'Ships in',
-      caption: 'all languages',
+      w: 442,
+      h: 160,
       languages,
       overflow,
       theme: dark,

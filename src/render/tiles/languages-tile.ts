@@ -1,89 +1,44 @@
 import type { Theme } from '../../types.js';
-import { iconByKey, renderIcon } from '../icons.js';
-import { escapeXml, fitText } from '../util.js';
+import { escapeXml } from '../util.js';
 import { RADAR_MAX_AXES, RADAR_MIN_AXES, renderRadar } from './radar.js';
 
-export interface LanguagesTileProps {
+export interface LanguagesChartProps {
+  /** Chart zone in card-local coordinates. */
   x: number;
   y: number;
   w: number;
   h: number;
-  iconKey: string;
-  accent: string;
-  count: number;
-  label: string;
-  caption: string;
   languages: { name: string; color: string; repos: number }[];
   overflow: number;
   theme: Theme;
 }
 
-const PAD = 28;
-// Same header grid as the stat tile, so the row reads as one system.
-const VALUE_X = 92;
-const PILLS_Y = 176;
-
-export function renderLanguagesTile(p: LanguagesTileProps): string {
-  const { x, y, w, h, theme, count, label } = p;
-
-  const icon = renderIcon({
-    path: iconByKey(p.iconKey),
-    size: 24,
-    stroke: p.accent,
-    strokeWidth: 2.2,
-  });
-
-  const fittedLabel = fitText(label, w - 2 * PAD, [17, 15, 14]);
-  const fittedCaption = fitText(p.caption, w - 2 * PAD, [13, 12]);
-
-  // The radar is the tile's centrepiece, but it needs at least three axes to
-  // be a shape — below that the pills carry the data instead.
-  const chart = chartFor(p, w, h, theme);
-
-  return `
-    <g transform="translate(${x}, ${y})">
-      <rect width="${w}" height="${h}" rx="24" fill="${theme.tile}" stroke="${theme.tileBorder}" stroke-width="1"/>
-      <g transform="translate(28, 28)">
-        <rect width="48" height="48" rx="12" fill="${p.accent}" fill-opacity="0.16"/>
-        <g transform="translate(12, 12)">${icon}</g>
-      </g>
-
-      <text x="${VALUE_X}" y="66" class="gb-display" font-size="40" fill="${theme.textPrimary}">${escapeXml(String(count))}</text>
-      <text x="${PAD}" y="112" class="gb-text" font-size="${fittedLabel.size}" fill="${theme.textPrimary}">${escapeXml(fittedLabel.text)}</text>
-      <text x="${PAD}" y="136" class="gb-text" font-size="${fittedCaption.size}" fill="${theme.textMuted}">${escapeXml(fittedCaption.text)}</text>
-
-      <line x1="${PAD}" y1="156" x2="${w - PAD}" y2="156" stroke="${theme.divider}" stroke-width="1"/>
-
-      ${chart}
-    </g>
-  `;
-}
-
-function chartFor(p: LanguagesTileProps, w: number, h: number, theme: Theme): string {
+/**
+ * Chart-only languages content for the card scaffold: the radar when there
+ * are enough axes to form a shape, pills below three, a message at zero.
+ */
+export function renderLanguagesChart(p: LanguagesChartProps): string {
+  const { x, y, w, h, theme } = p;
+  let inner: string;
   if (p.languages.length >= RADAR_MIN_AXES) {
-    // Vertical centre of the zone between the divider and the bottom padding,
-    // with room reserved for one label line above and below the outer ring.
-    const zoneTop = 168;
-    const zoneBottom = h - 16;
-    const cy = (zoneTop + zoneBottom) / 2;
     // Horizontal bound reserves 78px each side for tip-anchored labels, so a
     // side label can never reach back into the ring nor leave the card.
-    const rMax = Math.min((zoneBottom - zoneTop) / 2 - 14, (w - 64) / 2 - 78);
-    return renderRadar({
+    const rMax = Math.min(h / 2 - 15, w / 2 - 78);
+    inner = renderRadar({
       cx: w / 2,
-      cy,
+      cy: h / 2,
       rMax,
-      labelLeft: 10,
-      labelRight: w - 10,
+      labelLeft: 4,
+      labelRight: w - 4,
       languages: p.languages.slice(0, RADAR_MAX_AXES),
       theme,
     });
+  } else if (p.languages.length === 0) {
+    inner = `<text x="${w / 2}" y="${h / 2}" text-anchor="middle" class="gb-text" font-size="13" fill="${theme.textMuted}">no language data</text>`;
+  } else {
+    inner = `<g transform="translate(0, 8)">${layoutPills(p.languages, p.overflow, w, h - 16, theme)}</g>`;
   }
-  if (p.languages.length === 0) {
-    return `<text x="${w / 2}" y="${(156 + h) / 2}" text-anchor="middle" class="gb-text" font-size="13" fill="${theme.textMuted}">no language data</text>`;
-  }
-  const pillSvg = layoutPills(p.languages, p.overflow, w - 2 * PAD, h - PILLS_Y - 18, theme);
-  return `<g transform="translate(${PAD}, ${PILLS_Y})">${pillSvg}</g>`;
+  return `<g transform="translate(${x}, ${y})">${inner}</g>`;
 }
 
 const LINE_HEIGHT = 38;

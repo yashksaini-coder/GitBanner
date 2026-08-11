@@ -1,5 +1,4 @@
 import type { Theme } from '../../types.js';
-import { iconByKey, renderIcon } from '../icons.js';
 import { escapeXml, fitText, truncate } from '../util.js';
 
 export { escapeXml };
@@ -9,88 +8,87 @@ export interface StatTileRow {
   value: string;
 }
 
+export interface StatTileStat {
+  value: string;
+  label: string;
+}
+
 export interface StatTileProps {
   x: number;
   y: number;
   w: number;
   h: number;
-  iconKey: string;
   accent: string;
-  value: string;
-  label: string;
+  /** Card title, reference style: bold, top-left, no icon. */
+  title: string;
   caption: string;
-  rows: StatTileRow[];
-  /** Chart markup in tile-local coordinates, drawn below the divider. */
+  /** Chart markup in tile-local coordinates; the zone is CHART_TOP..CHART_BOTTOM. */
   chart?: string;
-  /** First dot-row baseline; chart cards push their rows below the chart. */
-  rowStart?: number;
-  rowPitch?: number;
+  /** Up to two stat columns BELOW the chart — the reference's number placement. */
+  stats: StatTileStat[];
+  rows: StatTileRow[];
   theme: Theme;
 }
 
 const PAD = 28;
-// One shared grid across every top-row tile, hero included: icon box 48px at
-// (28,28), value beside it, label y=112, caption y=136, divider y=156.
-const VALUE_X = 92;
-const LABEL_Y = 112;
-const CAPTION_Y = 136;
-const DIVIDER_Y = 156;
-const ROW_START = 188;
-const ROW_PITCH = 34;
-const DOT_R = 4;
+// Shared card grid, hyper-chart anatomy: title, chart, stats, rows.
+const TITLE_Y = 42;
+const CAPTION_Y = 62;
+export const CHART_TOP = 74;
+export const CHART_BOTTOM = 234;
+const STAT_LABEL_Y = 258;
+const STAT_VALUE_Y = 292;
+const ROW_START = 320;
+const ROW_PITCH = 28;
+const DOT_R = 3;
 
 /**
- * Supporting tile beside the hero. Deliberately quieter: a smaller value, and
- * row text in ink tokens rather than the accent hue — a light hue is poor as
- * text, and identity belongs to the coloured dot beside it, not the text.
+ * The one card scaffold every chart card uses: bold title (no icon — the
+ * chart is the identity), the chart given the freed space, the headline
+ * numbers below it, and metric rows at the bottom.
  */
 export function renderStatTile(p: StatTileProps): string {
-  const { x, y, w, h, theme, value, label, caption, rows } = p;
+  const { x, y, w, h, theme, title, caption, stats, rows } = p;
 
-  const icon = renderIcon({
-    path: iconByKey(p.iconKey),
-    size: 24,
-    stroke: p.accent,
-    strokeWidth: 2.2,
-  });
+  const fittedTitle = fitText(title, w - 2 * PAD, [19, 17, 15]);
+  const fittedCaption = fitText(caption, w - 2 * PAD, [12, 11]);
 
-  // The value sits beside the icon, optically centred on the icon box.
-  const fittedValue = fitText(value, w - VALUE_X - PAD, [40, 34, 30, 26, 22], 0.6);
-  const valueBaseline = 52 + Math.round(fittedValue.size * 0.36);
-  const fittedLabel = fitText(label, w - 2 * PAD, [17, 15, 14]);
-  const fittedCaption = fitText(caption, w - 2 * PAD, [13, 12]);
+  const colW = (w - 2 * PAD) / 2;
+  const statsSvg = stats
+    .slice(0, 2)
+    .map((stat, i) => {
+      const colX = PAD + i * colW;
+      const fittedValue = fitText(stat.value, colW - 16, [28, 24, 20, 17], 0.6);
+      const fittedLabel = fitText(stat.label, colW - 30, [11, 10], 0.55);
+      return (
+        `<rect x="${colX}" y="${STAT_LABEL_Y - 6}" width="6" height="6" rx="2" fill="${p.accent}"/>` +
+        `<text x="${colX + 12}" y="${STAT_LABEL_Y}" class="gb-text" font-size="${fittedLabel.size}" fill="${theme.textMuted}">${escapeXml(fittedLabel.text)}</text>` +
+        `<text x="${colX}" y="${STAT_VALUE_Y}" class="gb-display" font-size="${fittedValue.size}" fill="${theme.textPrimary}">${escapeXml(fittedValue.text)}</text>`
+      );
+    })
+    .join('');
 
-  const rowStart = p.rowStart ?? ROW_START;
-  const rowPitch = p.rowPitch ?? ROW_PITCH;
   const rowsSvg = rows
     .map((row, i) => {
-      const rowY = rowStart + i * rowPitch;
+      const rowY = ROW_START + i * ROW_PITCH;
       // Value column is right-aligned, so reserve it before truncating the label.
-      const valueW = row.value.length * 15 * 0.6;
-      const labelChars = Math.max(6, Math.floor((w - 2 * PAD - 18 - valueW - 10) / (15 * 0.55)));
-      return `
-      <circle cx="${PAD + DOT_R}" cy="${rowY - 5}" r="${DOT_R}" fill="${p.accent}"/>
-      <text x="${PAD + 18}" y="${rowY}" class="gb-text" font-size="15" fill="${theme.textSecondary}">${escapeXml(truncate(row.label, labelChars))}</text>
-      <text x="${w - PAD}" y="${rowY}" text-anchor="end" class="gb-mono" font-size="15" fill="${theme.textPrimary}">${escapeXml(row.value)}</text>
-    `;
+      const valueW = row.value.length * 14 * 0.6;
+      const labelChars = Math.max(6, Math.floor((w - 2 * PAD - 16 - valueW - 10) / (14 * 0.55)));
+      return (
+        `<circle cx="${PAD + DOT_R}" cy="${rowY - 5}" r="${DOT_R}" fill="${p.accent}"/>` +
+        `<text x="${PAD + 16}" y="${rowY}" class="gb-text" font-size="14" fill="${theme.textSecondary}">${escapeXml(truncate(row.label, labelChars))}</text>` +
+        `<text x="${w - PAD}" y="${rowY}" text-anchor="end" class="gb-mono" font-size="14" fill="${theme.textPrimary}">${escapeXml(row.value)}</text>`
+      );
     })
     .join('');
 
   return `
     <g transform="translate(${x}, ${y})">
       <rect width="${w}" height="${h}" rx="24" fill="${theme.tile}" stroke="${theme.tileBorder}" stroke-width="1"/>
-      <g transform="translate(28, 28)">
-        <rect width="48" height="48" rx="12" fill="${p.accent}" fill-opacity="0.16"/>
-        <g transform="translate(12, 12)">${icon}</g>
-      </g>
-
-      <text x="${VALUE_X}" y="${valueBaseline}" class="gb-display" font-size="${fittedValue.size}" fill="${theme.textPrimary}">${escapeXml(fittedValue.text)}</text>
-      <text x="${PAD}" y="${LABEL_Y}" class="gb-text" font-size="${fittedLabel.size}" fill="${theme.textPrimary}">${escapeXml(fittedLabel.text)}</text>
+      <text x="${PAD}" y="${TITLE_Y}" class="gb-text-bold" font-size="${fittedTitle.size}" fill="${theme.textPrimary}">${escapeXml(fittedTitle.text)}</text>
       <text x="${PAD}" y="${CAPTION_Y}" class="gb-text" font-size="${fittedCaption.size}" fill="${theme.textMuted}">${escapeXml(fittedCaption.text)}</text>
-
-      <line x1="${PAD}" y1="${DIVIDER_Y}" x2="${w - PAD}" y2="${DIVIDER_Y}" stroke="${theme.divider}" stroke-width="1"/>
-
       ${p.chart ?? ''}
+      ${statsSvg}
       ${rowsSvg}
     </g>
   `;

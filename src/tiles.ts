@@ -1,11 +1,9 @@
-import { topExternalByPrs, topExternalByStars } from './compute.js';
+import { topExternalByPrs } from './compute.js';
 import { renderBars } from './render/tiles/bars.js';
-import { renderHeroTile } from './render/tiles/hero-tile.js';
 import { renderHexCluster } from './render/tiles/hex.js';
-import { renderLanguagesTile } from './render/tiles/languages-tile.js';
-import { renderMeter } from './render/tiles/meter.js';
+import { renderLanguagesChart } from './render/tiles/languages-tile.js';
 import { renderMiniTile } from './render/tiles/mini-tile.js';
-import { renderStatTile } from './render/tiles/stat-tile.js';
+import { CHART_BOTTOM, CHART_TOP, renderStatTile } from './render/tiles/stat-tile.js';
 import { renderWave } from './render/tiles/wave.js';
 import type { DataNeed, StatsPayload, Theme } from './types.js';
 
@@ -35,12 +33,18 @@ function scope(p: StatsPayload): string {
   return p.periodLabel ?? 'all time';
 }
 
-/** Chart zone shared by the card tiles: below the divider, inside the padding. */
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+/** Chart zone shared by the card tiles, in card-local coordinates. */
 const PAD = 28;
-const CHART_TOP = 168;
-/** Dot rows under a chart sit on a fixed grid near the card's bottom edge. */
-const CHART_ROW_START = 320;
-const CHART_ROW_PITCH = 32;
+const CHART_H = CHART_BOTTOM - CHART_TOP;
+
+function chartGroup(_w: number, inner: string): string {
+  return `<g transform="translate(${PAD}, ${CHART_TOP})">${inner}</g>`;
+}
+
+/** Ridge-style hue drift for the activity wave, reference green→blue→violet. */
+const RIDGE_STOPS = ['#2fd08a', '#3987e5', '#8b6cf0'];
 
 export const TILES: Record<string, TileDef> = {
   // --- the six chart cards ----------------------------------------------
@@ -48,18 +52,33 @@ export const TILES: Record<string, TileDef> = {
     kind: 'card',
     needs: ['prs'],
     render: (p, theme, box) =>
-      renderHeroTile({
+      renderStatTile({
         ...box,
-        iconKey: 'git-pull-request',
         accent: theme.accents.prs,
-        value: n(p.prsMergedExternal),
-        label: "Merged into other people's repos",
-        caption: `${scope(p)} · ${n(p.externalRepoCount)} projects · ${p.mergeRatePct}% merge rate`,
-        bars: topExternalByPrs(p, 5).map((r) => ({
-          label: r.name,
-          value: r.value,
+        title: 'Pull requests',
+        caption: `merged into other people's repos · ${scope(p)}`,
+        chart: chartGroup(box.w, renderBars({
+          entries: topExternalByPrs(p, 4).map((r) => ({ label: r.name, value: r.value })),
+          w: box.w - 2 * PAD,
+          pitch: 40,
+          gradId: 'gbh-grad',
+          gradFrom: '#184f95',
+          gradTo: '#3987e5',
+          theme,
         })),
-        barCaption: 'WHERE THAT WORK LANDED',
+        stats: [
+          { value: n(p.prsMergedExternal), label: 'merged for others' },
+          { value: `${p.mergeRatePct}%`, label: 'merge rate' },
+        ],
+        rows: [
+          p.biggestProject
+            ? {
+                label: `Biggest · ${trunc(p.biggestProject.name, 14)}`,
+                value: `${n(p.biggestProject.mergedPrs)} merged`,
+              }
+            : { label: 'Biggest project', value: '—' },
+          { label: 'Active this year', value: `${n(p.recentExternalRepoCount)} projects` },
+        ],
         theme,
       }),
   },
@@ -67,40 +86,62 @@ export const TILES: Record<string, TileDef> = {
   activity: {
     kind: 'card',
     needs: ['prs'],
-    render: (p, theme, box) =>
-      renderStatTile({
+    render: (p, theme, box) => {
+      const peak = p.monthlyExternalMerges.reduce(
+        (best, m) => (m.count > best.count ? m : best),
+        p.monthlyExternalMerges[0] ?? { label: '', month: 0, count: 0 },
+      );
+      return renderStatTile({
         ...box,
-        iconKey: 'trending-up',
         accent: theme.accents.prs,
-        value: n(p.recentExternalPrs),
-        label: 'Activity',
-        caption: p.periodLabel ?? 'external merges · last 12 months',
-        rows: [],
-        chart: `<g transform="translate(${PAD}, ${CHART_TOP})">${renderWave({
+        title: 'Activity',
+        caption: p.periodLabel ?? 'external merges by month · last 12 months',
+        chart: chartGroup(box.w, renderWave({
           w: box.w - 2 * PAD,
-          h: 344 - CHART_TOP,
+          h: CHART_H,
           points: p.monthlyExternalMerges,
           accent: theme.accents.prs,
           gradId: 'gba-wave',
+          strokeStops: RIDGE_STOPS,
+          gridlines: true,
           theme,
-        })}</g>`,
+        })),
+        stats: [
+          { value: n(p.recentExternalPrs), label: 'last 12 months' },
+          {
+            value: n(peak.count),
+            label: peak.count > 0 ? `best month · ${MONTHS[peak.month]}` : 'best month',
+          },
+        ],
+        rows: [],
         theme,
-      }),
+      });
+    },
   },
 
   'ships-in': {
     kind: 'card',
     needs: ['prs'],
     render: (p, theme, box) =>
-      renderLanguagesTile({
+      renderStatTile({
         ...box,
-        iconKey: 'code-brackets',
         accent: theme.accents.languages,
-        count: p.languageCount,
-        label: 'Ships in',
-        caption: `top ${Math.min(8, p.languages.length)} by project count`,
-        languages: p.languages.map((l) => ({ name: l.name, color: l.color, repos: l.repos })),
-        overflow: Math.max(0, p.languageCount - p.languages.length),
+        title: 'Ships in',
+        caption: `top ${Math.min(8, p.languages.length)} of ${n(p.languageCount)} languages · by project count`,
+        chart: renderLanguagesChart({
+          x: PAD,
+          y: CHART_TOP,
+          w: box.w - 2 * PAD,
+          h: CHART_H,
+          languages: p.languages.map((l) => ({ name: l.name, color: l.color, repos: l.repos })),
+          overflow: Math.max(0, p.languageCount - p.languages.length),
+          theme,
+        }),
+        stats: [
+          { value: n(p.languageCount), label: 'languages' },
+          { value: p.languages[0]?.name ?? '—', label: 'most used' },
+        ],
+        rows: [],
         theme,
       }),
   },
@@ -111,24 +152,23 @@ export const TILES: Record<string, TileDef> = {
     render: (p, theme, box) =>
       renderStatTile({
         ...box,
-        iconKey: 'message-square',
         accent: theme.accents.reviews,
-        value: n(p.reviewsExternal),
-        label: 'Reviews for others',
-        caption: `of ${n(p.reviewsTotal)} reviews total`,
-        rows: [],
-        chart: `<g transform="translate(${PAD}, 176)">${renderBars({
-          entries: p.topReviewedRepos.slice(0, 4).map((r) => ({
-            label: r.name,
-            value: r.value,
-          })),
+        title: 'Code review',
+        caption: 'pull request reviews for other maintainers',
+        chart: chartGroup(box.w, renderBars({
+          entries: p.topReviewedRepos.slice(0, 4).map((r) => ({ label: r.name, value: r.value })),
           w: box.w - 2 * PAD,
-          pitch: 42,
+          pitch: 40,
           gradId: 'gbrv-grad',
           gradFrom: '#8a3416',
           gradTo: '#d95926',
           theme,
-        })}</g>`,
+        })),
+        stats: [
+          { value: n(p.reviewsExternal), label: 'for others' },
+          { value: n(p.reviewsTotal), label: 'total reviews' },
+        ],
+        rows: [],
         theme,
       }),
   },
@@ -136,75 +176,83 @@ export const TILES: Record<string, TileDef> = {
   projects: {
     kind: 'card',
     needs: ['prs'],
-    render: (p, theme, box) =>
-      renderStatTile({
+    render: (p, theme, box) => {
+      const most = p.externalRepos[0];
+      return renderStatTile({
         ...box,
-        iconKey: 'package',
         accent: theme.accents.prs,
-        value: n(p.externalRepoCount),
-        label: 'Projects shipped to',
-        caption: 'hex intensity = merged PRs',
-        chart: `<g transform="translate(${PAD}, ${CHART_TOP})">${renderHexCluster({
+        title: 'Projects shipped to',
+        caption: 'one hex per project · heat = merged PRs',
+        chart: chartGroup(box.w, renderHexCluster({
           w: box.w - 2 * PAD,
-          h: 296 - CHART_TOP,
+          h: CHART_H,
           values: p.externalRepos.map((r) => r.mergedPrs),
+          gradId: 'gbx-hex',
           theme,
-        })}</g>`,
-        rows: topExternalByStars(p, 2).map((r) => ({
-          label: trunc(r.name, 18),
-          value: `${n(r.value)} stars`,
         })),
-        rowStart: CHART_ROW_START,
-        rowPitch: CHART_ROW_PITCH,
+        stats: [
+          { value: n(p.externalRepoCount), label: 'projects · 2+ merged PRs' },
+          { value: most ? n(most.mergedPrs) : '—', label: 'most in one repo' },
+        ],
+        rows: topExternalByPrs(p, 2).map((r) => ({
+          label: trunc(r.name, 18),
+          value: `${n(r.value)} merged`,
+        })),
         theme,
-      }),
+      });
+    },
   },
 
   issues: {
     kind: 'card',
-    needs: ['issues'],
+    // Yearly issue counts ride on the contributions query, hence 'reviews'.
+    needs: ['issues', 'reviews'],
     render: (p, theme, box) => {
       const closed = p.issuesClosed;
+      const wave = chartGroup(box.w, renderWave({
+        w: box.w - 2 * PAD,
+        h: CHART_H,
+        points: p.issuesByYear.map((y) => ({
+          label: String(y.year),
+          month: 0,
+          count: y.opened,
+        })),
+        accent: theme.accents.issues,
+        gradId: 'gbi-wave',
+        gridlines: true,
+        tickEvery: 1,
+        emptyText: 'no issue history in range',
+        theme,
+      }));
       // Windowed cards can't show resolution: GitHub exposes issues opened in
-      // a range but not issues closed in one — so no meter either.
+      // a range but not issues closed in one.
       if (closed === null) {
         return renderStatTile({
           ...box,
-          iconKey: 'circle-dot',
           accent: theme.accents.issues,
-          value: n(p.issuesOpened),
-          label: 'Issues opened',
-          caption: scope(p),
-          rows: [{ label: 'Opened', value: n(p.issuesOpened) }],
+          title: 'Issues',
+          caption: `opened by you · ${scope(p)}`,
+          chart: wave,
+          stats: [{ value: n(p.issuesOpened), label: 'opened in range' }],
+          rows: [],
           theme,
         });
       }
-      // The proof is finishing what you file, so resolution leads.
       const pct = p.issuesOpened === 0 ? 0 : Math.round((closed / p.issuesOpened) * 100);
       return renderStatTile({
         ...box,
-        iconKey: 'circle-dot',
         accent: theme.accents.issues,
-        value: `${pct}%`,
-        label: 'Issues resolved',
-        caption: `${n(closed)} of ${n(p.issuesOpened)} you filed`,
-        chart: renderMeter({
-          cx: box.w / 2,
-          cy: 268,
-          r: 78,
-          pct,
-          centerTop: n(closed),
-          centerBottom: `of ${n(p.issuesOpened)} resolved`,
-          accent: theme.accents.issues,
-          theme,
-        }),
-        // Resolved lives in the meter; the rows carry the other two numbers.
+        title: 'Issues',
+        caption: 'opened by you, per year · finishing what you file',
+        chart: wave,
+        stats: [
+          { value: `${pct}%`, label: 'resolved' },
+          { value: n(Math.max(0, p.issuesOpened - closed)), label: 'still open' },
+        ],
         rows: [
           { label: 'Opened', value: n(p.issuesOpened) },
-          { label: 'Still open', value: n(Math.max(0, p.issuesOpened - closed)) },
+          { label: 'Resolved', value: n(closed) },
         ],
-        rowStart: CHART_ROW_START,
-        rowPitch: CHART_ROW_PITCH,
         theme,
       });
     },
