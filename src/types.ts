@@ -100,6 +100,14 @@ export interface ExternalRepo {
   languages: RepoLang[];
 }
 
+/** One external repo × one year of reviews — a dot in the 3D scatter. */
+export interface ReviewPoint {
+  name: string;
+  year: number;
+  reviews: number;
+  stars: number;
+}
+
 export interface TopRepo {
   name: string;
   value: number;
@@ -142,6 +150,8 @@ export interface StatsPayload {
   reviewsTotal: number;
   reviewsExternal: number;
   topReviewedRepos: TopRepo[];
+  /** External review dots (repo × year), reviews desc, capped at 14. */
+  reviewPoints: ReviewPoint[];
 
   // Issues. issuesClosed is null for a windowed card: GitHub exposes issues
   // *opened* in a window, but not issues closed in one.

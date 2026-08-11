@@ -3,13 +3,14 @@ import type {
   LanguageSummary,
   MergedPr,
   RawData,
+  ReviewPoint,
   ReviewYear,
   StatsPayload,
   TopRepo,
-} from './types.js';
+} from "./types.js";
 
 const TOP_LANGUAGES = 10;
-const FALLBACK_LANGUAGE_COLOR = '#94a3b8';
+const FALLBACK_LANGUAGE_COLOR = "#94a3b8";
 
 /**
  * Linguist's markup / data / prose classifications — the languages a "ships
@@ -20,19 +21,67 @@ const FALLBACK_LANGUAGE_COLOR = '#94a3b8';
  */
 export const NON_PROGRAMMING_LANGUAGES = new Set([
   // markup
-  'html', 'css', 'scss', 'sass', 'less', 'stylus', 'postcss',
-  'jupyter notebook', 'svg', 'xml', 'tex', 'bibtex',
-  'twig', 'handlebars', 'mustache', 'pug', 'haml', 'slim', 'liquid',
-  'blade', 'ejs', 'nunjucks', 'smarty', 'vue', 'svelte', 'astro',
-  'html+erb', 'html+django', 'html+php', 'html+razor',
+  "html",
+  "css",
+  "scss",
+  "sass",
+  "less",
+  "stylus",
+  "postcss",
+  "jupyter notebook",
+  "svg",
+  "xml",
+  "tex",
+  "bibtex",
+  "twig",
+  "handlebars",
+  "mustache",
+  "pug",
+  "haml",
+  "slim",
+  "liquid",
+  "blade",
+  "ejs",
+  "nunjucks",
+  "smarty",
+  "vue",
+  "svelte",
+  "astro",
+  "html+erb",
+  "html+django",
+  "html+php",
+  "html+razor",
   // prose
-  'markdown', 'mdx', 'restructuredtext', 'asciidoc', 'org', 'rich text format',
-  'roff', 'roff manpage', 'text',
+  "markdown",
+  "mdx",
+  "restructuredtext",
+  "asciidoc",
+  "org",
+  "rich text format",
+  "roff",
+  "roff manpage",
+  "text",
   // data
-  'json', 'json5', 'json with comments', 'jsonld', 'yaml', 'toml', 'ini',
-  'csv', 'tsv', 'graphql', 'protocol buffer', 'diff', 'dotenv',
-  'editorconfig', 'git attributes', 'git config', 'gettext catalog',
-  'pip requirements', 'xml property list', 'public key',
+  "json",
+  "json5",
+  "json with comments",
+  "jsonld",
+  "yaml",
+  "toml",
+  "ini",
+  "csv",
+  "tsv",
+  "graphql",
+  "protocol buffer",
+  "diff",
+  "dotenv",
+  "editorconfig",
+  "git attributes",
+  "git config",
+  "gettext catalog",
+  "pip requirements",
+  "xml property list",
+  "public key",
 ]);
 
 /**
@@ -54,10 +103,18 @@ export interface AggregateOptions {
   ignoreLanguages?: string[];
 }
 
-export function aggregate(raw: RawData, options: AggregateOptions = {}): StatsPayload {
-  const excluded = new Set((options.excludeRepos ?? []).map((r) => r.toLowerCase()));
+export function aggregate(
+  raw: RawData,
+  options: AggregateOptions = {},
+): StatsPayload {
+  const excluded = new Set(
+    (options.excludeRepos ?? []).map((r) => r.toLowerCase()),
+  );
   const includePrivate = options.includePrivate ?? false;
-  const minMergedPrs = Math.max(1, options.minMergedPrs ?? DEFAULT_MIN_MERGED_PRS);
+  const minMergedPrs = Math.max(
+    1,
+    options.minMergedPrs ?? DEFAULT_MIN_MERGED_PRS,
+  );
   const ignoredLanguages = new Set(
     (options.ignoreLanguages ?? []).map((l) => l.toLowerCase()),
   );
@@ -65,7 +122,7 @@ export function aggregate(raw: RawData, options: AggregateOptions = {}): StatsPa
 
   const isExcluded = (nameWithOwner: string): boolean => {
     const lower = nameWithOwner.toLowerCase();
-    return excluded.has(lower) || excluded.has(lower.split('/')[1] ?? lower);
+    return excluded.has(lower) || excluded.has(lower.split("/")[1] ?? lower);
   };
 
   // A PR counts as external when the repo belongs to someone else. That, not
@@ -86,13 +143,17 @@ export function aggregate(raw: RawData, options: AggregateOptions = {}): StatsPa
       !isExcluded(pr.repo.nameWithOwner) &&
       (includePrivate || !pr.repo.isPrivate),
   );
-  const externalPrs = usablePrs.filter((pr) => pr.repo.owner.toLowerCase() !== login);
+  const externalPrs = usablePrs.filter(
+    (pr) => pr.repo.owner.toLowerCase() !== login,
+  );
 
   // Every external merged PR is real work, so prsMergedExternal counts them all.
   // Repo-level claims (reach, project count, biggest, languages) are the ones a
   // drive-by PR inflates, so those use the qualifying subset only.
   const allExternalRepos = groupExternalRepos(externalPrs);
-  const qualifying = allExternalRepos.filter((r) => r.mergedPrs >= minMergedPrs);
+  const qualifying = allExternalRepos.filter(
+    (r) => r.mergedPrs >= minMergedPrs,
+  );
   // A newcomer whose every contribution is a first PR would otherwise show
   // "0 projects" beside a non-zero merged count. Show what they have instead.
   const externalRepos = qualifying.length > 0 ? qualifying : allExternalRepos;
@@ -102,12 +163,22 @@ export function aggregate(raw: RawData, options: AggregateOptions = {}): StatsPa
   // Trailing 12 months from now. On a windowed card externalPrs is already
   // range-filtered, so this can only narrow further, never contradict it.
   const cutoff = Date.now() - 365 * 24 * 60 * 60 * 1000;
-  const recentPrs = externalPrs.filter((pr) => Date.parse(pr.mergedAt) >= cutoff);
+  const recentPrs = externalPrs.filter(
+    (pr) => Date.parse(pr.mergedAt) >= cutoff,
+  );
   const recentRepos = new Set(recentPrs.map((pr) => pr.repo.nameWithOwner));
 
-  const { languages, languageCount } = summariseLanguages(externalRepos, ignoredLanguages);
+  const { languages, languageCount } = summariseLanguages(
+    externalRepos,
+    ignoredLanguages,
+  );
 
-  const reviews = summariseReviews(raw.reviewYears, login, isExcluded, includePrivate);
+  const reviews = summariseReviews(
+    raw.reviewYears,
+    login,
+    isExcluded,
+    includePrivate,
+  );
 
   // Highest-starred own repo: same visibility rule as the star sum, so a
   // private repo name can never appear on the card unless explicitly asked.
@@ -143,12 +214,16 @@ export function aggregate(raw: RawData, options: AggregateOptions = {}): StatsPa
     biggestProject,
     recentExternalPrs: recentPrs.length,
     monthlyExternalMerges: bucketByMonth(externalPrs),
-    issuesByYear: raw.reviewYears.map((y) => ({ year: y.year, opened: y.issuesOpened })),
+    issuesByYear: raw.reviewYears.map((y) => ({
+      year: y.year,
+      opened: y.issuesOpened,
+    })),
     recentExternalRepoCount: recentRepos.size,
 
     reviewsTotal: reviews.total,
     reviewsExternal: reviews.external,
     topReviewedRepos: reviews.top,
+    reviewPoints: buildReviewPoints(raw.reviewYears, login, isExcluded),
 
     issuesOpened,
     issuesClosed,
@@ -167,7 +242,10 @@ export function aggregate(raw: RawData, options: AggregateOptions = {}): StatsPa
   };
 }
 
-function sumPeriods(years: ReviewYear[]): { prsOpened: number; issuesOpened: number } {
+function sumPeriods(years: ReviewYear[]): {
+  prsOpened: number;
+  issuesOpened: number;
+} {
   return years.reduce(
     (acc, y) => ({
       prsOpened: acc.prsOpened + y.prsOpened,
@@ -177,7 +255,20 @@ function sumPeriods(years: ReviewYear[]): { prsOpened: number; issuesOpened: num
   );
 }
 
-const MONTH_LETTERS = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
+const MONTH_LETTERS = [
+  "J",
+  "F",
+  "M",
+  "A",
+  "M",
+  "J",
+  "J",
+  "A",
+  "S",
+  "O",
+  "N",
+  "D",
+];
 
 /**
  * External merges bucketed into the trailing 12 calendar months (UTC), ending
@@ -220,7 +311,7 @@ function groupExternalRepos(prs: MergedPr[]): ExternalRepo[] {
     }
     byRepo.set(pr.repo.nameWithOwner, {
       nameWithOwner: pr.repo.nameWithOwner,
-      name: pr.repo.nameWithOwner.split('/')[1] ?? pr.repo.nameWithOwner,
+      name: pr.repo.nameWithOwner.split("/")[1] ?? pr.repo.nameWithOwner,
       stars: pr.repo.stars,
       mergedPrs: 1,
       languages: pr.repo.languages,
@@ -273,7 +364,10 @@ function summariseLanguages(
       color: entry.color ?? FALLBACK_LANGUAGE_COLOR,
     }));
 
-  return { languages: sorted.slice(0, TOP_LANGUAGES), languageCount: sorted.length };
+  return {
+    languages: sorted.slice(0, TOP_LANGUAGES),
+    languageCount: sorted.length,
+  };
 }
 
 function summariseReviews(
@@ -292,7 +386,10 @@ function summariseReviews(
       if (isExcluded(entry.nameWithOwner)) continue;
       if (entry.owner.toLowerCase() === login) continue;
       external += entry.count;
-      byRepo.set(entry.nameWithOwner, (byRepo.get(entry.nameWithOwner) ?? 0) + entry.count);
+      byRepo.set(
+        entry.nameWithOwner,
+        (byRepo.get(entry.nameWithOwner) ?? 0) + entry.count,
+      );
     }
   }
 
@@ -300,7 +397,7 @@ function summariseReviews(
     .sort((a, b) => b[1] - a[1])
     .slice(0, 4)
     .map(([nameWithOwner, value]) => ({
-      name: nameWithOwner.split('/')[1] ?? nameWithOwner,
+      name: nameWithOwner.split("/")[1] ?? nameWithOwner,
       value,
     }));
 
@@ -311,8 +408,42 @@ function summariseReviews(
   return { total, external, top };
 }
 
+/** How many dots the scatter can hold before it turns into noise. */
+const MAX_REVIEW_POINTS = 14;
+
+/**
+ * One dot per external repo × year of reviews, for the 3D scatter. Same
+ * external/excluded rules as summariseReviews, but years are never merged —
+ * the year is an axis. On a windowed card reviewYears holds the single
+ * window, so the card inherits the range for free.
+ */
+function buildReviewPoints(
+  years: ReviewYear[],
+  login: string,
+  isExcluded: (nameWithOwner: string) => boolean,
+): ReviewPoint[] {
+  const points: ReviewPoint[] = [];
+  for (const year of years) {
+    for (const entry of year.byRepo) {
+      if (isExcluded(entry.nameWithOwner)) continue;
+      if (entry.owner.toLowerCase() === login) continue;
+      if (entry.count <= 0) continue;
+      points.push({
+        name: entry.nameWithOwner.split("/")[1] ?? entry.nameWithOwner,
+        year: year.year,
+        reviews: entry.count,
+        stars: entry.stars,
+      });
+    }
+  }
+  return points
+    .sort((a, b) => b.reviews - a.reviews || b.stars - a.stars)
+    .slice(0, MAX_REVIEW_POINTS);
+}
+
 function pickBestYear(years: ReviewYear[]): { year: number; commits: number } {
-  if (years.length === 0) return { year: new Date().getUTCFullYear(), commits: 0 };
+  if (years.length === 0)
+    return { year: new Date().getUTCFullYear(), commits: 0 };
   return years
     .map((y) => ({ year: y.year, commits: y.commits }))
     .sort((a, b) => b.commits - a.commits)[0];
@@ -325,7 +456,9 @@ function percent(part: number, whole: number): number {
 
 /** Top N external repos by merged PRs, for a stat tile's row list. */
 export function topExternalByPrs(p: StatsPayload, n: number): TopRepo[] {
-  return p.externalRepos.slice(0, n).map((r) => ({ name: r.name, value: r.mergedPrs }));
+  return p.externalRepos
+    .slice(0, n)
+    .map((r) => ({ name: r.name, value: r.mergedPrs }));
 }
 
 /** Top N external repos by stars, for the reach and projects tiles. */
