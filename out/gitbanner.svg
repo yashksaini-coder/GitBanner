@@ -111,7 +111,7 @@
       
       <circle cx="32" cy="183" r="4" fill="#199e70"/>
       <text x="46" y="188" class="gb-text" font-size="15" fill="#9ca3af">opens…</text>
-      <text x="218" y="188" text-anchor="end" class="gb-mono" font-size="15" fill="#ffffff">10,355 stars</text>
+      <text x="218" y="188" text-anchor="end" class="gb-mono" font-size="15" fill="#ffffff">10,356 stars</text>
     
       <circle cx="32" cy="217" r="4" fill="#199e70"/>
       <text x="46" y="222" class="gb-text" font-size="15" fill="#9ca3af">nanoco…</text>
@@ -136,46 +136,11 @@
 
       <text x="92" y="66" class="gb-display" font-size="40" fill="#ffffff">26</text>
       <text x="28" y="112" class="gb-text" font-size="17" fill="#ffffff">Ships in</text>
-      <text x="28" y="136" class="gb-text" font-size="13" fill="#6b7280">generated files excluded</text>
+      <text x="28" y="136" class="gb-text" font-size="13" fill="#6b7280">top 8 by project count</text>
 
       <line x1="28" y1="156" x2="218" y2="156" stroke="#1f2937" stroke-width="1"/>
 
-      <g transform="translate(28, 176)">
-      <g transform="translate(0, 0)">
-        <rect width="54" height="30" rx="8" fill="#172033" stroke="#663399" stroke-width="1" stroke-opacity="0.4"/>
-        <text x="27" y="20" text-anchor="middle" class="gb-text-bold" font-size="14" fill="#663399">CSS</text>
-      </g>
-    
-      <g transform="translate(62, 0)">
-        <rect width="112" height="30" rx="8" fill="#172033" stroke="#f1e05a" stroke-width="1" stroke-opacity="0.4"/>
-        <text x="56" y="20" text-anchor="middle" class="gb-text-bold" font-size="14" fill="#f1e05a">JavaScript</text>
-      </g>
-    
-      <g transform="translate(0, 38)">
-        <rect width="62" height="30" rx="8" fill="#172033" stroke="#e34c26" stroke-width="1" stroke-opacity="0.4"/>
-        <text x="31" y="20" text-anchor="middle" class="gb-text-bold" font-size="14" fill="#e34c26">HTML</text>
-      </g>
-    
-      <g transform="translate(70, 38)">
-        <rect width="112" height="30" rx="8" fill="#172033" stroke="#3178c6" stroke-width="1" stroke-opacity="0.4"/>
-        <text x="56" y="20" text-anchor="middle" class="gb-text-bold" font-size="14" fill="#3178c6">TypeScript</text>
-      </g>
-    
-      <g transform="translate(0, 76)">
-        <rect width="79" height="30" rx="8" fill="#172033" stroke="#3572A5" stroke-width="1" stroke-opacity="0.4"/>
-        <text x="39.5" y="20" text-anchor="middle" class="gb-text-bold" font-size="14" fill="#3572A5">Python</text>
-      </g>
-    
-      <g transform="translate(0, 114)">
-        <rect width="112" height="30" rx="8" fill="#172033" stroke="#384d54" stroke-width="1" stroke-opacity="0.4"/>
-        <text x="56" y="20" text-anchor="middle" class="gb-text-bold" font-size="14" fill="#384d54">Dockerfile</text>
-      </g>
-    
-      <g transform="translate(120, 114)">
-        <rect width="54" height="30" rx="8" fill="#172033" stroke="#6b7280" stroke-width="1" stroke-opacity="0.4"/>
-        <text x="27" y="20" text-anchor="middle" class="gb-text-bold" font-size="14" fill="#6b7280">+20</text>
-      </g>
-    </g>
+      <defs><linearGradient id="gbr-seg-0" gradientUnits="userSpaceOnUse" x1="123" y1="189" x2="169.26" y2="209.74"><stop offset="0" stop-color="#663399"/><stop offset="1" stop-color="#f1e05a"/></linearGradient><linearGradient id="gbr-seg-1" gradientUnits="userSpaceOnUse" x1="169.26" y1="209.74" x2="172.58" y2="256"><stop offset="0" stop-color="#f1e05a"/><stop offset="1" stop-color="#e34c26"/></linearGradient><linearGradient id="gbr-seg-2" gradientUnits="userSpaceOnUse" x1="172.58" y1="256" x2="153.58" y2="286.58"><stop offset="0" stop-color="#e34c26"/><stop offset="1" stop-color="#3178c6"/></linearGradient><linearGradient id="gbr-seg-3" gradientUnits="userSpaceOnUse" x1="153.58" y1="286.58" x2="123" y2="294.5"><stop offset="0" stop-color="#3178c6"/><stop offset="1" stop-color="#3572A5"/></linearGradient><linearGradient id="gbr-seg-4" gradientUnits="userSpaceOnUse" x1="123" y1="294.5" x2="99.14" y2="279.86"><stop offset="0" stop-color="#3572A5"/><stop offset="1" stop-color="#384d54"/></linearGradient><linearGradient id="gbr-seg-5" gradientUnits="userSpaceOnUse" x1="99.14" y1="279.86" x2="90.83" y2="256"><stop offset="0" stop-color="#384d54"/><stop offset="1" stop-color="#89e051"/></linearGradient><linearGradient id="gbr-seg-6" gradientUnits="userSpaceOnUse" x1="90.83" y1="256" x2="108.09" y2="241.09"><stop offset="0" stop-color="#89e051"/><stop offset="1" stop-color="#DA5B0B"/></linearGradient><linearGradient id="gbr-seg-7" gradientUnits="userSpaceOnUse" x1="108.09" y1="241.09" x2="123" y2="189"><stop offset="0" stop-color="#DA5B0B"/><stop offset="1" stop-color="#663399"/></linearGradient><radialGradient id="gbr-fill" gradientUnits="userSpaceOnUse" cx="123" cy="256" r="67"><stop offset="0" stop-color="#663399" stop-opacity="0.16"/><stop offset="1" stop-color="#663399" stop-opacity="0"/></radialGradient><filter id="gbr-glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4.5"/></filter></defs><circle cx="123" cy="256" r="22.33" fill="none" stroke="#1f2937" stroke-width="1"/><circle cx="123" cy="256" r="44.67" fill="none" stroke="#1f2937" stroke-width="1"/><circle cx="123" cy="256" r="67" fill="none" stroke="#1f2937" stroke-width="1"/><line x1="123" y1="256" x2="123" y2="189" stroke="#1f2937" stroke-width="1"/><line x1="123" y1="256" x2="170.38" y2="208.62" stroke="#1f2937" stroke-width="1"/><line x1="123" y1="256" x2="190" y2="256" stroke="#1f2937" stroke-width="1"/><line x1="123" y1="256" x2="170.38" y2="303.38" stroke="#1f2937" stroke-width="1"/><line x1="123" y1="256" x2="123" y2="323" stroke="#1f2937" stroke-width="1"/><line x1="123" y1="256" x2="75.62" y2="303.38" stroke="#1f2937" stroke-width="1"/><line x1="123" y1="256" x2="56" y2="256" stroke="#1f2937" stroke-width="1"/><line x1="123" y1="256" x2="75.62" y2="208.62" stroke="#1f2937" stroke-width="1"/><path d="M 123 189 C 133.2 183.78, 161 198.57, 169.26 209.74 C 177.52 220.91, 175.19 243.19, 172.58 256 C 169.97 268.81, 161.84 280.16, 153.58 286.58 C 145.32 293, 132.07 295.62, 123 294.5 C 113.93 293.38, 104.5 286.28, 99.14 279.86 C 93.78 273.44, 89.34 262.46, 90.83 256 C 92.32 249.54, 102.73 252.26, 108.09 241.09 C 113.45 229.92, 112.81 194.23, 123 189 Z" fill="url(#gbr-fill)"/><g filter="url(#gbr-glow)"><path d="M 123 189 C 133.2 183.78, 161 198.57, 169.26 209.74" fill="none" stroke="url(#gbr-seg-0)" stroke-width="9" stroke-linecap="round" stroke-opacity="0.5"/><path d="M 169.26 209.74 C 177.52 220.91, 175.19 243.19, 172.58 256" fill="none" stroke="url(#gbr-seg-1)" stroke-width="9" stroke-linecap="round" stroke-opacity="0.5"/><path d="M 172.58 256 C 169.97 268.81, 161.84 280.16, 153.58 286.58" fill="none" stroke="url(#gbr-seg-2)" stroke-width="9" stroke-linecap="round" stroke-opacity="0.5"/><path d="M 153.58 286.58 C 145.32 293, 132.07 295.62, 123 294.5" fill="none" stroke="url(#gbr-seg-3)" stroke-width="9" stroke-linecap="round" stroke-opacity="0.5"/><path d="M 123 294.5 C 113.93 293.38, 104.5 286.28, 99.14 279.86" fill="none" stroke="url(#gbr-seg-4)" stroke-width="9" stroke-linecap="round" stroke-opacity="0.5"/><path d="M 99.14 279.86 C 93.78 273.44, 89.34 262.46, 90.83 256" fill="none" stroke="url(#gbr-seg-5)" stroke-width="9" stroke-linecap="round" stroke-opacity="0.5"/><path d="M 90.83 256 C 92.32 249.54, 102.73 252.26, 108.09 241.09" fill="none" stroke="url(#gbr-seg-6)" stroke-width="9" stroke-linecap="round" stroke-opacity="0.5"/><path d="M 108.09 241.09 C 113.45 229.92, 112.81 194.23, 123 189" fill="none" stroke="url(#gbr-seg-7)" stroke-width="9" stroke-linecap="round" stroke-opacity="0.5"/></g><path d="M 123 189 C 133.2 183.78, 161 198.57, 169.26 209.74" fill="none" stroke="url(#gbr-seg-0)" stroke-width="2.5" stroke-linecap="round"/><path d="M 169.26 209.74 C 177.52 220.91, 175.19 243.19, 172.58 256" fill="none" stroke="url(#gbr-seg-1)" stroke-width="2.5" stroke-linecap="round"/><path d="M 172.58 256 C 169.97 268.81, 161.84 280.16, 153.58 286.58" fill="none" stroke="url(#gbr-seg-2)" stroke-width="2.5" stroke-linecap="round"/><path d="M 153.58 286.58 C 145.32 293, 132.07 295.62, 123 294.5" fill="none" stroke="url(#gbr-seg-3)" stroke-width="2.5" stroke-linecap="round"/><path d="M 123 294.5 C 113.93 293.38, 104.5 286.28, 99.14 279.86" fill="none" stroke="url(#gbr-seg-4)" stroke-width="2.5" stroke-linecap="round"/><path d="M 99.14 279.86 C 93.78 273.44, 89.34 262.46, 90.83 256" fill="none" stroke="url(#gbr-seg-5)" stroke-width="2.5" stroke-linecap="round"/><path d="M 90.83 256 C 92.32 249.54, 102.73 252.26, 108.09 241.09" fill="none" stroke="url(#gbr-seg-6)" stroke-width="2.5" stroke-linecap="round"/><path d="M 108.09 241.09 C 113.45 229.92, 112.81 194.23, 123 189" fill="none" stroke="url(#gbr-seg-7)" stroke-width="2.5" stroke-linecap="round"/><circle cx="123" cy="256" r="11" fill="#11161f" stroke="#1f2937" stroke-width="1"/><g transform="translate(116, 249)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6" /><path d="M8 6l-6 6 6 6" /></svg></g><text x="123" y="176" text-anchor="middle" class="gb-text" font-size="10" fill="#9ca3af">CSS <tspan class="gb-mono" font-size="9" fill="#6b7280">36</tspan></text><text x="176.74" y="198.26" text-anchor="start" class="gb-text" font-size="10" fill="#9ca3af">JavaScri… <tspan class="gb-mono" font-size="9" fill="#6b7280">35</tspan></text><text x="199" y="260" text-anchor="start" class="gb-text" font-size="10" fill="#9ca3af">HTML <tspan class="gb-mono" font-size="9" fill="#6b7280">25</tspan></text><text x="176.74" y="320.74" text-anchor="start" class="gb-text" font-size="10" fill="#9ca3af">TypeScri… <tspan class="gb-mono" font-size="9" fill="#6b7280">21</tspan></text><text x="123" y="343" text-anchor="middle" class="gb-text" font-size="10" fill="#9ca3af">Python <tspan class="gb-mono" font-size="9" fill="#6b7280">18</tspan></text><text x="69.26" y="320.74" text-anchor="end" class="gb-text" font-size="10" fill="#9ca3af">Dockerfi… <tspan class="gb-mono" font-size="9" fill="#6b7280">15</tspan></text><text x="47" y="260" text-anchor="end" class="gb-text" font-size="10" fill="#9ca3af">Shell <tspan class="gb-mono" font-size="9" fill="#6b7280">14</tspan></text><text x="69.26" y="198.26" text-anchor="end" class="gb-text" font-size="10" fill="#9ca3af">Jupyter … <tspan class="gb-mono" font-size="9" fill="#6b7280">7</tspan></text>
     </g>
   
     <g transform="translate(1338, 28)">
@@ -212,7 +177,7 @@
       <text x="58" y="41" class="gb-text" font-size="16" fill="#9ca3af">Biggest project</text>
 
       <text x="28" y="94" class="gb-display" font-size="36" fill="#ffffff">opensre</text>
-      <text x="28" y="124" class="gb-text" font-size="16" fill="#9ca3af">10,355 stars · 17 merged</text>
+      <text x="28" y="124" class="gb-text" font-size="16" fill="#9ca3af">10,356 stars · 17 merged</text>
     </g>
   
     <g transform="translate(418, 404)">

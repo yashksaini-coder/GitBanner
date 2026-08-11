@@ -84,11 +84,11 @@
 
       <text x="92" y="66" class="gb-display" font-size="40" fill="#ffffff">0</text>
       <text x="28" y="112" class="gb-text" font-size="17" fill="#ffffff">Ships in</text>
-      <text x="28" y="136" class="gb-text" font-size="13" fill="#6b7280">generated files excluded</text>
+      <text x="28" y="136" class="gb-text" font-size="13" fill="#6b7280">top 0 by project count</text>
 
       <line x1="28" y1="156" x2="218" y2="156" stroke="#1f2937" stroke-width="1"/>
 
-      <g transform="translate(28, 176)"></g>
+      <text x="123" y="258" text-anchor="middle" class="gb-text" font-size="13" fill="#6b7280">no language data</text>
     </g>
   
     <g transform="translate(1338, 28)">
