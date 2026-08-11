@@ -22,6 +22,7 @@ interface CliArgs {
   exclude: string[];
   tiles?: string;
   minMergedPrs?: number;
+  ignoreLanguages: string[];
   since?: string;
   until?: string;
 }
@@ -52,6 +53,7 @@ async function main(): Promise<void> {
     excludeRepos,
     includePrivate: args.includePrivate,
     minMergedPrs: args.minMergedPrs,
+    ignoreLanguages: args.ignoreLanguages,
   });
   console.log(
     `  ${payload.prsMergedExternal} PRs merged into others' repos across ${payload.externalRepoCount} projects · ${payload.reviewsExternal} external reviews · ${payload.mergeRatePct}% merge rate`,
@@ -87,6 +89,7 @@ function parseArgs(argv: string[]): CliArgs {
     format: 'both',
     includePrivate: false,
     exclude: [],
+    ignoreLanguages: [],
   };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
@@ -135,6 +138,12 @@ function parseArgs(argv: string[]): CliArgs {
       case '--until':
         args.until = next();
         break;
+      case '--ignore-languages':
+        args.ignoreLanguages = next()
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean);
+        break;
       case '--min-merged-prs':
         args.minMergedPrs = Number(next());
         if (!Number.isFinite(args.minMergedPrs) || args.minMergedPrs < 1) {
@@ -173,6 +182,8 @@ Options:
   --tiles              Comma-separated tiles to render, in order. Only the
                        queries those tiles need are issued.
                        Available: ${TILE_KEYS.join(', ')}
+  --ignore-languages   Comma-separated language names to hide from the
+                       language tiles (case-insensitive)
   --min-merged-prs     Merged PRs a repo needs before it counts as one you
                        contributed to (default ${DEFAULT_MIN_MERGED_PRS}). Keeps one-off
                        drive-by PRs out of reach and project counts.

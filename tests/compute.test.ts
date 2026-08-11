@@ -158,6 +158,13 @@ describe('aggregate — external contribution metrics', () => {
     for (const lang of stats.languages) expect(lang.color).toMatch(/^#/);
   });
 
+  it('ignoreLanguages hides languages from the tiles, case-insensitively', () => {
+    const top = stats.languages[0].name;
+    const ignored = aggregate(raw, { ignoreLanguages: [top.toLowerCase()] });
+    expect(ignored.languages.find((l) => l.name === top)).toBeUndefined();
+    expect(ignored.languageCount).toBe(stats.languageCount - 1);
+  });
+
   it('sums own stars over non-fork repos only', () => {
     const expected = raw.ownRepos
       .filter((r) => !r.isFork && !r.isPrivate)

@@ -26,6 +26,7 @@ async function run(): Promise<void> {
     const excludeRepos = parseExclude(core.getInput('exclude'), username);
     const tiles = parseTiles(core.getInput('tiles'));
     const minMergedPrs = parseCount(core.getInput('min-merged-prs'), DEFAULT_MIN_MERGED_PRS);
+    const ignoreLanguages = parseCsv(core.getInput('ignore-languages'));
     const needs = neededData(tiles);
     const window = buildWindow(core.getInput('since'), core.getInput('until'));
 
@@ -34,7 +35,7 @@ async function run(): Promise<void> {
     );
     const raw = await fetchAll({ username, token, needs, window });
 
-    const payload = aggregate(raw, { excludeRepos, includePrivate, minMergedPrs });
+    const payload = aggregate(raw, { excludeRepos, includePrivate, minMergedPrs, ignoreLanguages });
     core.info(
       `${payload.prsMergedExternal} PRs merged into others' repos across ${payload.externalRepoCount} projects · ${payload.reviewsExternal} external reviews · ${payload.mergeRatePct}% merge rate`,
     );
@@ -91,6 +92,13 @@ function parseBool(input: string, fallback: boolean): boolean {
   if (v === 'true' || v === 'yes' || v === '1') return true;
   if (v === 'false' || v === 'no' || v === '0') return false;
   return fallback;
+}
+
+function parseCsv(input: string): string[] {
+  return input
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
 }
 
 function parseCount(input: string, fallback: number): number {

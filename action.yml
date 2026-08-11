@@ -78,6 +78,15 @@ inputs:
     required: false
     default: '2'
 
+  ignore-languages:
+    description: |
+      Comma-separated language names to hide from the ships-in language tiles,
+      matched case-insensitively. Linguist already excludes vendored and
+      generated files automatically; use this for languages you legitimately
+      ship but don't want leading your card (e.g. `HTML,CSS`).
+    required: false
+    default: ''
+
   since:
     description: |
       Scope the card to work done on or after this date (YYYY-MM-DD, UTC).

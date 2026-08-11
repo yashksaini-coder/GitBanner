@@ -16,6 +16,7 @@ interface CliArgs {
   exclude: string[];
   tiles?: string;
   minMergedPrs?: number;
+  ignoreLanguages: string[];
   since?: string;
   until?: string;
   top: number;
@@ -60,6 +61,7 @@ async function main(): Promise<void> {
     excludeRepos: args.exclude,
     includePrivate: args.includePrivate,
     minMergedPrs: args.minMergedPrs,
+    ignoreLanguages: args.ignoreLanguages,
   });
 
   if (args.json) {
@@ -156,6 +158,7 @@ function parseArgs(argv: string[]): CliArgs {
   const args: CliArgs = {
     includePrivate: false,
     exclude: [],
+    ignoreLanguages: [],
     top: 20,
     json: false,
   };
@@ -197,6 +200,12 @@ function parseArgs(argv: string[]): CliArgs {
         break;
       case '--until':
         args.until = next();
+        break;
+      case '--ignore-languages':
+        args.ignoreLanguages = next()
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean);
         break;
       case '--min-merged-prs':
         args.minMergedPrs = Number(next());

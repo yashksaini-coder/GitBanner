@@ -68,6 +68,7 @@ You can find the SHA for a release on the [releases page](https://github.com/yas
 | `exclude` | _(empty)_ | Comma-separated repos to exclude from per-repo aggregations, matched on `name` or `owner/name`. The profile README repo is always excluded automatically. |
 | `tiles` | _(all)_ | Comma-separated tiles to render, in order. **Only the queries the selected tiles need are issued** — see [Tiles](#tiles). |
 | `min-merged-prs` | `2` | Merged PRs a repo needs before it counts as one you contributed to. See [Why the drive-by filter exists](#why-the-drive-by-filter-exists). |
+| `ignore-languages` | _(empty)_ | Comma-separated language names to hide from the language tiles, case-insensitive. Linguist already drops vendored/generated files; use this for languages you ship but don't want leading the card (e.g. `HTML,CSS`). |
 | `since` / `until` | _(empty)_ | Scope the card to a date range (`YYYY-MM-DD`, UTC, inclusive). Max one year. Omit both for an all-time card. See [Scoping to a date range](#scoping-to-a-date-range). |
 | `commit` | `true` | When true, commit and push the regenerated card if it changed. |
 | `commit-message` | `chore: refresh GitBanner stats` | Commit message used by the action. |

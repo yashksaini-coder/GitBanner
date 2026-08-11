@@ -26,12 +26,17 @@ export interface AggregateOptions {
   includePrivate?: boolean;
   /** Merged PRs a repo needs before it counts as one you contributed to. */
   minMergedPrs?: number;
+  /** Language names dropped from the language tiles, matched case-insensitively. */
+  ignoreLanguages?: string[];
 }
 
 export function aggregate(raw: RawData, options: AggregateOptions = {}): StatsPayload {
   const excluded = new Set((options.excludeRepos ?? []).map((r) => r.toLowerCase()));
   const includePrivate = options.includePrivate ?? false;
   const minMergedPrs = Math.max(1, options.minMergedPrs ?? DEFAULT_MIN_MERGED_PRS);
+  const ignoredLanguages = new Set(
+    (options.ignoreLanguages ?? []).map((l) => l.toLowerCase()),
+  );
   const login = raw.profile.login.toLowerCase();
 
   const isExcluded = (nameWithOwner: string): boolean => {
@@ -76,7 +81,7 @@ export function aggregate(raw: RawData, options: AggregateOptions = {}): StatsPa
   const recentPrs = externalPrs.filter((pr) => Date.parse(pr.mergedAt) >= cutoff);
   const recentRepos = new Set(recentPrs.map((pr) => pr.repo.nameWithOwner));
 
-  const { languages, languageCount } = summariseLanguages(externalRepos);
+  const { languages, languageCount } = summariseLanguages(externalRepos, ignoredLanguages);
 
   const reviews = summariseReviews(raw.reviewYears, login, isExcluded, includePrivate);
 
@@ -184,7 +189,10 @@ function pickBiggest(repos: ExternalRepo[]): ExternalRepo | null {
  * language), which already excludes vendored and generated files — lockfiles,
  * dist/, minified bundles never count. Rides along free on the merged-PR pages.
  */
-function summariseLanguages(repos: ExternalRepo[]): {
+function summariseLanguages(
+  repos: ExternalRepo[],
+  ignored: Set<string>,
+): {
   languages: LanguageSummary[];
   languageCount: number;
 } {
@@ -192,6 +200,7 @@ function summariseLanguages(repos: ExternalRepo[]): {
 
   for (const repo of repos) {
     for (const lang of repo.languages) {
+      if (ignored.has(lang.name.toLowerCase())) continue;
       const entry = totals.get(lang.name) ?? { repos: 0, color: lang.color };
       entry.repos++;
       if (!entry.color && lang.color) entry.color = lang.color;
