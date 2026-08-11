@@ -4,6 +4,7 @@ import { aggregate } from '../src/compute.js';
 import { toSvg } from '../src/render/svg.js';
 import { dark } from '../src/render/theme.js';
 import { renderLanguagesTile } from '../src/render/tiles/languages-tile.js';
+import { closedSegments, radarLayout } from '../src/render/tiles/radar.js';
 import { DEFAULT_TILES, neededData, parseTiles, TILE_KEYS, TILES } from '../src/tiles.js';
 import type { RawData } from '../src/types.js';
 
@@ -204,18 +205,10 @@ describe('date windows', () => {
   });
 });
 
-describe('language pills', () => {
+describe('language chart', () => {
   const TILE_H = 410;
-  const PILLS_Y = 176;
-  const AVAILABLE = TILE_H - PILLS_Y - 18;
 
-  function pillOffsets(tile: string): number[] {
-    const container = `translate(32, ${PILLS_Y})`;
-    const inner = tile.slice(tile.indexOf(container) + container.length);
-    return [...inner.matchAll(/translate\((\d+), (\d+)\)/g)].map((m) => Number(m[2]));
-  }
-
-  function render(languages: { name: string; color: string }[], overflow: number): string {
+  function render(languages: { name: string; color: string; repos: number }[], overflow = 0): string {
     return renderLanguagesTile({
       x: 0,
       y: 0,
@@ -232,31 +225,68 @@ describe('language pills', () => {
     });
   }
 
-  it('lays out a normal set without dropping anything', () => {
-    const langs = ['Python', 'Rust', 'Go', 'CSS'].map((name) => ({ name, color: '#fff' }));
-    const tile = render(langs, 3);
-    for (const lang of langs) expect(tile).toContain(lang.name);
-    expect(tile).toContain('+3');
+  const lang = (name: string, repos: number, color = '#3178c6') => ({ name, color, repos });
+
+  it('renders a radar with one gradient segment per language at 3+ axes', () => {
+    const tile = render([lang('Python', 18), lang('Rust', 9, '#dea584'), lang('Go', 4, '#00add8')]);
+    expect(tile).toContain('gbr-glow');
+    expect([...tile.matchAll(/id="gbr-seg-\d+"/g)]).toHaveLength(3);
+    for (const name of ['Python', 'Rust', 'Go']) expect(tile).toContain(name);
+    // pills fallback must not render alongside the radar
+    expect(tile).not.toContain('rx="8"');
   });
 
-  it('never lets a pill escape the tile, however long the names are', () => {
-    const langs = Array.from({ length: 8 }, (_, i) => ({
-      name: `VeryLongLanguageName${i}`,
-      color: '#fff',
-    }));
-    const tile = render(langs, 15);
-    const offsets = pillOffsets(tile);
-    expect(offsets.length).toBeGreaterThan(0);
-    expect(Math.max(...offsets) + 30).toBeLessThanOrEqual(AVAILABLE);
+  it('caps the radar at 8 axes however many languages exist', () => {
+    const many = Array.from({ length: 14 }, (_, i) => lang(`L${i}`, 14 - i));
+    const tile = render(many, 0);
+    expect([...tile.matchAll(/id="gbr-seg-\d+"/g)]).toHaveLength(8);
+    expect(tile).not.toContain('L9');
   });
 
-  it('rolls dropped languages into the +N pill rather than silently losing them', () => {
-    const langs = Array.from({ length: 8 }, (_, i) => ({
-      name: `VeryLongLanguageName${i}`,
-      color: '#fff',
-    }));
-    const tile = render(langs, 15);
-    const shown = langs.filter((l) => tile.includes(l.name)).length;
-    expect(tile).toContain(`+${15 + (langs.length - shown)}`);
+  it('falls back to pills below 3 axes and to a message at zero', () => {
+    const two = render([lang('Python', 3), lang('Go', 1)], 4);
+    expect(two).not.toContain('gbr-glow');
+    expect(two).toContain('+4');
+    const none = render([], 0);
+    expect(none).toContain('no language data');
+  });
+
+  it('escapes hostile colour strings before interpolating them', () => {
+    const tile = render([
+      lang('A', 3, '"/><script>x</script>'),
+      lang('B', 2),
+      lang('C', 1),
+    ]);
+    expect(tile).not.toContain('<script>');
+  });
+});
+
+describe('radar geometry', () => {
+  it('puts the first axis straight up and spaces axes evenly', () => {
+    const pts = radarLayout([5, 5, 5, 5], 100, 100, 10, 60);
+    expect(pts[0]).toEqual({ x: 100, y: 40 }); // top
+    expect(pts[1]).toEqual({ x: 160, y: 100 }); // right
+    expect(pts[2]).toEqual({ x: 100, y: 160 }); // bottom
+    expect(pts[3]).toEqual({ x: 40, y: 100 }); // left
+  });
+
+  it('scales radius with value and floors tiny values off the hub', () => {
+    const pts = radarLayout([10, 5, 0], 0, 0, 10, 60);
+    const r = (p: { x: number; y: number }) => Math.hypot(p.x, p.y);
+    expect(r(pts[0])).toBeCloseTo(60, 1);
+    expect(r(pts[1])).toBeCloseTo(35, 1);
+    // zero value sits at the 18% floor, not at the hub
+    expect(r(pts[2])).toBeGreaterThan(10 + 0.17 * 50);
+  });
+
+  it('emits one seamless segment per point, closing the loop', () => {
+    const pts = radarLayout([3, 1, 4, 1, 5], 50, 50, 8, 40);
+    const segs = closedSegments(pts);
+    expect(segs).toHaveLength(5);
+    for (let i = 0; i < 5; i++) {
+      const next = pts[(i + 1) % 5];
+      expect(segs[i].startsWith(`M ${pts[i].x} ${pts[i].y} `)).toBe(true);
+      expect(segs[i].endsWith(`${next.x} ${next.y}`)).toBe(true);
+    }
   });
 });

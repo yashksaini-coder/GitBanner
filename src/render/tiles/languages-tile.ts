@@ -1,6 +1,7 @@
 import type { Theme } from '../../types.js';
 import { iconByKey, renderIcon } from '../icons.js';
 import { escapeXml, fitText } from '../util.js';
+import { RADAR_MAX_AXES, RADAR_MIN_AXES, renderRadar } from './radar.js';
 
 export interface LanguagesTileProps {
   x: number;
@@ -12,7 +13,7 @@ export interface LanguagesTileProps {
   count: number;
   label: string;
   caption: string;
-  languages: { name: string; color: string }[];
+  languages: { name: string; color: string; repos: number }[];
   overflow: number;
   theme: Theme;
 }
@@ -23,7 +24,7 @@ const VALUE_X = 92;
 const PILLS_Y = 176;
 
 export function renderLanguagesTile(p: LanguagesTileProps): string {
-  const { x, y, w, h, theme, count, label, languages, overflow } = p;
+  const { x, y, w, h, theme, count, label } = p;
 
   const icon = renderIcon({
     path: iconByKey(p.iconKey),
@@ -34,7 +35,10 @@ export function renderLanguagesTile(p: LanguagesTileProps): string {
 
   const fittedLabel = fitText(label, w - 2 * PAD, [17, 15, 14]);
   const fittedCaption = fitText(p.caption, w - 2 * PAD, [13, 12]);
-  const pillSvg = layoutPills(languages, overflow, w - 2 * PAD, h - PILLS_Y - 18, theme);
+
+  // The radar is the tile's centrepiece, but it needs at least three axes to
+  // be a shape — below that the pills carry the data instead.
+  const chart = chartFor(p, w, h, theme);
 
   return `
     <g transform="translate(${x}, ${y})">
@@ -50,9 +54,32 @@ export function renderLanguagesTile(p: LanguagesTileProps): string {
 
       <line x1="${PAD}" y1="156" x2="${w - PAD}" y2="156" stroke="${theme.divider}" stroke-width="1"/>
 
-      <g transform="translate(${PAD}, ${PILLS_Y})">${pillSvg}</g>
+      ${chart}
     </g>
   `;
+}
+
+function chartFor(p: LanguagesTileProps, w: number, h: number, theme: Theme): string {
+  if (p.languages.length >= RADAR_MIN_AXES) {
+    // Vertical centre of the zone between the divider and the bottom padding,
+    // with room reserved for one label line above and below the outer ring.
+    const zoneTop = 168;
+    const zoneBottom = h - 16;
+    const cy = (zoneTop + zoneBottom) / 2;
+    const rMax = Math.min((zoneBottom - zoneTop) / 2 - 14, (w - 2 * PAD) / 2 - 28);
+    return renderRadar({
+      cx: w / 2,
+      cy,
+      rMax,
+      languages: p.languages.slice(0, RADAR_MAX_AXES),
+      theme,
+    });
+  }
+  if (p.languages.length === 0) {
+    return `<text x="${w / 2}" y="${(156 + h) / 2}" text-anchor="middle" class="gb-text" font-size="13" fill="${theme.textMuted}">no language data</text>`;
+  }
+  const pillSvg = layoutPills(p.languages, p.overflow, w - 2 * PAD, h - PILLS_Y - 18, theme);
+  return `<g transform="translate(${PAD}, ${PILLS_Y})">${pillSvg}</g>`;
 }
 
 const LINE_HEIGHT = 38;
