@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed — spectrum columns, hex haze
+
+- The popularity spectrum renders as gradient columns (value on every cap,
+  bucket label under every base, rounded tops, square baselines) — the
+  honest form for discrete decade buckets, which the old area curve
+  implied were continuous.
+- The projects hex gains the reference's periphery: data cells shrink
+  slightly per ring (ring order is rank order, so the falloff double-encodes
+  the truth) and a single ring of tiny near-background ghost hexes provides
+  the haze — unmistakably texture, never heat-coloured, dropped entirely
+  when the zone is too small to fit it.
+
 ### Changed — Activity becomes a value-labelled heat grid
 
 - The Activity card's 12-month wave gives way to the reference's heat grid:

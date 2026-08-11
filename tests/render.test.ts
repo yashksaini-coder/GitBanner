@@ -30,8 +30,9 @@ describe('toSvg', () => {
     expect(svg).not.toContain('Combined reach');
   });
 
-  it('pull requests card is a popularity-spectrum area, top repo in the stats', () => {
-    expect(svg).toContain('url(#gbh-wave)');
+  it('pull requests card is popularity-spectrum columns, top repo in the stats', () => {
+    expect(svg).toContain('url(#gbh-cols)');
+    expect(svg).not.toContain('gbh-wave');
     expect(svg).toContain('popularity spectrum');
     for (const label of ['&lt;10', '10+', '100+', '1k+', '10k+']) {
       expect(svg).toContain(label);
@@ -73,13 +74,17 @@ describe('toSvg', () => {
     expect(TILES['momentum']).toBeUndefined();
   });
 
-  it('draws the heat hex cluster, no legend strip, no per-repo rows', () => {
+  it('draws the heat hex cluster with rank falloff and a ghost ring', () => {
     expect(svg).toContain('<polygon points=');
     expect(svg).toContain('one hex per open source project');
     // the legend strip and dot-rows were removed by design
     expect(svg).not.toContain('-legend');
     // heat ramp endpoints: cold slate low, gold core high
     expect(svg.toLowerCase()).toContain('#f2c14e');
+    // ghost texture ring: present, uniform near-background fill, never heat
+    const ghosts = [...svg.matchAll(/class="gbx-ghost"/g)];
+    expect(ghosts.length).toBeGreaterThan(0);
+    expect(svg).toMatch(/class="gbx-ghost"[^/]*fill="#15151a"/);
   });
 
   it('projects card carries collective open-source metrics, not stars', () => {

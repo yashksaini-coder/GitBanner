@@ -102,12 +102,28 @@ function hexPoints(cx: number, cy: number, size: number): string {
   return pts.join(' ');
 }
 
+/** Ring index of a spiral position: centre is 0, ring k starts at 1+3k(k-1). */
+export function ringOf(index: number): number {
+  let k = 0;
+  let bound = 1;
+  while (index >= bound) {
+    k++;
+    bound += 6 * k;
+  }
+  return k;
+}
+
+/** Outer rings shrink slightly — rank falloff, since the spiral is rank order. */
+const RING_SHRINK = 0.055;
+const MIN_RING_SCALE = 0.72;
+
 /**
  * One pointy-top hex per value, spiralling out from the centre — the caller
  * passes values sorted descending, so the strongest value sits at the centre
- * and intensity fades outward. Fill is the single-hue log-scaled blue ramp;
- * a hairline black stroke is the surface gap between cells. Draws centred in
- * a local (0,0)-(w,h) zone.
+ * and both intensity and cell size fade outward (ring order IS rank order,
+ * so the size falloff double-encodes the truth). A single ring of tiny
+ * near-background ghost hexes past the data gives the reference's haze —
+ * unmistakably texture: no heat colour, barely above the card surface.
  */
 export function renderHexCluster(p: {
   w: number;
@@ -118,28 +134,61 @@ export function renderHexCluster(p: {
   const { w, h, values } = p;
   if (values.length === 0) return '';
   const cells = hexSpiral(values.length);
+  // Ghost ring: continue the spiral one ring past the data; the fit must
+  // account for it or the haze pokes outside the zone.
+  const lastRing = ringOf(values.length - 1);
+  const withGhosts = hexSpiral(Math.min(200, 1 + 3 * (lastRing + 1) * (lastRing + 2)));
+  const ghosts = withGhosts.slice(cells.length);
 
   // Largest integer hex radius (≥5) whose spiral bounding box fits the zone —
   // same brute-force fit loop as the language pills: try big, shrink until it fits.
   let size = 5;
   for (let s = Math.floor(Math.min(w, h) / 2); s >= 5; s--) {
-    const b = bbox(cells, s);
+    const b = bbox(withGhosts, s);
     if (b.w <= w && b.h <= h) {
       size = s;
       break;
     }
   }
+  // Texture is optional, data is not: if even minimum-size cells can't fit
+  // the ghost ring, drop the haze and lay out the data alone.
+  let haze = ghosts;
+  let frame = withGhosts;
+  if (bbox(withGhosts, size).w > w || bbox(withGhosts, size).h > h) {
+    haze = [];
+    frame = cells;
+    for (let s = Math.floor(Math.min(w, h) / 2); s >= 5; s--) {
+      const b = bbox(cells, s);
+      if (b.w <= w && b.h <= h) {
+        size = s;
+        break;
+      }
+    }
+  }
 
-  const b = bbox(cells, size);
+  const b = bbox(frame, size);
   const ox = w / 2 - (b.minX + b.maxX) / 2;
   const oy = h / 2 - (b.minY + b.maxY) / 2;
   const max = Math.max(...values);
 
-  return cells
+  const scaleFor = (i: number): number =>
+    Math.max(MIN_RING_SCALE, 1 - RING_SHRINK * ringOf(i));
+
+  const dataHexes = cells
     .map((c, i) => {
       const { x, y } = cellCenter(c, size);
-      return `<polygon points="${hexPoints(x + ox, y + oy, size)}" fill="${intensityColor(values[i], max)}" stroke="#000000" stroke-opacity="0.6" stroke-width="1"/>`;
+      return `<polygon points="${hexPoints(x + ox, y + oy, size * scaleFor(i))}" fill="${intensityColor(values[i], max)}" stroke="#000000" stroke-opacity="0.6" stroke-width="1"/>`;
     })
     .join('');
+
+  // Texture, never data: uniform tiny cells a breath above the card surface.
+  const ghostHexes = haze
+    .map((c) => {
+      const { x, y } = cellCenter(c, size);
+      return `<polygon class="gbx-ghost" points="${hexPoints(x + ox, y + oy, size * 0.55)}" fill="#15151a" stroke="none"/>`;
+    })
+    .join('');
+
+  return ghostHexes + dataHexes;
 }
 

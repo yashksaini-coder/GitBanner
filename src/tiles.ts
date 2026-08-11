@@ -1,4 +1,5 @@
 import { topExternalByPrs } from './compute.js';
+import { renderColumns } from './render/tiles/columns.js';
 import { renderHeatGrid } from './render/tiles/heatgrid.js';
 import { renderHexCluster } from './render/tiles/hex.js';
 import { renderLanguagesChart } from './render/tiles/languages-tile.js';
@@ -53,16 +54,13 @@ export const TILES: Record<string, TileDef> = {
         accent: theme.accents.prs,
         title: 'Pull requests',
         caption: `merged PRs across the popularity spectrum · ${p.periodLabel ?? new Date().getUTCFullYear()}`,
-        // Area under the curve = your merged work, laid out by how popular
-        // the receiving project is (fixed log-decade star buckets).
-        chart: chartGroup(box.w, renderWave({
+        // Discrete decade buckets are columns, not a curve — an area would
+        // imply continuity between the bins.
+        chart: chartGroup(box.w, renderColumns({
           w: box.w - 2 * PAD,
           h: CHART_H,
-          points: p.popularitySpectrum,
-          accent: theme.accents.prs,
-          gradId: 'gbh-wave',
-          gridlines: true,
-          tickEvery: 1,
+          data: p.popularitySpectrum,
+          gradId: 'gbh-cols',
           emptyText: 'no external merges yet',
           theme,
         })),
