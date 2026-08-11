@@ -214,6 +214,10 @@ export function aggregate(
     biggestProject,
     recentExternalPrs: recentPrs.length,
     monthlyExternalMerges: bucketByMonth(externalPrs),
+    // Built from ALL external repos (not the drive-by-filtered subset): the
+    // chart distributes prsMergedExternal, which counts every merged PR — and
+    // one-off PRs into huge repos belong in the top decade, honestly.
+    popularitySpectrum: bucketByPopularity(allExternalRepos),
     issuesByYear: raw.reviewYears.map((y) => ({
       year: y.year,
       opened: y.issuesOpened,
@@ -292,6 +296,25 @@ function bucketByMonth(
     if (Number.isNaN(at.getTime())) continue;
     const idx = at.getUTCFullYear() * 12 + at.getUTCMonth() - first;
     if (idx >= 0 && idx < 12) buckets[idx].count++;
+  }
+  return buckets;
+}
+
+const POPULARITY_LABELS = ['<10', '10+', '100+', '1k+', '10k+'];
+
+/**
+ * Merged PRs summed into fixed star-magnitude decades. Fixed buckets (not
+ * data-driven) so two users' charts — or the same user a year apart — are
+ * directly comparable, and an empty tier renders as an honest gap.
+ */
+function bucketByPopularity(
+  repos: ExternalRepo[],
+): { label: string; count: number }[] {
+  const buckets = POPULARITY_LABELS.map((label) => ({ label, count: 0 }));
+  for (const repo of repos) {
+    const idx =
+      repo.stars < 10 ? 0 : repo.stars < 100 ? 1 : repo.stars < 1000 ? 2 : repo.stars < 10000 ? 3 : 4;
+    buckets[idx].count += repo.mergedPrs;
   }
   return buckets;
 }

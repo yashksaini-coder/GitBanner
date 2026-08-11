@@ -145,6 +145,11 @@ export interface StatsPayload {
   monthlyExternalMerges: { label: string; month: number; count: number }[];
   /** Issues you opened per calendar year, oldest first; empty when not fetched. */
   issuesByYear: { year: number; opened: number }[];
+  /**
+   * Merged external PRs bucketed by the target repo's star magnitude —
+   * fixed log decades, so the x-axis is stable across users.
+   */
+  popularitySpectrum: { label: string; count: number }[];
 
   // Reviews
   reviewsTotal: number;

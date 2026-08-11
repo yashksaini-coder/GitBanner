@@ -186,6 +186,27 @@ describe('aggregate — external contribution metrics', () => {
     expect(ignored.languageCount).toBe(stats.languageCount - 1);
   });
 
+  it('buckets merged PRs into fixed popularity decades that sum to the total', () => {
+    expect(stats.popularitySpectrum.map((b) => b.label)).toEqual([
+      '<10', '10+', '100+', '1k+', '10k+',
+    ]);
+    const sum = stats.popularitySpectrum.reduce((s2, b) => s2 + b.count, 0);
+    expect(sum).toBe(stats.prsMergedExternal);
+    // boundary check via synthetic repos
+    const synth = aggregate({
+      ...raw,
+      mergedPrs: [
+        { mergedAt: '2025-01-01T00:00:00Z', repo: { nameWithOwner: 'a/nine', owner: 'a', stars: 9, isPrivate: false, languages: [] } },
+        { mergedAt: '2025-01-02T00:00:00Z', repo: { nameWithOwner: 'a/nine', owner: 'a', stars: 9, isPrivate: false, languages: [] } },
+        { mergedAt: '2025-01-01T00:00:00Z', repo: { nameWithOwner: 'a/ten', owner: 'a', stars: 10, isPrivate: false, languages: [] } },
+        { mergedAt: '2025-01-02T00:00:00Z', repo: { nameWithOwner: 'a/ten', owner: 'a', stars: 10, isPrivate: false, languages: [] } },
+        { mergedAt: '2025-01-01T00:00:00Z', repo: { nameWithOwner: 'a/big', owner: 'a', stars: 10000, isPrivate: false, languages: [] } },
+        { mergedAt: '2025-01-02T00:00:00Z', repo: { nameWithOwner: 'a/big', owner: 'a', stars: 10000, isPrivate: false, languages: [] } },
+      ],
+    });
+    expect(synth.popularitySpectrum.map((b) => b.count)).toEqual([2, 2, 0, 0, 2]);
+  });
+
   it('sums own stars over non-fork repos only', () => {
     const expected = raw.ownRepos
       .filter((r) => !r.isFork && !r.isPrivate)

@@ -1,5 +1,4 @@
 import { topExternalByPrs } from './compute.js';
-import { renderBars } from './render/tiles/bars.js';
 import { renderHexCluster } from './render/tiles/hex.js';
 import { renderLanguagesChart } from './render/tiles/languages-tile.js';
 import { renderMiniTile } from './render/tiles/mini-tile.js';
@@ -52,28 +51,36 @@ export const TILES: Record<string, TileDef> = {
   'merged-prs': {
     kind: 'card',
     needs: ['prs'],
-    render: (p, theme, box) =>
-      renderStatTile({
+    render: (p, theme, box) => {
+      const top = topExternalByPrs(p, 1)[0];
+      return renderStatTile({
         ...box,
         accent: theme.accents.prs,
         title: 'Pull requests',
-        caption: `merged into other people's repos · ${scope(p)}`,
-        chart: chartGroup(box.w, renderBars({
-          entries: topExternalByPrs(p, 5).map((r) => ({ label: r.name, value: r.value })),
+        caption: `merged PRs across the popularity spectrum · ${scope(p)}`,
+        // Area under the curve = your merged work, laid out by how popular
+        // the receiving project is (fixed log-decade star buckets).
+        chart: chartGroup(box.w, renderWave({
           w: box.w - 2 * PAD,
-          pitch: 44,
-          gradId: 'gbh-grad',
-          gradFrom: '#184f95',
-          gradTo: '#3987e5',
+          h: CHART_H,
+          points: p.popularitySpectrum,
+          accent: theme.accents.prs,
+          gradId: 'gbh-wave',
+          gridlines: true,
+          tickEvery: 1,
+          emptyText: 'no external merges yet',
           theme,
         })),
         stats: [
           { value: n(p.prsMergedExternal), label: 'merged for others' },
           { value: `${p.mergeRatePct}%`, label: 'merge rate' },
-          { value: n(p.recentExternalPrs), label: 'last 12 months' },
+          top
+            ? { value: top.name, label: `top repo · ${n(top.value)} merged` }
+            : { value: '—', label: 'top repo' },
         ],
         theme,
-      }),
+      });
+    },
   },
 
   activity: {

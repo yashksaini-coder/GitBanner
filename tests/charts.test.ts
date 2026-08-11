@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import { dark } from '../src/render/theme.js';
-import { renderBars } from '../src/render/tiles/bars.js';
 import { hexSpiral, intensityColor, renderHexCluster } from '../src/render/tiles/hex.js';
 
 describe('hexSpiral', () => {
@@ -65,37 +64,3 @@ describe('renderHexCluster', () => {
   });
 });
 
-describe('renderBars', () => {
-  const entries = [
-    { label: 'big-repo', value: 1234 },
-    { label: 'small-repo', value: 0 },
-  ];
-  const svg = renderBars({
-    entries,
-    w: 442,
-    pitch: 30,
-    gradId: 'gb-bars-test',
-    gradFrom: '#184f95',
-    gradTo: '#3987e5',
-    theme: dark,
-  });
-
-  it('emits its own gradient defs and one bar per entry filled with it', () => {
-    expect(svg).toContain('<linearGradient id="gb-bars-test"');
-    expect(svg).toContain('stop-color="#184f95"');
-    expect(svg).toContain('stop-color="#3987e5"');
-    expect(svg.match(/fill="url\(#gb-bars-test\)"/g)).toHaveLength(2);
-  });
-
-  it('labels names and grouped values, keeping a minimum bar width', () => {
-    expect(svg).toContain('big-repo');
-    expect(svg).toContain('1,234');
-    // Zero value still draws a 6px stub: its rounded end starts at x=2 (6-4).
-    expect(svg).toContain('M0 44 H2');
-  });
-
-  it('reserves the value column: the longest bar ends 64px short of w', () => {
-    // max value spans the full track: w - 64 = 378.
-    expect(svg).toContain('H374 A4 4 0 0 1 378');
-  });
-});

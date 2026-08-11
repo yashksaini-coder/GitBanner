@@ -30,6 +30,16 @@ describe('toSvg', () => {
     expect(svg).not.toContain('Combined reach');
   });
 
+  it('pull requests card is a popularity-spectrum area, top repo in the stats', () => {
+    expect(svg).toContain('url(#gbh-wave)');
+    expect(svg).toContain('popularity spectrum');
+    for (const label of ['&lt;10', '10+', '100+', '1k+', '10k+']) {
+      expect(svg).toContain(label);
+    }
+    // the #1 repo's name survives in the stat trio
+    expect(svg).toContain(stats.externalRepos[0].name);
+  });
+
   it('shows the issues resolution rate below a yearly issues wave', () => {
     const pct = Math.round((stats.issuesClosed! / stats.issuesOpened) * 100);
     expect(svg).toContain(`${pct}%`);
