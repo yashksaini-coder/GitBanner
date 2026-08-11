@@ -30,26 +30,27 @@ describe('toSvg', () => {
     expect(svg).not.toContain('Combined reach');
   });
 
-  it('pull requests card is a popularity-spectrum area, top repo in the stats', () => {
-    expect(svg).toContain('url(#gbh-wave)');
-    expect(svg).not.toContain('gbh-cols');
-    expect(svg).toContain('popularity spectrum');
-    for (const label of ['&lt;10', '10+', '100+', '1k+', '10k+']) {
-      expect(svg).toContain(label);
-    }
-    // the top-repo stat is the YEAR's leader (all-time fallback when empty)
-    const yearTop = stats.topExternalThisYear[0] ?? {
-      name: stats.externalRepos[0].name,
-      value: stats.externalRepos[0].mergedPrs,
-    };
-    expect(svg).toContain(yearTop.name);
-    expect(svg).toContain(`top repo · ${yearTop.value.toLocaleString('en-US')} merged`);
+  it('pull requests card is a dash-segment leaderboard of the year top repos', () => {
+    expect(svg).toContain('top repos by merged PRs');
+    expect(svg).toContain('class="gbd-on"');
+    expect(svg).toContain('class="gbd-off"');
+    const rows = (stats.topExternalThisYear.length > 0
+      ? stats.topExternalThisYear
+      : stats.externalRepos.map((r) => ({ name: r.name, value: r.mergedPrs }))
+    ).slice(0, 5);
+    // names longer than 13 chars render truncated with an ellipsis
+    for (const row of rows) expect(svg).toContain(row.name.slice(0, 12));
+    expect(svg).toContain('projects this year');
   });
 
-  it('shows the issues resolution rate below a yearly issues wave', () => {
+  it('shows the issues resolution rate below the yearly stream', () => {
     const pct = Math.round((stats.issuesClosed! / stats.issuesOpened) * 100);
     expect(svg).toContain(`${pct}%`);
-    expect(svg).toContain('url(#gbi-wave)');
+    expect(svg).toContain('url(#gbi-stream)');
+    // one measure-line pill per year carries its exact count
+    for (const y of stats.issuesByYear) {
+      expect(svg).toContain(`>${y.opened}<`);
+    }
     expect(svg).toContain('finishing what you file');
     expect(svg).not.toContain('Contributing since');
   });

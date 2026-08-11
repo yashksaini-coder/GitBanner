@@ -1,11 +1,12 @@
 import { topExternalByPrs } from './compute.js';
 import { renderColumns } from './render/tiles/columns.js';
+import { renderDashRows } from './render/tiles/dashes.js';
+import { renderStream } from './render/tiles/stream.js';
 import { renderHexCluster } from './render/tiles/hex.js';
 import { renderLanguagesChart } from './render/tiles/languages-tile.js';
 import { renderMiniTile } from './render/tiles/mini-tile.js';
 import { renderRidgeline } from './render/tiles/ridgeline.js';
 import { CHART_BOTTOM, CHART_TOP, renderStatTile } from './render/tiles/stat-tile.js';
-import { renderWave } from './render/tiles/wave.js';
 import type { DataNeed, StatsPayload, Theme } from './types.js';
 
 export interface Box {
@@ -46,32 +47,26 @@ export const TILES: Record<string, TileDef> = {
     kind: 'card',
     needs: ['prs'],
     render: (p, theme, box) => {
-      // This year's leader, matching the chart's year scope; all-time fallback.
-      const top = p.topExternalThisYear[0] ?? topExternalByPrs(p, 1)[0];
       return renderStatTile({
         ...box,
         accent: theme.accents.prs,
         title: 'Pull requests',
-        caption: `merged PRs across the popularity spectrum · ${p.periodLabel ?? new Date().getUTCFullYear()}`,
-        // Area under the curve = your merged work, laid out by how popular
-        // the receiving project is (fixed log-decade star buckets).
-        chart: chartGroup(box.w, renderWave({
+        caption: `top repos by merged PRs · ${p.periodLabel ?? new Date().getUTCFullYear()}`,
+        chart: chartGroup(box.w, renderDashRows({
           w: box.w - 2 * PAD,
           h: CHART_H,
-          points: p.popularitySpectrum,
+          rows: (p.topExternalThisYear.length > 0
+            ? p.topExternalThisYear
+            : topExternalByPrs(p, 5)
+          ).slice(0, 5).map((r) => ({ label: r.name, value: r.value })),
           accent: theme.accents.prs,
-          gradId: 'gbh-wave',
-          gridlines: true,
-          tickEvery: 1,
           emptyText: 'no external merges yet',
           theme,
         })),
         stats: [
           { value: n(p.prsMergedExternal), label: 'merged for others' },
           { value: `${p.mergeRatePct}%`, label: 'merge rate' },
-          top
-            ? { value: top.name, label: `top repo · ${n(top.value)} merged` }
-            : { value: '—', label: 'top repo' },
+          { value: n(p.recentExternalRepoCount), label: 'projects this year' },
         ],
         theme,
       });
@@ -204,18 +199,15 @@ export const TILES: Record<string, TileDef> = {
     needs: ['issues', 'reviews'],
     render: (p, theme, box) => {
       const closed = p.issuesClosed;
-      const wave = chartGroup(box.w, renderWave({
+      const wave = chartGroup(box.w, renderStream({
         w: box.w - 2 * PAD,
         h: CHART_H,
-        points: p.issuesByYear.map((y) => ({
+        stations: p.issuesByYear.map((y) => ({
           label: String(y.year),
-          month: 0,
-          count: y.opened,
+          value: y.opened,
         })),
         accent: theme.accents.issues,
-        gradId: 'gbi-wave',
-        gridlines: true,
-        tickEvery: 1,
+        gradId: 'gbi-stream',
         emptyText: 'no issue history in range',
         theme,
       }));

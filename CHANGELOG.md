@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed — issues stream, PR dash leaderboard
+
+- Issues renders as a symmetric stream: band thickness = issues opened per
+  year, hairline measure lines with pill value labels alternating above and
+  below, monotone edges so the band cannot bulge past its stations.
+- Pull requests becomes a dash-segment leaderboard of the current year's
+  top 5 repos — rounded dashes filled in proportion to merges, dim track
+  segments for the remainder, exact value per row; the third stat becomes
+  projects-this-year (the top repo is now the first row). The popularity
+  spectrum data stays in the payload for windowed/other uses.
+
 ### Changed — activity columns, hex haze
 
 - The Activity card renders the trailing 12 months as gradient columns
