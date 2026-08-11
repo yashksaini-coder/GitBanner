@@ -25,6 +25,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   test asserts containment for adversarial value patterns. Below 3 languages
   the tile falls back to the pill layout; at zero it says so.
 
+- **Ships-in counts programming languages only.** Linguist's markup, data and
+  prose classes — HTML, CSS, SCSS, JSON, YAML, Markdown, Jupyter Notebook and
+  friends — no longer count toward the language claim or appear on the radar.
+  GitHub's API doesn't expose linguist's type field, so the classification
+  ships in compute as an exclusion set. Shell, PowerShell, Dockerfile and
+  Makefile stay: linguist classes them as programming. `ignore-languages`
+  stacks on top for personal taste.
+- Radar labels are colour-coded to their vertex dots (dark brand colours flip
+  to ink for readability) and are middle-anchored above or below each vertex,
+  so full language names render without truncation in the narrow tile.
+
 ### Removed
 
 - The footer credit line at the bottom of the banner.

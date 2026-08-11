@@ -68,7 +68,7 @@ You can find the SHA for a release on the [releases page](https://github.com/yas
 | `exclude` | _(empty)_ | Comma-separated repos to exclude from per-repo aggregations, matched on `name` or `owner/name`. The profile README repo is always excluded automatically. |
 | `tiles` | _(all)_ | Comma-separated tiles to render, in order. **Only the queries the selected tiles need are issued** — see [Tiles](#tiles). |
 | `min-merged-prs` | `2` | Merged PRs a repo needs before it counts as one you contributed to. See [Why the drive-by filter exists](#why-the-drive-by-filter-exists). |
-| `ignore-languages` | _(empty)_ | Comma-separated language names to hide from the language tiles, case-insensitive. Linguist already drops vendored/generated files; use this for languages you ship but don't want leading the card (e.g. `HTML,CSS`). |
+| `ignore-languages` | _(empty)_ | Comma-separated language names to hide from the language tiles, case-insensitive. Markup, data and prose languages (HTML, CSS, JSON, notebooks…) are already excluded automatically; use this for programming languages you'd rather not show (e.g. `Batchfile`). |
 | `since` / `until` | _(empty)_ | Scope the card to a date range (`YYYY-MM-DD`, UTC, inclusive). Max one year. Omit both for an all-time card. See [Scoping to a date range](#scoping-to-a-date-range). |
 | `commit` | `true` | When true, commit and push the regenerated card if it changed. |
 | `commit-message` | `chore: refresh GitBanner stats` | Commit message used by the action. |
@@ -215,7 +215,7 @@ hero renders per card; selecting two is an error.
 | `merged-prs` | **(hero)** PRs merged into repos you **don't** own, with a bar chart of the top 5 projects |
 | `reviews` | Code reviews you gave on other people's repos |
 | `projects` | Distinct external projects you've landed work in |
-| `ships-in` | A straight-edged radar of your top 8 languages by project count, with a dot in each language's own colour at its vertex. Falls back to pills below 3 languages. Uses linguist's full language data, which excludes vendored and generated files |
+| `ships-in` | A straight-edged radar of your top 8 **programming** languages by project count — linguist's markup/data/prose classes (HTML, CSS, JSON, notebooks) don't count toward the claim. Labels and vertex dots wear each language's own colour. Falls back to pills below 3 languages |
 | `issues` | Issue resolution rate — % of issues you filed that got resolved, with opened/resolved/still-open rows |
 
 **Row 2 — supporting context:** `biggest-project`, `merge-rate`, `own-stars`
