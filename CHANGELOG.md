@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed — Activity becomes a value-labelled heat grid
+
+- The Activity card's 12-month wave gives way to the reference's heat grid:
+  one rounded cell per month with its merge count inside, rows = years
+  (last 4), columns = Jan..Dec, colours on the same heat ramp as the
+  projects hex. Future months are skipped; past zero-months are honest dim
+  zeros; in-cell ink flips dark on bright cells. The grid shows the full
+  history the wave could not — including the Oct/Nov 2024 surge (99 and
+  108 merges) that no earlier chart surfaced.
+
 ### Changed — language burst, year-scoped top repo
 
 - The ships-in chart becomes a radial burst, reference style: one glowing

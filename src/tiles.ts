@@ -1,4 +1,5 @@
 import { topExternalByPrs } from './compute.js';
+import { renderHeatGrid } from './render/tiles/heatgrid.js';
 import { renderHexCluster } from './render/tiles/hex.js';
 import { renderLanguagesChart } from './render/tiles/languages-tile.js';
 import { renderMiniTile } from './render/tiles/mini-tile.js';
@@ -38,9 +39,6 @@ const CHART_H = CHART_BOTTOM - CHART_TOP;
 function chartGroup(_w: number, inner: string): string {
   return `<g transform="translate(${PAD}, ${CHART_TOP})">${inner}</g>`;
 }
-
-/** Ridge-style hue drift for the activity wave, reference green→blue→violet. */
-const RIDGE_STOPS = ['#2fd08a', '#3987e5', '#8b6cf0'];
 
 export const TILES: Record<string, TileDef> = {
   // --- the six chart cards ----------------------------------------------
@@ -92,15 +90,11 @@ export const TILES: Record<string, TileDef> = {
         ...box,
         accent: theme.accents.prs,
         title: 'Activity',
-        caption: p.periodLabel ?? 'external merges by month · last 12 months',
-        chart: chartGroup(box.w, renderWave({
+        caption: p.periodLabel ?? 'external merges by month and year · heat = count',
+        chart: chartGroup(box.w, renderHeatGrid({
           w: box.w - 2 * PAD,
           h: CHART_H,
-          points: p.monthlyExternalMerges,
-          accent: theme.accents.prs,
-          gradId: 'gba-wave',
-          strokeStops: RIDGE_STOPS,
-          gridlines: true,
+          rows: p.activityByMonth,
           theme,
         })),
         stats: [

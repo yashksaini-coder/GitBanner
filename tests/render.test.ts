@@ -60,12 +60,16 @@ describe('toSvg', () => {
     expect(svg).toContain('Activity');
   });
 
-  it('replaces the momentum mini with the Activity wave card', () => {
+  it('activity is a value-labelled month-by-year heat grid', () => {
     expect(svg).toContain('Activity');
-    expect(svg).toContain('url(#gba-wave)');
-    expect(svg).toContain('external merges');
-    // the old mini is gone
-    expect(svg).not.toContain('Last 12 months');
+    expect(svg).toContain('by month and year');
+    // U+00D7 is not in the embedded font subsets and would render as a hole
+    expect(svg).not.toContain('×');
+    // year gutter labels and value-bearing cells render
+    for (const row of stats.activityByMonth) {
+      expect(svg).toContain(`>${String(row.year).slice(2)}<`);
+    }
+    expect(svg).not.toContain('url(#gba-wave)');
     expect(TILES['momentum']).toBeUndefined();
   });
 

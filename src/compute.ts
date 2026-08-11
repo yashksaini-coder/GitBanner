@@ -225,6 +225,7 @@ export function aggregate(
     biggestProject,
     recentExternalPrs: recentPrs.length,
     monthlyExternalMerges: bucketByMonth(externalPrs),
+    activityByMonth: bucketByYearMonth(externalPrs),
     // Built from ALL external repos (not the drive-by-filtered subset): one-off
     // PRs into huge repos belong in the top decade, honestly. All-time cards
     // scope to the current UTC year (the tile tells this year's story); a
@@ -319,6 +320,36 @@ function bucketByMonth(
     if (idx >= 0 && idx < 12) buckets[idx].count++;
   }
   return buckets;
+}
+
+/**
+ * External merges as a month × year grid, oldest year first, capped at the
+ * last 4 years so the card grid stays readable. Months that haven't happened
+ * yet in the current year are null (skipped by the renderer); past months
+ * with no merges are honest zeros.
+ */
+function bucketByYearMonth(
+  prs: MergedPr[],
+): { year: number; months: (number | null)[] }[] {
+  const now = new Date();
+  const curYear = now.getUTCFullYear();
+  const curMonth = now.getUTCMonth();
+  const byYear = new Map<number, number[]>();
+  for (const pr of prs) {
+    const at = new Date(pr.mergedAt);
+    if (Number.isNaN(at.getTime())) continue;
+    const y = at.getUTCFullYear();
+    const row = byYear.get(y) ?? Array.from({ length: 12 }, () => 0);
+    row[at.getUTCMonth()]++;
+    byYear.set(y, row);
+  }
+  const years = [...byYear.keys()].sort((a, b) => a - b).slice(-4);
+  return years.map((year) => ({
+    year,
+    months: (byYear.get(year) ?? []).map((count, m) =>
+      year === curYear && m > curMonth ? null : count,
+    ),
+  }));
 }
 
 const POPULARITY_LABELS = ['<10', '10+', '100+', '1k+', '10k+'];
