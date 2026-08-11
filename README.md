@@ -215,7 +215,7 @@ hero renders per card; selecting two is an error.
 | `merged-prs` | **(hero)** PRs merged into repos you **don't** own, with a bar chart of the top 5 projects |
 | `reviews` | Code reviews you gave on other people's repos |
 | `projects` | Distinct external projects you've landed work in |
-| `ships-in` | Every language across the projects you ship to, as pills. Uses linguist's full language data, which excludes vendored and generated files (lockfiles, `dist/`, minified bundles) |
+| `ships-in` | A radar of your top 8 languages by project count — the curve's colour shifts through each language's own colour at its spoke. Falls back to pills below 3 languages. Uses linguist's full language data, which excludes vendored and generated files |
 | `issues` | Issue resolution rate — % of issues you filed that got resolved, with opened/resolved/still-open rows |
 
 **Row 2 — supporting context:** `biggest-project`, `merge-rate`, `own-stars`

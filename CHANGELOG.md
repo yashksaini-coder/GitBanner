@@ -15,6 +15,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `npm run build:fonts` regenerates them. Star counts are written as
   "N stars" because U+2605 is absent from both faces.
 
+### Changed
+
+- **The ships-in tile is now a radar chart**: one smooth closed curve over
+  polar gridlines, one spoke per language (top 8 by project count), radius =
+  projects using it. The stroke is a per-segment gradient that passes through
+  each language's own colour at its spoke, with a soft glow. Below 3 languages
+  the tile falls back to the pill layout; at zero it says so.
+
 ### Removed
 
 - The footer credit line at the bottom of the banner.
