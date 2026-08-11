@@ -17,10 +17,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **The ships-in tile is now a radar chart**: one smooth closed curve over
-  polar gridlines, one spoke per language (top 8 by project count), radius =
-  projects using it. The stroke is a per-segment gradient that passes through
-  each language's own colour at its spoke, with a soft glow. Below 3 languages
+- **The ships-in tile is now a radar chart**: a sharp straight-edged polygon
+  over polar gridlines, one spoke per language (top 8 by project count),
+  radius = projects using it, drawn in the accent colour with a soft glow.
+  Each vertex carries a dot in the language's own colour as identity notation.
+  Straight chords between in-ring points cannot leave the outer ring, and a
+  test asserts containment for adversarial value patterns. Below 3 languages
   the tile falls back to the pill layout; at zero it says so.
 
 ### Removed

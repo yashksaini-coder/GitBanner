@@ -4,7 +4,7 @@ import { aggregate } from '../src/compute.js';
 import { toSvg } from '../src/render/svg.js';
 import { dark } from '../src/render/theme.js';
 import { renderLanguagesTile } from '../src/render/tiles/languages-tile.js';
-import { closedSegments, radarLayout } from '../src/render/tiles/radar.js';
+import { polygonPath, radarLayout } from '../src/render/tiles/radar.js';
 import { DEFAULT_TILES, neededData, parseTiles, TILE_KEYS, TILES } from '../src/tiles.js';
 import type { RawData } from '../src/types.js';
 
@@ -227,10 +227,13 @@ describe('language chart', () => {
 
   const lang = (name: string, repos: number, color = '#3178c6') => ({ name, color, repos });
 
-  it('renders a radar with one gradient segment per language at 3+ axes', () => {
+  it('renders a straight-edged radar with one colour dot per language at 3+ axes', () => {
     const tile = render([lang('Python', 18), lang('Rust', 9, '#dea584'), lang('Go', 4, '#00add8')]);
     expect(tile).toContain('gbr-glow');
-    expect([...tile.matchAll(/id="gbr-seg-\d+"/g)]).toHaveLength(3);
+    expect([...tile.matchAll(/class="gbr-dot"/g)]).toHaveLength(3);
+    expect(tile).toContain('#dea584');
+    // single accent stroke, not a per-segment gradient
+    expect(tile).not.toContain('<linearGradient');
     for (const name of ['Python', 'Rust', 'Go']) expect(tile).toContain(name);
     // pills fallback must not render alongside the radar
     expect(tile).not.toContain('rx="8"');
@@ -239,7 +242,7 @@ describe('language chart', () => {
   it('caps the radar at 8 axes however many languages exist', () => {
     const many = Array.from({ length: 14 }, (_, i) => lang(`L${i}`, 14 - i));
     const tile = render(many, 0);
-    expect([...tile.matchAll(/id="gbr-seg-\d+"/g)]).toHaveLength(8);
+    expect([...tile.matchAll(/class="gbr-dot"/g)]).toHaveLength(8);
     expect(tile).not.toContain('L9');
   });
 
@@ -279,14 +282,36 @@ describe('radar geometry', () => {
     expect(r(pts[2])).toBeGreaterThan(10 + 0.17 * 50);
   });
 
-  it('emits one seamless segment per point, closing the loop', () => {
+  it('draws a closed straight-edged polygon through every point', () => {
     const pts = radarLayout([3, 1, 4, 1, 5], 50, 50, 8, 40);
-    const segs = closedSegments(pts);
-    expect(segs).toHaveLength(5);
-    for (let i = 0; i < 5; i++) {
-      const next = pts[(i + 1) % 5];
-      expect(segs[i].startsWith(`M ${pts[i].x} ${pts[i].y} `)).toBe(true);
-      expect(segs[i].endsWith(`${next.x} ${next.y}`)).toBe(true);
+    const d = polygonPath(pts);
+    expect(d.startsWith(`M ${pts[0].x} ${pts[0].y}`)).toBe(true);
+    expect(d.endsWith('Z')).toBe(true);
+    // straight lines only — a curve command would mean overshoot is possible
+    expect(d).not.toMatch(/[CQSTA]/);
+    expect([...d.matchAll(/L /g)]).toHaveLength(pts.length - 1);
+  });
+
+  it('never crosses the outer ring, whatever the value pattern', () => {
+    const cx = 120, cy = 130, rMin = 10, rMax = 60;
+    const patterns = [
+      [36, 35, 25, 21, 18, 15, 14, 7], // live-like
+      [1, 100, 1, 100, 1, 100],        // alternating extremes (worst spline case)
+      [100, 100, 100],                 // everything at the ring
+      [0, 0, 0, 1],                    // floor territory
+    ];
+    for (const values of patterns) {
+      const pts = radarLayout(values, cx, cy, rMin, rMax);
+      for (const pt of pts) {
+        expect(Math.hypot(pt.x - cx, pt.y - cy)).toBeLessThanOrEqual(rMax + 0.01);
+      }
+      // A straight chord between two in-ring points stays in the ring; assert
+      // it anyway at midpoints so a future smoothing regression fails loudly.
+      for (let i = 0; i < pts.length; i++) {
+        const a = pts[i], b = pts[(i + 1) % pts.length];
+        const mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+        expect(Math.hypot(mid.x - cx, mid.y - cy)).toBeLessThanOrEqual(rMax + 0.01);
+      }
     }
   });
 });

@@ -44,24 +44,16 @@ export function radarLayout(
 }
 
 /**
- * Closed Catmull-Rom spline through the points, returned as one cubic Bézier
- * path per segment (P_i → P_{i+1}). Segments share endpoints exactly, so each
- * can carry its own gradient while the joined curve stays seamless.
+ * Straight-edged closed polygon through the points. Straight chords between
+ * points that all satisfy r ≤ rMax can never leave the outer ring — unlike a
+ * smoothing spline, whose curve overshoots between knots.
  */
-export function closedSegments(pts: Pt[]): string[] {
-  const n = pts.length;
-  const at = (i: number): Pt => pts[((i % n) + n) % n];
-  const out: string[] = [];
-  for (let i = 0; i < n; i++) {
-    const p0 = at(i - 1);
-    const p1 = at(i);
-    const p2 = at(i + 1);
-    const p3 = at(i + 2);
-    const c1 = { x: r2(p1.x + (p2.x - p0.x) / 6), y: r2(p1.y + (p2.y - p0.y) / 6) };
-    const c2 = { x: r2(p2.x - (p3.x - p1.x) / 6), y: r2(p2.y - (p3.y - p1.y) / 6) };
-    out.push(`M ${p1.x} ${p1.y} C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${p2.x} ${p2.y}`);
-  }
-  return out;
+export function polygonPath(pts: Pt[]): string {
+  return (
+    `M ${pts[0].x} ${pts[0].y} ` +
+    pts.slice(1).map((p) => `L ${p.x} ${p.y}`).join(' ') +
+    ' Z'
+  );
 }
 
 export interface RadarProps {
@@ -74,9 +66,10 @@ export interface RadarProps {
 }
 
 /**
- * The signature chart: one smooth closed curve whose stroke interpolates
- * through each language's own colour at its spoke, over recessive polar grid
- * rings, with a soft glow so the curve reads as the tile's light source.
+ * The signature chart: a sharp closed polygon in the accent colour over
+ * recessive polar grid rings, with a soft glow. Language identity is notation,
+ * not stroke paint: a coloured dot sits on each vertex, ringed in the tile
+ * colour so it stays legible where the shape crosses itself.
  * Caller guarantees RADAR_MIN_AXES ≤ languages.length ≤ RADAR_MAX_AXES.
  */
 export function renderRadar(p: RadarProps): string {
@@ -84,9 +77,10 @@ export function renderRadar(p: RadarProps): string {
   const langs = p.languages;
   const n = langs.length;
   const rMin = 10;
+  const accent = theme.accents.languages;
 
   const pts = radarLayout(langs.map((l) => l.repos), cx, cy, rMin, rMax);
-  const segments = closedSegments(pts);
+  const shape = polygonPath(pts);
 
   // Grid: three rings plus one hairline spoke per axis.
   const rings = [1 / 3, 2 / 3, 1]
@@ -99,31 +93,17 @@ export function renderRadar(p: RadarProps): string {
     })
     .join('');
 
-  // One gradient per segment: this language's colour to the next one's, in
-  // user space along the chord, so the hue arrives exactly at each spoke.
-  const defs = segments
-    .map((_, i) => {
-      const a = pts[i];
-      const b = pts[(i + 1) % n];
-      const from = escapeXml(langs[i].color);
-      const to = escapeXml(langs[(i + 1) % n].color);
-      return `<linearGradient id="gbr-seg-${i}" gradientUnits="userSpaceOnUse" x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}"><stop offset="0" stop-color="${from}"/><stop offset="1" stop-color="${to}"/></linearGradient>`;
-    })
-    .join('');
-  const dominant = escapeXml(langs[0].color);
-  const glowFill = `<radialGradient id="gbr-fill" gradientUnits="userSpaceOnUse" cx="${cx}" cy="${cy}" r="${rMax}"><stop offset="0" stop-color="${dominant}" stop-opacity="0.16"/><stop offset="1" stop-color="${dominant}" stop-opacity="0"/></radialGradient>`;
+  const glowFill = `<radialGradient id="gbr-fill" gradientUnits="userSpaceOnUse" cx="${cx}" cy="${cy}" r="${rMax}"><stop offset="0" stop-color="${accent}" stop-opacity="0.14"/><stop offset="1" stop-color="${accent}" stop-opacity="0"/></radialGradient>`;
   // Generous filter region so the blur is not clipped at the group bounds.
-  const glowFilter = `<filter id="gbr-glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4.5"/></filter>`;
+  const glowFilter = `<filter id="gbr-glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4"/></filter>`;
 
-  const fillPath = `M ${pts[0].x} ${pts[0].y} ${segments
-    .map((s) => s.slice(s.indexOf('C')))
-    .join(' ')} Z`;
+  const glow = `<path d="${shape}" fill="none" stroke="${accent}" stroke-width="8" stroke-linejoin="miter" stroke-opacity="0.45"/>`;
+  const stroke = `<path d="${shape}" fill="none" stroke="${accent}" stroke-width="2.5" stroke-linejoin="miter"/>`;
 
-  const glow = segments
-    .map((d, i) => `<path d="${d}" fill="none" stroke="url(#gbr-seg-${i})" stroke-width="9" stroke-linecap="round" stroke-opacity="0.5"/>`)
-    .join('');
-  const stroke = segments
-    .map((d, i) => `<path d="${d}" fill="none" stroke="url(#gbr-seg-${i})" stroke-width="2.5" stroke-linecap="round"/>`)
+  // Colour notation: one dot per vertex in the language's own colour, with a
+  // tile-coloured ring so overlapping geometry never swallows it.
+  const dots = pts
+    .map((pt, i) => `<circle class="gbr-dot" cx="${pt.x}" cy="${pt.y}" r="3.5" fill="${escapeXml(langs[i].color)}" stroke="${theme.tile}" stroke-width="2"/>`)
     .join('');
 
   // Centre hub: the code glyph in a quiet ring, like the reference's diamond.
@@ -149,14 +129,15 @@ export function renderRadar(p: RadarProps): string {
     .join('');
 
   return (
-    `<defs>${defs}${glowFill}${glowFilter}</defs>` +
+    `<defs>${glowFill}${glowFilter}</defs>` +
     rings +
     spokes +
-    `<path d="${fillPath}" fill="url(#gbr-fill)"/>` +
+    `<path d="${shape}" fill="url(#gbr-fill)"/>` +
     `<g filter="url(#gbr-glow)">${glow}</g>` +
     stroke +
     `<circle cx="${cx}" cy="${cy}" r="11" fill="${theme.tile}" stroke="${theme.divider}" stroke-width="1"/>` +
     `<g transform="translate(${r2(cx - 7)}, ${r2(cy - 7)})">${hubIcon}</g>` +
+    dots +
     labels
   );
 }
