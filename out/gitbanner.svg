@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="728" viewBox="0 0 1600 728" role="img" aria-label="Open source contributions by yashksaini-coder: 362 pull requests merged into other people&apos;s repositories across 46 projects.">
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="582" viewBox="0 0 1600 582" role="img" aria-label="Open source contributions by yashksaini-coder: 362 pull requests merged into other people&apos;s repositories across 46 projects.">
   <defs>
     <style>@font-face {
       font-family: "Inter";
@@ -24,6 +24,222 @@
     .gb-text-bold { font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-weight: 700; }
     .gb-mono { font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-weight: 600; }</style>
   </defs>
-  <rect width="1600" height="728" rx="36" fill="#0b0d12"/>
-  <g transform="translate(32, 32)"><rect width="496" height="664" rx="28" fill="#11161f" stroke="#1c2230" stroke-width="1.5"/><text x="32" y="56" class="gb-display" font-size="26" fill="#ffffff">Pull requests</text><defs><linearGradient id="gb-grad-pull-requests" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#184f95"/><stop offset="1" stop-color="#3987e5"/></linearGradient></defs><text x="32" y="104" class="gb-text" font-size="13" fill="#9ca3af">PySnippets</text><path d="M32,112 h364 a4,4 0 0 1 4,4 v8 a4,4 0 0 1 -4,4 h-364 z" fill="url(#gb-grad-pull-requests)"/><text x="408" y="124" class="gb-mono" font-size="13" fill="#ffffff">71</text><text x="32" y="154" class="gb-text" font-size="13" fill="#9ca3af">py-libp2p</text><path d="M32,162 h131 a4,4 0 0 1 4,4 v8 a4,4 0 0 1 -4,4 h-131 z" fill="url(#gb-grad-pull-requests)"/><text x="175" y="174" class="gb-mono" font-size="13" fill="#ffffff">26</text><text x="32" y="204" class="gb-text" font-size="13" fill="#9ca3af">PyVerse</text><path d="M32,212 h110 a4,4 0 0 1 4,4 v8 a4,4 0 0 1 -4,4 h-110 z" fill="url(#gb-grad-pull-requests)"/><text x="154" y="224" class="gb-mono" font-size="13" fill="#ffffff">22</text><text x="32" y="254" class="gb-text" font-size="13" fill="#9ca3af">opensre</text><path d="M32,262 h84 a4,4 0 0 1 4,4 v8 a4,4 0 0 1 -4,4 h-84 z" fill="url(#gb-grad-pull-requests)"/><text x="128" y="274" class="gb-mono" font-size="13" fill="#ffffff">17</text><text x="32" y="304" class="gb-text" font-size="13" fill="#9ca3af">trx</text><path d="M32,312 h63 a4,4 0 0 1 4,4 v8 a4,4 0 0 1 -4,4 h-63 z" fill="url(#gb-grad-pull-requests)"/><text x="107" y="324" class="gb-mono" font-size="13" fill="#ffffff">13</text><rect x="32" y="385" width="6" height="6" rx="2" fill="#3987e5"/><text x="46" y="394" class="gb-text" font-size="13" fill="#6b7280">All time</text><text x="32" y="438" class="gb-display" font-size="34" fill="#ffffff">362</text><text x="32" y="462" class="gb-mono" font-size="12"><tspan fill="#199e70">↑ 99</tspan><tspan fill="#6b7280"> in last 12 mo</tspan></text><rect x="264" y="385" width="6" height="6" rx="2" fill="#3987e5"/><text x="278" y="394" class="gb-text" font-size="13" fill="#6b7280">Merge rate</text><text x="264" y="438" class="gb-display" font-size="34" fill="#ffffff">82%</text><text x="264" y="462" class="gb-mono" font-size="12"><tspan fill="#6b7280">492 of 599 opened</tspan></text><line x1="32" y1="492" x2="464" y2="492" stroke="#1f2937" stroke-width="1"/><text x="32" y="525" class="gb-text" font-size="15" fill="#9ca3af">Projects shipped to</text><text x="464" y="525" text-anchor="end" class="gb-mono" font-size="15" fill="#ffffff">46</text><line x1="32" y1="544" x2="464" y2="544" stroke="#1f2937" stroke-width="1"/><text x="32" y="577" class="gb-text" font-size="15" fill="#9ca3af">Biggest · opensre</text><text x="464" y="577" text-anchor="end" class="gb-mono" font-size="15" fill="#ffffff">10,356 stars</text><line x1="32" y1="596" x2="464" y2="596" stroke="#1f2937" stroke-width="1"/><text x="32" y="629" class="gb-text" font-size="15" fill="#9ca3af">Active this year</text><text x="464" y="629" text-anchor="end" class="gb-mono" font-size="15" fill="#ffffff">22 projects</text></g><g transform="translate(552, 32)"><rect width="496" height="664" rx="28" fill="#11161f" stroke="#1c2230" stroke-width="1.5"/><text x="32" y="56" class="gb-display" font-size="26" fill="#ffffff">Code review</text><defs><linearGradient id="gb-grad-code-review" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8a3416"/><stop offset="1" stop-color="#d95926"/></linearGradient></defs><text x="32" y="110" class="gb-text" font-size="13" fill="#9ca3af">opensre</text><path d="M32,118 h364 a4,4 0 0 1 4,4 v8 a4,4 0 0 1 -4,4 h-364 z" fill="url(#gb-grad-code-review)"/><text x="408" y="130" class="gb-mono" font-size="13" fill="#ffffff">79</text><text x="32" y="166" class="gb-text" font-size="13" fill="#9ca3af">Draftdeckai</text><path d="M32,174 h57 a4,4 0 0 1 4,4 v8 a4,4 0 0 1 -4,4 h-57 z" fill="url(#gb-grad-code-review)"/><text x="101" y="186" class="gb-mono" font-size="13" fill="#ffffff">13</text><text x="32" y="222" class="gb-text" font-size="13" fill="#9ca3af">py-libp2p</text><path d="M32,230 h38 a4,4 0 0 1 4,4 v8 a4,4 0 0 1 -4,4 h-38 z" fill="url(#gb-grad-code-review)"/><text x="82" y="242" class="gb-mono" font-size="13" fill="#ffffff">9</text><text x="32" y="278" class="gb-text" font-size="13" fill="#9ca3af">github_tracker</text><path d="M32,286 h24 a4,4 0 0 1 4,4 v8 a4,4 0 0 1 -4,4 h-24 z" fill="url(#gb-grad-code-review)"/><text x="68" y="298" class="gb-mono" font-size="13" fill="#ffffff">6</text><rect x="32" y="385" width="6" height="6" rx="2" fill="#d95926"/><text x="46" y="394" class="gb-text" font-size="13" fill="#6b7280">Reviews for others</text><text x="32" y="438" class="gb-display" font-size="34" fill="#ffffff">132</text><text x="32" y="462" class="gb-mono" font-size="12"><tspan fill="#6b7280">of 235 total</tspan></text><rect x="264" y="385" width="6" height="6" rx="2" fill="#d95926"/><text x="278" y="394" class="gb-text" font-size="13" fill="#6b7280">Issues resolved</text><text x="264" y="438" class="gb-display" font-size="34" fill="#ffffff">85%</text><text x="264" y="462" class="gb-mono" font-size="12"><tspan fill="#6b7280">440 of 516 filed</tspan></text><line x1="32" y1="492" x2="464" y2="492" stroke="#1f2937" stroke-width="1"/><text x="32" y="525" class="gb-text" font-size="15" fill="#9ca3af">Opened</text><text x="464" y="525" text-anchor="end" class="gb-mono" font-size="15" fill="#ffffff">516</text><line x1="32" y1="544" x2="464" y2="544" stroke="#1f2937" stroke-width="1"/><text x="32" y="577" class="gb-text" font-size="15" fill="#9ca3af">Resolved</text><text x="464" y="577" text-anchor="end" class="gb-mono" font-size="15" fill="#ffffff">440</text><line x1="32" y1="596" x2="464" y2="596" stroke="#1f2937" stroke-width="1"/><text x="32" y="629" class="gb-text" font-size="15" fill="#9ca3af">Still open</text><text x="464" y="629" text-anchor="end" class="gb-mono" font-size="15" fill="#ffffff">76</text></g><g transform="translate(1072, 32)"><rect width="496" height="664" rx="28" fill="#11161f" stroke="#1c2230" stroke-width="1.5"/><text x="32" y="56" class="gb-display" font-size="26" fill="#ffffff">Footprint</text><rect x="32" y="90" width="137" height="54" rx="12" fill="#663399" fill-opacity="0.13" stroke="#663399" stroke-opacity="0.35" stroke-width="1"/><text x="44" y="112" class="gb-text-bold" font-size="13" fill="#663399">CSS</text><text x="44" y="132" class="gb-mono" font-size="14" fill="#ffffff">36</text><rect x="179" y="90" width="137" height="54" rx="12" fill="#f1e05a" fill-opacity="0.13" stroke="#f1e05a" stroke-opacity="0.35" stroke-width="1"/><text x="191" y="112" class="gb-text-bold" font-size="13" fill="#f1e05a">JavaScript</text><text x="191" y="132" class="gb-mono" font-size="14" fill="#ffffff">35</text><rect x="326" y="90" width="137" height="54" rx="12" fill="#e34c26" fill-opacity="0.13" stroke="#e34c26" stroke-opacity="0.35" stroke-width="1"/><text x="338" y="112" class="gb-text-bold" font-size="13" fill="#e34c26">HTML</text><text x="338" y="132" class="gb-mono" font-size="14" fill="#ffffff">25</text><rect x="32" y="154" width="137" height="54" rx="12" fill="#3178c6" fill-opacity="0.13" stroke="#3178c6" stroke-opacity="0.35" stroke-width="1"/><text x="44" y="176" class="gb-text-bold" font-size="13" fill="#3178c6">TypeScript</text><text x="44" y="196" class="gb-mono" font-size="14" fill="#ffffff">21</text><rect x="179" y="154" width="137" height="54" rx="12" fill="#3572A5" fill-opacity="0.13" stroke="#3572A5" stroke-opacity="0.35" stroke-width="1"/><text x="191" y="176" class="gb-text-bold" font-size="13" fill="#3572A5">Python</text><text x="191" y="196" class="gb-mono" font-size="14" fill="#ffffff">18</text><rect x="326" y="154" width="137" height="54" rx="12" fill="#384d54" fill-opacity="0.13" stroke="#384d54" stroke-opacity="0.35" stroke-width="1"/><text x="338" y="176" class="gb-text-bold" font-size="13" fill="#384d54">Dockerfile</text><text x="338" y="196" class="gb-mono" font-size="14" fill="#ffffff">15</text><rect x="32" y="218" width="137" height="54" rx="12" fill="#89e051" fill-opacity="0.13" stroke="#89e051" stroke-opacity="0.35" stroke-width="1"/><text x="44" y="240" class="gb-text-bold" font-size="13" fill="#89e051">Shell</text><text x="44" y="260" class="gb-mono" font-size="14" fill="#ffffff">14</text><rect x="179" y="218" width="137" height="54" rx="12" fill="#DA5B0B" fill-opacity="0.13" stroke="#DA5B0B" stroke-opacity="0.35" stroke-width="1"/><text x="191" y="240" class="gb-text-bold" font-size="13" fill="#DA5B0B">Jupyter Notebo…</text><text x="191" y="260" class="gb-mono" font-size="14" fill="#ffffff">7</text><rect x="326" y="218" width="137" height="54" rx="12" fill="#427819" fill-opacity="0.13" stroke="#427819" stroke-opacity="0.35" stroke-width="1"/><text x="338" y="240" class="gb-text-bold" font-size="13" fill="#427819">Makefile</text><text x="338" y="260" class="gb-mono" font-size="14" fill="#ffffff">6</text><rect x="32" y="282" width="137" height="54" rx="12" fill="#C1F12E" fill-opacity="0.13" stroke="#C1F12E" stroke-opacity="0.35" stroke-width="1"/><text x="44" y="304" class="gb-text-bold" font-size="13" fill="#C1F12E">Batchfile</text><text x="44" y="324" class="gb-mono" font-size="14" fill="#ffffff">4</text><rect x="179" y="282" width="137" height="54" rx="12" fill="#172033" stroke="#1f2937" stroke-width="1"/><text x="191" y="304" class="gb-text-bold" font-size="13" fill="#6b7280">+16</text><rect x="32" y="385" width="6" height="6" rx="2" fill="#199e70"/><text x="46" y="394" class="gb-text" font-size="13" fill="#6b7280">Languages</text><text x="32" y="438" class="gb-display" font-size="34" fill="#ffffff">26</text><text x="32" y="462" class="gb-mono" font-size="12"><tspan fill="#6b7280">generated files excluded</tspan></text><rect x="264" y="385" width="6" height="6" rx="2" fill="#199e70"/><text x="278" y="394" class="gb-text" font-size="13" fill="#6b7280">Stars earned</text><text x="264" y="438" class="gb-display" font-size="34" fill="#ffffff">815</text><text x="264" y="462" class="gb-mono" font-size="12"><tspan fill="#6b7280">across 122 repos</tspan></text><line x1="32" y1="492" x2="464" y2="492" stroke="#1f2937" stroke-width="1"/><text x="32" y="525" class="gb-text" font-size="15" fill="#9ca3af">Top · Rustlens</text><text x="464" y="525" text-anchor="end" class="gb-mono" font-size="15" fill="#ffffff">158 stars</text><line x1="32" y1="544" x2="464" y2="544" stroke="#1f2937" stroke-width="1"/><text x="32" y="577" class="gb-text" font-size="15" fill="#9ca3af">Followers</text><text x="464" y="577" text-anchor="end" class="gb-mono" font-size="15" fill="#ffffff">326</text><line x1="32" y1="596" x2="464" y2="596" stroke="#1f2937" stroke-width="1"/><text x="32" y="629" class="gb-text" font-size="15" fill="#9ca3af">Following</text><text x="464" y="629" text-anchor="end" class="gb-mono" font-size="15" fill="#ffffff">158</text></g>
+  <rect width="1600" height="582" rx="36" fill="#0b0d12"/>
+  
+    <g transform="translate(28, 28)">
+      <rect width="508" height="360" rx="24" fill="#11161f" stroke="#1c2230" stroke-width="1.5"/>
+      <g transform="translate(28, 28)">
+        <rect width="48" height="48" rx="12" fill="#3987e5" fill-opacity="0.16"/>
+        <g transform="translate(12, 12)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3987e5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" /><path d="M6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" /><path d="M6 9v6" /><path d="M18 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" /><path d="M13 6h2a3 3 0 0 1 3 3v6" /></svg></g>
+      </g>
+
+      <text x="92" y="72" class="gb-display" font-size="56" fill="#ffffff">362</text>
+      <text x="28" y="112" class="gb-text" font-size="19" fill="#ffffff">Merged into other people&apos;s repos</text>
+      <text x="28" y="136" class="gb-text" font-size="13" fill="#6b7280">all time · 46 projects · 82% merge rate</text>
+
+      <line x1="28" y1="156" x2="480" y2="156" stroke="#1f2937" stroke-width="1"/>
+      <text x="28" y="182" class="gb-text" font-size="12" letter-spacing="0.08em" fill="#6b7280">WHERE THAT WORK LANDED</text>
+
+      
+      <text x="28" y="209" class="gb-text" font-size="15" fill="#9ca3af">PySnippets</text>
+      <path d="M178 194 H424 A4 4 0 0 1 428 198 V210 A4 4 0 0 1 424 214 H178 Z" fill="#3987e5"/>
+      <text x="438" y="209" class="gb-mono" font-size="15" fill="#ffffff">71</text>
+    
+      <text x="28" y="239" class="gb-text" font-size="15" fill="#9ca3af">py-libp2p</text>
+      <path d="M178 224 H266 A4 4 0 0 1 270 228 V240 A4 4 0 0 1 266 244 H178 Z" fill="#3987e5"/>
+      <text x="280" y="239" class="gb-mono" font-size="15" fill="#ffffff">26</text>
+    
+      <text x="28" y="269" class="gb-text" font-size="15" fill="#9ca3af">PyVerse</text>
+      <path d="M178 254 H251 A4 4 0 0 1 255 258 V270 A4 4 0 0 1 251 274 H178 Z" fill="#3987e5"/>
+      <text x="265" y="269" class="gb-mono" font-size="15" fill="#ffffff">22</text>
+    
+      <text x="28" y="299" class="gb-text" font-size="15" fill="#9ca3af">opensre</text>
+      <path d="M178 284 H234 A4 4 0 0 1 238 288 V300 A4 4 0 0 1 234 304 H178 Z" fill="#3987e5"/>
+      <text x="248" y="299" class="gb-mono" font-size="15" fill="#ffffff">17</text>
+    
+      <text x="28" y="329" class="gb-text" font-size="15" fill="#9ca3af">trx</text>
+      <path d="M178 314 H220 A4 4 0 0 1 224 318 V330 A4 4 0 0 1 220 334 H178 Z" fill="#3987e5"/>
+      <text x="234" y="329" class="gb-mono" font-size="15" fill="#ffffff">13</text>
+    
+    </g>
+  
+    <g transform="translate(552, 28)">
+      <rect width="246" height="360" rx="24" fill="#11161f" stroke="#1c2230" stroke-width="1.5"/>
+      <g transform="translate(28, 28)">
+        <rect width="48" height="48" rx="12" fill="#d95926" fill-opacity="0.16"/>
+        <g transform="translate(12, 12)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d95926" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /><path d="M8 9h8" /><path d="M8 13h5" /></svg></g>
+      </g>
+
+      <text x="92" y="66" class="gb-display" font-size="40" fill="#ffffff">132</text>
+      <text x="28" y="112" class="gb-text" font-size="17" fill="#ffffff">Reviews for others</text>
+      <text x="28" y="136" class="gb-text" font-size="13" fill="#6b7280">of 235 reviews total</text>
+
+      <line x1="28" y1="156" x2="218" y2="156" stroke="#1f2937" stroke-width="1"/>
+
+      
+      <circle cx="32" cy="183" r="4" fill="#d95926"/>
+      <text x="46" y="188" class="gb-text" font-size="15" fill="#9ca3af">opensre</text>
+      <text x="218" y="188" text-anchor="end" class="gb-mono" font-size="15" fill="#ffffff">79</text>
+    
+      <circle cx="32" cy="217" r="4" fill="#d95926"/>
+      <text x="46" y="222" class="gb-text" font-size="15" fill="#9ca3af">Draftdeckai</text>
+      <text x="218" y="222" text-anchor="end" class="gb-mono" font-size="15" fill="#ffffff">13</text>
+    
+      <circle cx="32" cy="251" r="4" fill="#d95926"/>
+      <text x="46" y="256" class="gb-text" font-size="15" fill="#9ca3af">py-libp2p</text>
+      <text x="218" y="256" text-anchor="end" class="gb-mono" font-size="15" fill="#ffffff">9</text>
+    
+      <circle cx="32" cy="285" r="4" fill="#d95926"/>
+      <text x="46" y="290" class="gb-text" font-size="15" fill="#9ca3af">github_tracker</text>
+      <text x="218" y="290" text-anchor="end" class="gb-mono" font-size="15" fill="#ffffff">6</text>
+    
+    </g>
+  
+    <g transform="translate(814, 28)">
+      <rect width="246" height="360" rx="24" fill="#11161f" stroke="#1c2230" stroke-width="1.5"/>
+      <g transform="translate(28, 28)">
+        <rect width="48" height="48" rx="12" fill="#199e70" fill-opacity="0.16"/>
+        <g transform="translate(12, 12)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#199e70" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /><path d="M3.27 6.96L12 12.01l8.73-5.05" /><path d="M12 22.08V12" /></svg></g>
+      </g>
+
+      <text x="92" y="66" class="gb-display" font-size="40" fill="#ffffff">46</text>
+      <text x="28" y="112" class="gb-text" font-size="17" fill="#ffffff">Projects shipped to</text>
+      <text x="28" y="136" class="gb-text" font-size="13" fill="#6b7280">with 2+ merged PRs</text>
+
+      <line x1="28" y1="156" x2="218" y2="156" stroke="#1f2937" stroke-width="1"/>
+
+      
+      <circle cx="32" cy="183" r="4" fill="#199e70"/>
+      <text x="46" y="188" class="gb-text" font-size="15" fill="#9ca3af">opens…</text>
+      <text x="218" y="188" text-anchor="end" class="gb-mono" font-size="15" fill="#ffffff">10,355 stars</text>
+    
+      <circle cx="32" cy="217" r="4" fill="#199e70"/>
+      <text x="46" y="222" class="gb-text" font-size="15" fill="#9ca3af">nanoco…</text>
+      <text x="218" y="222" text-anchor="end" class="gb-mono" font-size="15" fill="#ffffff">2,337 stars</text>
+    
+      <circle cx="32" cy="251" r="4" fill="#199e70"/>
+      <text x="46" y="256" class="gb-text" font-size="15" fill="#9ca3af">py-libp2p</text>
+      <text x="218" y="256" text-anchor="end" class="gb-mono" font-size="15" fill="#ffffff">621 stars</text>
+    
+      <circle cx="32" cy="285" r="4" fill="#199e70"/>
+      <text x="46" y="290" class="gb-text" font-size="15" fill="#9ca3af">master-w…</text>
+      <text x="218" y="290" text-anchor="end" class="gb-mono" font-size="15" fill="#ffffff">220 stars</text>
+    
+    </g>
+  
+    <g transform="translate(1076, 28)">
+      <rect width="246" height="360" rx="24" fill="#11161f" stroke="#1c2230" stroke-width="1.5"/>
+      <g transform="translate(28, 28)">
+        <rect width="48" height="48" rx="12" fill="#199e70" fill-opacity="0.16"/>
+        <g transform="translate(12, 12)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#199e70" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6" /><path d="M8 6l-6 6 6 6" /></svg></g>
+      </g>
+
+      <text x="92" y="66" class="gb-display" font-size="40" fill="#ffffff">26</text>
+      <text x="28" y="112" class="gb-text" font-size="17" fill="#ffffff">Ships in</text>
+      <text x="28" y="136" class="gb-text" font-size="13" fill="#6b7280">generated files excluded</text>
+
+      <line x1="28" y1="156" x2="218" y2="156" stroke="#1f2937" stroke-width="1"/>
+
+      <g transform="translate(28, 176)">
+      <g transform="translate(0, 0)">
+        <rect width="54" height="30" rx="8" fill="#172033" stroke="#663399" stroke-width="1" stroke-opacity="0.4"/>
+        <text x="27" y="20" text-anchor="middle" class="gb-text-bold" font-size="14" fill="#663399">CSS</text>
+      </g>
+    
+      <g transform="translate(62, 0)">
+        <rect width="112" height="30" rx="8" fill="#172033" stroke="#f1e05a" stroke-width="1" stroke-opacity="0.4"/>
+        <text x="56" y="20" text-anchor="middle" class="gb-text-bold" font-size="14" fill="#f1e05a">JavaScript</text>
+      </g>
+    
+      <g transform="translate(0, 38)">
+        <rect width="62" height="30" rx="8" fill="#172033" stroke="#e34c26" stroke-width="1" stroke-opacity="0.4"/>
+        <text x="31" y="20" text-anchor="middle" class="gb-text-bold" font-size="14" fill="#e34c26">HTML</text>
+      </g>
+    
+      <g transform="translate(70, 38)">
+        <rect width="112" height="30" rx="8" fill="#172033" stroke="#3178c6" stroke-width="1" stroke-opacity="0.4"/>
+        <text x="56" y="20" text-anchor="middle" class="gb-text-bold" font-size="14" fill="#3178c6">TypeScript</text>
+      </g>
+    
+      <g transform="translate(0, 76)">
+        <rect width="79" height="30" rx="8" fill="#172033" stroke="#3572A5" stroke-width="1" stroke-opacity="0.4"/>
+        <text x="39.5" y="20" text-anchor="middle" class="gb-text-bold" font-size="14" fill="#3572A5">Python</text>
+      </g>
+    
+      <g transform="translate(0, 114)">
+        <rect width="112" height="30" rx="8" fill="#172033" stroke="#384d54" stroke-width="1" stroke-opacity="0.4"/>
+        <text x="56" y="20" text-anchor="middle" class="gb-text-bold" font-size="14" fill="#384d54">Dockerfile</text>
+      </g>
+    
+      <g transform="translate(120, 114)">
+        <rect width="54" height="30" rx="8" fill="#172033" stroke="#6b7280" stroke-width="1" stroke-opacity="0.4"/>
+        <text x="27" y="20" text-anchor="middle" class="gb-text-bold" font-size="14" fill="#6b7280">+20</text>
+      </g>
+    </g>
+    </g>
+  
+    <g transform="translate(1338, 28)">
+      <rect width="246" height="360" rx="24" fill="#11161f" stroke="#1c2230" stroke-width="1.5"/>
+      <g transform="translate(28, 28)">
+        <rect width="48" height="48" rx="12" fill="#8b949e" fill-opacity="0.16"/>
+        <g transform="translate(12, 12)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8b949e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z" /><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" /></svg></g>
+      </g>
+
+      <text x="92" y="66" class="gb-display" font-size="40" fill="#ffffff">85%</text>
+      <text x="28" y="112" class="gb-text" font-size="17" fill="#ffffff">Issues resolved</text>
+      <text x="28" y="136" class="gb-text" font-size="13" fill="#6b7280">440 of 516 you filed</text>
+
+      <line x1="28" y1="156" x2="218" y2="156" stroke="#1f2937" stroke-width="1"/>
+
+      
+      <circle cx="32" cy="183" r="4" fill="#8b949e"/>
+      <text x="46" y="188" class="gb-text" font-size="15" fill="#9ca3af">Opened</text>
+      <text x="218" y="188" text-anchor="end" class="gb-mono" font-size="15" fill="#ffffff">516</text>
+    
+      <circle cx="32" cy="217" r="4" fill="#8b949e"/>
+      <text x="46" y="222" class="gb-text" font-size="15" fill="#9ca3af">Resolved</text>
+      <text x="218" y="222" text-anchor="end" class="gb-mono" font-size="15" fill="#ffffff">440</text>
+    
+      <circle cx="32" cy="251" r="4" fill="#8b949e"/>
+      <text x="46" y="256" class="gb-text" font-size="15" fill="#9ca3af">Still open</text>
+      <text x="218" y="256" text-anchor="end" class="gb-mono" font-size="15" fill="#ffffff">76</text>
+    
+    </g>
+  
+    <g transform="translate(28, 404)">
+      <rect width="374" height="150" rx="22" fill="#11161f" stroke="#1c2230" stroke-width="1.5"/>
+      <g transform="translate(28, 24)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4a2 2 0 1 1 0-4h2" /><path d="M18 9h2a2 2 0 1 0 0-4h-2" /><path d="M6 5h12v6a6 6 0 1 1-12 0V5z" /><path d="M9 21h6" /><path d="M12 15v6" /></svg></g>
+      <text x="58" y="41" class="gb-text" font-size="16" fill="#9ca3af">Biggest project</text>
+
+      <text x="28" y="94" class="gb-display" font-size="36" fill="#ffffff">opensre</text>
+      <text x="28" y="124" class="gb-text" font-size="16" fill="#9ca3af">10,355 stars · 17 merged</text>
+    </g>
+  
+    <g transform="translate(418, 404)">
+      <rect width="374" height="150" rx="22" fill="#11161f" stroke="#1c2230" stroke-width="1.5"/>
+      <g transform="translate(28, 24)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><path d="M22 4L12 14.01l-3-3" /></svg></g>
+      <text x="58" y="41" class="gb-text" font-size="16" fill="#9ca3af">Merge rate</text>
+
+      <text x="28" y="94" class="gb-display" font-size="36" fill="#ffffff">82%</text>
+      <text x="28" y="124" class="gb-text" font-size="16" fill="#9ca3af">492 of 599 PRs</text>
+    </g>
+  
+    <g transform="translate(808, 404)">
+      <rect width="374" height="150" rx="22" fill="#11161f" stroke="#1c2230" stroke-width="1.5"/>
+      <g transform="translate(28, 24)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg></g>
+      <text x="58" y="41" class="gb-text" font-size="16" fill="#9ca3af">Stars earned</text>
+
+      <text x="28" y="94" class="gb-display" font-size="36" fill="#ffffff">815</text>
+      <text x="28" y="124" class="gb-text" font-size="16" fill="#9ca3af">top: Rustlens · 158 stars</text>
+    </g>
+  
+    <g transform="translate(1198, 404)">
+      <rect width="374" height="150" rx="22" fill="#11161f" stroke="#1c2230" stroke-width="1.5"/>
+      <g transform="translate(28, 24)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8" /><path d="M14 7h7v7" /></svg></g>
+      <text x="58" y="41" class="gb-text" font-size="16" fill="#9ca3af">Last 12 months</text>
+
+      <text x="28" y="94" class="gb-display" font-size="36" fill="#ffffff">99</text>
+      <text x="28" y="124" class="gb-text" font-size="16" fill="#9ca3af">external merges · 22 projects</text>
+    </g>
+  
 </svg>
