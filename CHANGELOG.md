@@ -46,8 +46,12 @@ design iteration is chronicled in [#3](https://github.com/yashksaini-coder/GitBa
 - **Projects shipped to**: a spiral-packed hex cluster, one hex per external
   project, log-scaled heat = merged PRs, with a ghost-hex periphery; stats
   count projects, distinct maintainers & orgs, and most merged in one repo.
-- **Issues**: a symmetric stream of issues opened per year with pill value
-  labels, resolution rate in the stat trio.
+- **Issues**: issues filed in other people's public repos that got
+  *resolved* (closed as completed — closed-as-not-planned never counts),
+  measured by aliased issue searches and rendered as capped gradient columns
+  per year in GitHub's own closed-issue purple, with resolved,
+  resolution-rate and filed counts below. Card copy speaks in the first
+  person — the banner shares facts about its owner.
 - **Minis**: Top projects (this year's top-3 leaderboard), Merge rate with a
   monthly spark, Stars earned (top-3 own repos) — rounded-bar sparklines,
   no icons.
@@ -55,8 +59,8 @@ design iteration is chronicled in [#3](https://github.com/yashksaini-coder/GitBa
 ### Added
 
 - **`since` / `until` inputs** scope a card to a date range (inclusive whole
-  UTC days, capped at one year by GitHub). Windowed cards report issues
-  opened-only and an approximate merge rate, both labelled.
+  UTC days, capped at one year by GitHub). Windowed cards report an
+  approximate merge rate, labelled and clamped.
 - **`ignore-languages` input** hides languages from the ships-in card.
 - **Embedded fonts.** Inter and JetBrains Mono subsets ship inside every SVG
   as data-URI @font-face rules and drive PNG rendering with system fonts
@@ -86,7 +90,7 @@ design iteration is chronicled in [#3](https://github.com/yashksaini-coder/GitBa
 - A non-numeric `min-merged-prs` falls back to the default instead of
   silently disabling the drive-by filter through NaN.
 - A single-period issues chart (windowed card, or an account created this
-  year) renders a centred lens instead of claiming there is no history.
+  year) renders one bar instead of claiming there is no history.
 - The merge rate is clamped at 100% (windowed numerator and denominator can
   legitimately cross), and merged-PR pagination warns when the 2,000-newest
   cap truncates history.

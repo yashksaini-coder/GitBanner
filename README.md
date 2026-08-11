@@ -219,7 +219,7 @@ hero renders per card; selecting two is an error.
 | `reviews` | Code reviews you gave on other people's repos |
 | `projects` | Distinct external projects you've landed work in |
 | `ships-in` | A straight-edged radar of your top 8 **programming** languages by project count — linguist's markup/data/prose classes (HTML, CSS, JSON, notebooks) don't count toward the claim. Labels and vertex dots wear each language's own colour. Falls back to pills below 3 languages |
-| `issues` | Issue resolution rate — % of issues you filed that got resolved, with opened/resolved/still-open rows |
+| `issues` | Issues filed in **other people's public repos** that got resolved (closed as completed — never closed-as-not-planned), as capped gradient columns per year in GitHub's own closed-issue purple · resolved, resolution-rate and filed counts |
 
 **Row 2 — supporting context:** `biggest-project`, `merge-rate`, `own-stars`
 (stars earned on your own repos, with your highest-starred project). The
@@ -244,14 +244,12 @@ The period appears on the pull-requests and activity cards.
 Both bounds are inclusive whole UTC days. GitHub caps contribution windows at
 one year, so a longer range is rejected rather than silently truncated.
 
-Two things change on a windowed card:
+One thing changes on a windowed card:
 
-- **Issues show opened only.** GitHub exposes issues *opened* in a window but
-  not issues *closed* in one, so the closed count is omitted rather than
-  guessed.
 - **Merge rate is approximate.** It compares PRs merged in the window against
   PRs opened in the window — a PR opened on the last day and merged the week
-  after counts against you. Over an all-time card the two line up.
+  after counts against you. Over an all-time card the two line up, and the
+  rate is clamped at 100% either way.
 
 ## Tiles
 
@@ -272,7 +270,7 @@ needs and skips everything nothing asked for.
 |---|---|
 | `merged-prs`, `activity`, `projects`, `ships-in`, `biggest-project`, `merge-rate` | merged PR pages |
 | `reviews` | one aliased contributions request |
-| `issues` | two scalar counts on the profile request |
+| `issues` | one aliased issue-search request (per-year counts) |
 | `own-stars` | repository pagination |
 
 An unknown tile name is a hard error rather than a silent drop, so a typo in a
