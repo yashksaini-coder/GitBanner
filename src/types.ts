@@ -153,7 +153,6 @@ export interface StatsPayload {
 
   followers: number;
   following: number;
-  bestYear: { year: number; commits: number };
   /** e.g. "1-9 Aug 2026". Null for an all-time card. */
   periodLabel: string | null;
 }
@@ -162,10 +161,6 @@ export interface ThemeAccents {
   prs: string;
   reviews: string;
   projects: string;
-  reach: string;
-  issues: string;
-  languages: string;
-  neutral: string;
 }
 
 export interface Theme {

@@ -136,7 +136,6 @@ export function aggregate(raw: RawData, options: AggregateOptions = {}): StatsPa
 
     followers: raw.profile.followers,
     following: raw.profile.following,
-    bestYear: pickBestYear(raw.reviewYears),
     periodLabel: raw.window?.label ?? null,
   };
 }
@@ -252,13 +251,6 @@ function summariseReviews(
   void includePrivate;
 
   return { total, external, top };
-}
-
-function pickBestYear(years: ReviewYear[]): { year: number; commits: number } {
-  if (years.length === 0) return { year: new Date().getUTCFullYear(), commits: 0 };
-  return years
-    .map((y) => ({ year: y.year, commits: y.commits }))
-    .sort((a, b) => b.commits - a.commits)[0];
 }
 
 function percent(part: number, whole: number): number {
