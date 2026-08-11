@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed — year-scoped spectrum, review ridgeline
+
+- The Pull requests popularity spectrum now charts the CURRENT year's merges
+  (windowed cards keep their window); the caption names the year, and the
+  all-time headline stays in the stat trio.
+- Code review becomes a ridgeline, reference style: one ridge per reviewed
+  repo (top 6 external), x = years, height = reviews that year on a shared
+  scale, depth hues violet→blue→green back to front, each ridge labelled
+  with its repo name. Built entirely from the per-year data already fetched;
+  the one-turn-old 3D scatter and its reviewPoints payload retire.
+
 ### Changed — Pull requests becomes a popularity-spectrum area chart
 
 - The hero bars give way to an area-under-the-curve chart of merged PRs

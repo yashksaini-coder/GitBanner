@@ -212,7 +212,7 @@ hero renders per card; selecting two is an error.
 
 | Tile | Shows |
 |---|---|
-| `merged-prs` | Area chart of merged PRs across the popularity spectrum (fixed star decades: <10 → 10k+) · merged-for-others, merge-rate and top-repo stats |
+| `merged-prs` | Area chart of the current year's merged PRs across the popularity spectrum (fixed star decades: <10 → 10k+) · merged-for-others, merge-rate and top-repo stats |
 | `reviews` | Code reviews you gave on other people's repos |
 | `projects` | Distinct external projects you've landed work in |
 | `ships-in` | A straight-edged radar of your top 8 **programming** languages by project count — linguist's markup/data/prose classes (HTML, CSS, JSON, notebooks) don't count toward the claim. Labels and vertex dots wear each language's own colour. Falls back to pills below 3 languages |
