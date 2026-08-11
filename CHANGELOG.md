@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed — Pull requests becomes a popularity-spectrum area chart
+
+- The hero bars give way to an area-under-the-curve chart of merged PRs
+  across fixed star-magnitude decades (<10, 10+, 100+, 1k+, 10k+) — where
+  your work lands on the popularity spectrum. Fixed buckets keep charts
+  comparable across users and over time; the spectrum is built from ALL
+  external merges (drive-by PRs into huge repos belong in the top decade),
+  so the area sums exactly to the merged-for-others headline. The #1 repo
+  moves into the stat trio; the shared bars renderer is retired.
+
 ### Changed — Code review becomes a 3D scatter
 
 - The reviews card's bars are now an isometric 3D scatter, reference style:
