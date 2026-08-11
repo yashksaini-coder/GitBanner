@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed — hyper-chart cards on pure black
+
+- **Three-column card grid** (1600x964): six chart cards in two rows plus a
+  mini row, equal widths, pure-black canvas (#000000) with near-black cards.
+- **New Activity card**: external merges per month for the trailing 12
+  calendar months as a monotone-cubic gradient area wave (Fritsch-Carlson
+  tangents — the curve cannot overshoot the data). Absorbs the momentum mini;
+  the `momentum` tile key is gone, `activity` replaces it.
+- **Projects card gains a hex cluster**: one hexagon per external project,
+  spiral-packed strongest-first, single-hue intensity ramp (log-scaled — the
+  PR distribution is heavily skewed).
+- **Issues card gains an arc meter** for the resolution rate; the track is a
+  dark step of the same hue, not gray.
+- **Radar labels sit fully outside the ring** now that the ships-in card is
+  wide, with a containment test.
+- Rejected from the reference set as dishonest for our data: 3D bubbles, 3D
+  scatter, rainbow-interpolated heatmaps.
+
 ### Added
 
 - **Embedded fonts.** Inter and JetBrains Mono subsets ship inside every SVG

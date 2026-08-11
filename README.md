@@ -219,14 +219,14 @@ hero renders per card; selecting two is an error.
 | `issues` | Issue resolution rate — % of issues you filed that got resolved, with opened/resolved/still-open rows |
 
 **Row 2 — supporting context:** `biggest-project`, `merge-rate`, `own-stars`
-(stars earned on your own repos, with your highest-starred project), `momentum`
-(external merges in the trailing 12 months — proof you're shipping now, not
-just historically).
+(stars earned on your own repos, with your highest-starred project). The
+`activity` card charts external merges over the trailing 12 months — proof
+you're shipping now, not just historically.
 
 ## Scoping to a date range
 
 `since` / `until` produce a weekly or monthly card instead of an all-time one.
-The period appears in the footer and in the hero caption.
+The period appears on the pull-requests and activity cards.
 
 ```yaml
 # A "what I shipped last month" card
@@ -262,12 +262,12 @@ needs and skips everything nothing asked for.
 - uses: yashksaini-coder/GitBanner@v1
   with:
     github-token: ${{ secrets.GITBANNER_PAT }}
-    tiles: merged-prs,reviews,projects,reach,biggest-project,merge-rate
+    tiles: merged-prs,activity,reviews
 ```
 
 | Tile | Needs |
 |---|---|
-| `merged-prs`, `projects`, `ships-in`, `biggest-project`, `merge-rate`, `momentum` | merged PR pages |
+| `merged-prs`, `activity`, `projects`, `ships-in`, `biggest-project`, `merge-rate` | merged PR pages |
 | `reviews` | one aliased contributions request |
 | `issues` | two scalar counts on the profile request |
 | `own-stars` | repository pagination |
