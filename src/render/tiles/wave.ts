@@ -72,9 +72,9 @@ export interface WaveProps {
   tickEvery?: number;
 }
 
-const TOP_PAD = 12;
-/** Room under the baseline for the 9px month tick letters. */
-const TICK_BAND = 14;
+const TOP_PAD = 26;
+/** Room under the baseline for the 14px tick labels. */
+const TICK_BAND = 22;
 const X_PAD = 6;
 
 /**
@@ -92,7 +92,7 @@ export function renderWave(p: WaveProps): string {
     const msg = p.emptyText ?? 'no external merges in the last 12 months';
     return (
       baselineLine +
-      `<text x="${r2(w / 2)}" y="${r2(baseline / 2)}" text-anchor="middle" class="gb-text" font-size="13" fill="${theme.textMuted}">${escapeXml(msg)}</text>`
+      `<text x="${r2(w / 2)}" y="${r2(baseline / 2)}" text-anchor="middle" class="gb-text" font-size="16" fill="${theme.textMuted}">${escapeXml(msg)}</text>`
     );
   }
 
@@ -122,7 +122,7 @@ export function renderWave(p: WaveProps): string {
   const ticks = points
     .map((pt, i) =>
       i % tickEvery === 0
-        ? `<text x="${r2(pts[i].x)}" y="${h - 2}" text-anchor="middle" class="gb-mono" font-size="9" fill="${theme.textMuted}">${escapeXml(pt.label)}</text>`
+        ? `<text x="${r2(pts[i].x)}" y="${h - 4}" text-anchor="middle" class="gb-mono" font-size="14" fill="${theme.textMuted}">${escapeXml(pt.label)}</text>`
         : '',
     )
     .join('');
@@ -132,10 +132,10 @@ export function renderWave(p: WaveProps): string {
   const markers = marked
     .map((i) => {
       // Clamp the label centre so the count never clips at the tile edge.
-      const tx = Math.min(w - 12, Math.max(12, pts[i].x));
+      const tx = Math.min(w - 16, Math.max(16, pts[i].x));
       return (
         `<circle cx="${r2(pts[i].x)}" cy="${r2(pts[i].y)}" r="3.5" fill="${accent}" stroke="${theme.tile}" stroke-width="2"/>` +
-        `<text x="${r2(tx)}" y="${r2(pts[i].y - 8)}" text-anchor="middle" class="gb-mono" font-size="10" fill="${theme.textPrimary}">${points[i].count}</text>`
+        `<text x="${r2(tx)}" y="${r2(pts[i].y - 10)}" text-anchor="middle" class="gb-mono" font-size="14" fill="${theme.textPrimary}">${points[i].count}</text>`
       );
     })
     .join('');

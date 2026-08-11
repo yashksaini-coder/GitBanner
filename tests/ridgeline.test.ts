@@ -119,7 +119,7 @@ describe('renderRidgeline', () => {
     expect(svg).toContain('>&lt;&amp;</text>');
     expect(svg).not.toContain('><&');
     expect(svg).toContain('>plain</text>');
-    expect((svg.match(/font-size="9"/g) ?? []).length).toBe(2);
+    expect((svg.match(/font-size="13"/g) ?? []).length).toBe(2);
 
     const long = renderRidgeline({
       ...base,
@@ -144,7 +144,7 @@ describe('renderRidgeline', () => {
       ],
     });
     for (const y of years) expect(svg).toContain(`>${y}</text>`);
-    const ticks = [...svg.matchAll(/<text x="([\d.]+)" y="132" [^>]*font-size="8"/g)];
+    const ticks = [...svg.matchAll(/<text x="([\d.]+)" y="134" [^>]*font-size="12"/g)];
     expect(ticks).toHaveLength(3);
     // First tick sits at the front ridge's first year x-position.
     expect(Number(ticks[0][1])).toBe(8);

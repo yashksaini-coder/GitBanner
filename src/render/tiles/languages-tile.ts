@@ -23,9 +23,10 @@ export function renderLanguagesChart(p: LanguagesChartProps): string {
   const { x, y, w, h, theme } = p;
   let inner: string;
   if (p.languages.length >= RADAR_MIN_AXES) {
-    // Horizontal bound reserves 78px each side for tip-anchored labels, so a
-    // side label can never reach back into the ring nor leave the card.
-    const rMax = Math.min(h / 2 - 15, w / 2 - 78);
+    // Bounds reserve room for the 16px tip-anchored labels: 96px each side,
+    // 34px above and below (ascender + gap), so a label can never reach back
+    // into the ring, leave the card, or climb into the caption band.
+    const rMax = Math.min(h / 2 - 34, w / 2 - 96);
     inner = renderBurst({
       cx: w / 2,
       cy: h / 2,
@@ -37,7 +38,7 @@ export function renderLanguagesChart(p: LanguagesChartProps): string {
       theme,
     });
   } else if (p.languages.length === 0) {
-    inner = `<text x="${w / 2}" y="${h / 2}" text-anchor="middle" class="gb-text" font-size="13" fill="${theme.textMuted}">no language data</text>`;
+    inner = `<text x="${w / 2}" y="${h / 2}" text-anchor="middle" class="gb-text" font-size="16" fill="${theme.textMuted}">no language data</text>`;
   } else {
     inner = `<g transform="translate(0, 8)">${layoutPills(p.languages, p.overflow, w, h - 16, theme)}</g>`;
   }

@@ -36,12 +36,12 @@ const GRAD_STOPS: readonly (readonly [number, string, number])[] = [
  */
 export function renderColumns(p: ColumnsProps): string {
   const { w, h, data, gradId, theme } = p;
-  const LABEL_BAND = 16;
-  const VALUE_BAND = 16;
+  const LABEL_BAND = 22;
+  const VALUE_BAND = 24;
   const baseline = h - LABEL_BAND;
 
   if (data.length === 0 || data.every((d) => d.count === 0)) {
-    return `<text x="${r2(w / 2)}" y="${r2(h / 2)}" text-anchor="middle" class="gb-text" font-size="13" fill="${theme.textMuted}">${escapeXml(p.emptyText ?? 'no data yet')}</text>`;
+    return `<text x="${r2(w / 2)}" y="${r2(h / 2)}" text-anchor="middle" class="gb-text" font-size="16" fill="${theme.textMuted}">${escapeXml(p.emptyText ?? 'no data yet')}</text>`;
   }
 
   const n = data.length;
@@ -77,8 +77,8 @@ export function renderColumns(p: ColumnsProps): string {
       return (
         `<path d="${barPath(x, y, bh)}" fill="url(#${escapeXml(gradId)})"/>` +
         cap +
-        `<text x="${r2(x + bw / 2)}" y="${r2(y - 6)}" text-anchor="middle" class="gb-mono" font-size="11" fill="${theme.textPrimary}">${d.count}</text>` +
-        `<text x="${r2(x + bw / 2)}" y="${h - 3}" text-anchor="middle" class="gb-mono" font-size="9" fill="${theme.textMuted}">${escapeXml(d.label)}</text>`
+        `<text x="${r2(x + bw / 2)}" y="${r2(y - 8)}" text-anchor="middle" class="gb-mono" font-size="15" fill="${theme.textPrimary}">${d.count}</text>` +
+        `<text x="${r2(x + bw / 2)}" y="${h - 5}" text-anchor="middle" class="gb-mono" font-size="14" fill="${theme.textMuted}">${escapeXml(d.label)}</text>`
       );
     })
     .join('');

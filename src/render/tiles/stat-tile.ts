@@ -24,13 +24,15 @@ export interface StatTileProps {
 }
 
 const PAD = 28;
-// Shared card grid, hyper-chart anatomy: title, chart, stats, rows.
-const TITLE_Y = 42;
-const CAPTION_Y = 62;
-export const CHART_TOP = 74;
-export const CHART_BOTTOM = 300;
-const STAT_LABEL_Y = 322;
-const STAT_VALUE_Y = 356;
+// Shared card grid, hyper-chart anatomy: title, chart, stats, rows. The type
+// scale is set for the ~0.53x GitHub README render: nothing that must be read
+// is authored below 15px (~8px effective).
+const TITLE_Y = 44;
+const CAPTION_Y = 68;
+export const CHART_TOP = 78;
+export const CHART_BOTTOM = 296;
+const STAT_LABEL_Y = 324;
+const STAT_VALUE_Y = 358;
 
 /**
  * The one card scaffold every chart card uses: bold title (no icon — the
@@ -40,8 +42,8 @@ const STAT_VALUE_Y = 356;
 export function renderStatTile(p: StatTileProps): string {
   const { x, y, w, h, theme, title, caption, stats } = p;
 
-  const fittedTitle = fitText(title, w - 2 * PAD, [19, 17, 15]);
-  const fittedCaption = fitText(caption, w - 2 * PAD, [12, 11]);
+  const fittedTitle = fitText(title, w - 2 * PAD, [24, 22, 20]);
+  const fittedCaption = fitText(caption, w - 2 * PAD, [17, 16, 15]);
 
   const cols = Math.max(1, Math.min(3, stats.length));
   const colW = (w - 2 * PAD) / cols;
@@ -49,11 +51,11 @@ export function renderStatTile(p: StatTileProps): string {
     .slice(0, 3)
     .map((stat, i) => {
       const colX = PAD + i * colW;
-      const fittedValue = fitText(stat.value, colW - 18, [26, 22, 19, 16], 0.6);
-      const fittedLabel = fitText(stat.label, colW - 30, [11, 10], 0.55);
+      const fittedValue = fitText(stat.value, colW - 18, [30, 26, 22, 19], 0.6);
+      const fittedLabel = fitText(stat.label, colW - 17, [15, 14, 13, 12], 0.55);
       return (
-        `<rect x="${colX}" y="${STAT_LABEL_Y - 6}" width="6" height="6" rx="2" fill="${p.accent}"/>` +
-        `<text x="${colX + 12}" y="${STAT_LABEL_Y}" class="gb-text" font-size="${fittedLabel.size}" fill="${theme.textMuted}">${escapeXml(fittedLabel.text)}</text>` +
+        `<rect x="${colX}" y="${STAT_LABEL_Y - 8}" width="8" height="8" rx="2" fill="${p.accent}"/>` +
+        `<text x="${colX + 13}" y="${STAT_LABEL_Y}" class="gb-text" font-size="${fittedLabel.size}" fill="${theme.textMuted}">${escapeXml(fittedLabel.text)}</text>` +
         `<text x="${colX}" y="${STAT_VALUE_Y}" class="gb-display" font-size="${fittedValue.size}" fill="${theme.textPrimary}">${escapeXml(fittedValue.text)}</text>`
       );
     })

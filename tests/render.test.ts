@@ -42,7 +42,7 @@ describe('toSvg', () => {
       value: stats.externalRepos[0].mergedPrs,
     };
     expect(svg).toContain(yearTop.name);
-    expect(svg).toContain(`top repo · ${yearTop.value.toLocaleString('en-US')} merged`);
+    expect(svg).toContain(`top repo · ${yearTop.value.toLocaleString('en-US')} PRs`);
   });
 
   it('issues card charts resolved external issues as capped purple columns', () => {
@@ -124,7 +124,7 @@ describe('toSvg', () => {
       expect(svg).toContain(`${repo.stars.toLocaleString('en-US')} stars`);
       expect(svg).toContain(repo.name);
     }
-    expect(svg).toContain('spark: merges per month');
+    expect(svg).toContain('monthly spark');
   });
 
   it('ships-in lists all languages with a +N overflow, never just the primary', () => {
@@ -309,7 +309,7 @@ describe('language chart', () => {
     expect(tile).toContain('#dea584');
     expect(tile).toContain('gbr-ray-glow');
     // hub shows the count (3 languages + 0 overflow)
-    expect(tile).toMatch(/font-size="14"[^>]*>3</);
+    expect(tile).toMatch(/font-size="17"[^>]*>3</);
     // filler ticks: two per gap, uniform structure
     expect([...tile.matchAll(/stroke-width="1"\/>/g)].length).toBeGreaterThanOrEqual(6);
     for (const name of ['Python', 'Rust', 'Go']) expect(tile).toContain(name);
@@ -335,7 +335,7 @@ describe('language chart', () => {
   it('separates the count from the name with dx, immune to whitespace collapsing', () => {
     const tile = render([lang('Rust', 4, '#dea584'), lang('Python', 18), lang('Go', 2, '#00add8')]);
     // A literal "Rust4" (no gap) must never appear; the count rides a dx tspan.
-    expect(tile).toMatch(/>Rust<tspan[^>]*dx="5"/);
+    expect(tile).toMatch(/>Rust<tspan[^>]*dx="6"/);
     expect(tile).not.toMatch(/>Rust4</);
   });
 

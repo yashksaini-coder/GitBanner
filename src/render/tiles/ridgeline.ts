@@ -56,10 +56,10 @@ export function renderRidgeline(p: {
   const globalMax = Math.max(0, ...series.flatMap((s) => s.counts));
 
   if (n === 0 || globalMax === 0) {
-    return `<text x="${r2(w / 2)}" y="${r2(h / 2)}" text-anchor="middle" class="gb-text" font-size="13" fill="${theme.textMuted}">no reviews yet</text>`;
+    return `<text x="${r2(w / 2)}" y="${r2(h / 2)}" text-anchor="middle" class="gb-text" font-size="16" fill="${theme.textMuted}">no reviews yet</text>`;
   }
 
-  const ridgeW = w - 84 - (n - 1) * DX; // 84: room for a ~9-char ridge label
+  const ridgeW = w - 112 - (n - 1) * DX; // 112: room for a 13px ridge label
   const ridgeH = h - 30 - (n - 1) * DY;
   const step = years.length > 1 ? ridgeW / (years.length - 1) : 0;
 
@@ -80,13 +80,13 @@ export function renderRidgeline(p: {
     const area = `${curve} L ${r2(pts[pts.length - 1].x)} ${baseY} L ${r2(pts[0].x)} ${baseY} Z`;
 
     const labelX = offX + ridgeW + 4;
-    const label = fitText(series[i].name, Math.max(0, w - labelX), [9], 0.6);
+    const label = fitText(series[i].name, Math.max(0, w - labelX), [13, 12, 11], 0.6);
 
     parts.push(
       `<path d="${area}" fill="${theme.tile}"/>`,
       `<path d="${area}" fill="${hue}" fill-opacity="0.3"/>`,
       `<path d="${curve}" fill="none" stroke="${hue}" stroke-width="2" stroke-linejoin="round"/>`,
-      `<text x="${r2(labelX)}" y="${baseY + 3}" class="gb-mono" font-size="9" fill="${theme.textSecondary}">${escapeXml(label.text)}</text>`,
+      `<text x="${r2(labelX)}" y="${baseY + 3}" class="gb-mono" font-size="${label.size}" fill="${theme.textSecondary}">${escapeXml(label.text)}</text>`,
     );
   }
 
@@ -94,7 +94,7 @@ export function renderRidgeline(p: {
   const ticks = years
     .map((y, j) => {
       const tx = X_PAD + (years.length > 1 ? j * step : ridgeW / 2);
-      return `<text x="${r2(tx)}" y="${h - 8}" text-anchor="middle" class="gb-mono" font-size="8" fill="${theme.textMuted}">${escapeXml(y)}</text>`;
+      return `<text x="${r2(tx)}" y="${h - 6}" text-anchor="middle" class="gb-mono" font-size="12" fill="${theme.textMuted}">${escapeXml(y)}</text>`;
     })
     .join('');
 

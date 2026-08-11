@@ -72,7 +72,7 @@ export const TILES: Record<string, TileDef> = {
           { value: n(p.prsMergedExternal), label: 'merged for others' },
           { value: `${p.mergeRatePct}%`, label: 'merge rate' },
           top
-            ? { value: top.name, label: `top repo · ${n(top.value)} merged` }
+            ? { value: top.name, label: `top repo · ${n(top.value)} PRs` }
             : { value: '—', label: 'top repo' },
         ],
         theme,
@@ -218,7 +218,9 @@ export const TILES: Record<string, TileDef> = {
         ...box,
         accent: theme.accents.issues,
         title: 'Issues',
-        caption: `issues I filed in others' projects that got resolved · ${p.periodLabel ?? 'per year'}`,
+        caption: p.periodLabel
+          ? `resolved issues I filed elsewhere · ${p.periodLabel}`
+          : `resolved issues I filed in others' repos · per year`,
         // Bars = resolved counts, in GitHub's own closed-as-completed purple.
         chart: chartGroup(box.w, renderColumns({
           w: box.w - 2 * PAD,
@@ -272,7 +274,7 @@ export const TILES: Record<string, TileDef> = {
         accent: theme.accents.prs,
         title: 'Merge rate',
         value: `${p.mergeRatePct}%`,
-        subLine: `${n(p.prsMerged)} of ${n(p.prsOpened)} PRs · spark: merges per month`,
+        subLine: `${n(p.prsMerged)} of ${n(p.prsOpened)} PRs · monthly spark`,
         spark: p.monthlyExternalMerges.map((m) => m.count),
         theme,
       }),

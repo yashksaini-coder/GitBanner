@@ -34,41 +34,41 @@ export function renderMiniTile(p: MiniTileProps): string {
   const { x, y, w, h, theme, title, value, subLine, spark } = p;
 
   const textMax = w - 2 * PAD - (spark.length > 0 ? SPARK_W + 16 : 0);
-  const fittedTitle = fitText(title, textMax, [15, 14, 13]);
+  const fittedTitle = fitText(title, textMax, [19, 18, 17]);
 
   if (p.list && p.list.length > 0) {
     const rows = p.list.slice(0, 3).map((row, i) => {
-      const rowY = 68 + i * 26;
-      const valueW = Math.ceil(row.value.length * 13 * 0.62);
+      const rowY = 66 + i * 27;
+      const valueW = Math.ceil(row.value.length * 16 * 0.62);
       const valueX = PAD + textMax;
-      const name = fitText(row.label, textMax - 22 - valueW - 10, [13, 12], 0.55);
+      const name = fitText(row.label, textMax - 26 - valueW - 10, [16, 15, 14, 13], 0.55);
       return (
-        `<text x="${PAD}" y="${rowY}" class="gb-mono" font-size="12" fill="${p.accent}">${i + 1}</text>` +
-        `<text x="${PAD + 18}" y="${rowY}" class="gb-text" font-size="${name.size}" fill="${theme.textSecondary}">${escapeXml(name.text)}</text>` +
-        `<text x="${valueX}" y="${rowY}" text-anchor="end" class="gb-mono" font-size="13" fill="${theme.textPrimary}">${escapeXml(row.value)}</text>`
+        `<text x="${PAD}" y="${rowY}" class="gb-mono" font-size="15" fill="${p.accent}">${i + 1}</text>` +
+        `<text x="${PAD + 22}" y="${rowY}" class="gb-text" font-size="${name.size}" fill="${theme.textSecondary}">${escapeXml(name.text)}</text>` +
+        `<text x="${valueX}" y="${rowY}" text-anchor="end" class="gb-mono" font-size="16" fill="${theme.textPrimary}">${escapeXml(row.value)}</text>`
       );
     });
     const sparkSvg = spark.length > 0 ? renderSpark(spark, w, p.accent) : '';
     return `
     <g transform="translate(${x}, ${y})">
       <rect width="${w}" height="${h}" rx="22" fill="${theme.tile}" stroke="${theme.tileBorder}" stroke-width="1"/>
-      <text x="${PAD}" y="38" class="gb-text-bold" font-size="${fittedTitle.size}" fill="${theme.textPrimary}">${escapeXml(fittedTitle.text)}</text>
+      <text x="${PAD}" y="40" class="gb-text-bold" font-size="${fittedTitle.size}" fill="${theme.textPrimary}">${escapeXml(fittedTitle.text)}</text>
       ${rows.join('')}
       ${sparkSvg}
     </g>
   `;
   }
-  const fittedValue = fitText(value, textMax, [30, 26, 22, 18], 0.6);
-  const fittedSub = fitText(subLine, textMax, [12, 11], 0.55);
+  const fittedValue = fitText(value, textMax, [34, 30, 26, 20], 0.6);
+  const fittedSub = fitText(subLine, textMax, [15, 14], 0.55);
 
   const sparkSvg = spark.length > 0 ? renderSpark(spark, w, p.accent) : '';
 
   return `
     <g transform="translate(${x}, ${y})">
       <rect width="${w}" height="${h}" rx="22" fill="${theme.tile}" stroke="${theme.tileBorder}" stroke-width="1"/>
-      <text x="${PAD}" y="38" class="gb-text-bold" font-size="${fittedTitle.size}" fill="${theme.textPrimary}">${escapeXml(fittedTitle.text)}</text>
-      <text x="${PAD}" y="84" class="gb-display" font-size="${fittedValue.size}" fill="${theme.textPrimary}">${escapeXml(fittedValue.text)}</text>
-      <text x="${PAD}" y="${h - 26}" class="gb-text" font-size="${fittedSub.size}" fill="${theme.textMuted}">${escapeXml(fittedSub.text)}</text>
+      <text x="${PAD}" y="40" class="gb-text-bold" font-size="${fittedTitle.size}" fill="${theme.textPrimary}">${escapeXml(fittedTitle.text)}</text>
+      <text x="${PAD}" y="86" class="gb-display" font-size="${fittedValue.size}" fill="${theme.textPrimary}">${escapeXml(fittedValue.text)}</text>
+      <text x="${PAD}" y="${h - 24}" class="gb-text" font-size="${fittedSub.size}" fill="${theme.textMuted}">${escapeXml(fittedSub.text)}</text>
       ${sparkSvg}
     </g>
   `;

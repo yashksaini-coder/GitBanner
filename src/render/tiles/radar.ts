@@ -63,8 +63,8 @@ export interface RadarLabelPos {
   sin: number;
 }
 
-/** Labels sit 9px past the outer ring, at the spoke tip. */
-const LABEL_GAP = 9;
+/** Labels sit 12px past the outer ring, at the spoke tip. */
+const LABEL_GAP = 12;
 /** Past this |cos| a spoke reads as sideways and its label anchors at the tip. */
 const SIDE_COS = 0.35;
 
@@ -87,7 +87,7 @@ export function radarLabelLayout(
     const x = r2(cx + (rMax + LABEL_GAP) * cos);
     const side = Math.abs(cos) > SIDE_COS;
     const anchor = side ? (cos > 0 ? 'start' : 'end') : 'middle';
-    const dy = side ? 4 : sin < 0 ? -6 : 13;
+    const dy = side ? 5 : sin < 0 ? -8 : 16;
     return { x, y: r2(cy + (rMax + LABEL_GAP) * sin + dy), anchor, cos, sin };
   });
 }
@@ -113,7 +113,7 @@ export function renderBurst(p: RadarProps): string {
   const { cx, cy, rMax, theme } = p;
   const langs = p.languages;
   const n = langs.length;
-  const HUB_R = 17;
+  const HUB_R = 20;
 
   const tips = radarLayout(langs.map((l) => l.repos), cx, cy, HUB_R + 14, rMax);
 
@@ -164,24 +164,24 @@ export function renderBurst(p: RadarProps): string {
       // so they stay readable on the tile.
       const nameFill =
         luminance(lang.color) < 0.22 ? theme.textPrimary : escapeXml(lang.color);
-      const countW = (String(lang.repos).length + 1) * 9 * 0.62;
+      const countW = (String(lang.repos).length + 1) * 13 * 0.62;
       const avail =
         pos.anchor === 'start'
           ? p.labelRight - pos.x
           : pos.anchor === 'end'
             ? pos.x - p.labelLeft
             : 2 * Math.min(pos.x - p.labelLeft, p.labelRight - pos.x);
-      const name = fitText(lang.name, Math.max(34, avail - countW), [11, 10, 9], 0.55);
+      const name = fitText(lang.name, Math.max(40, avail - countW), [16, 15, 13], 0.55);
       // dx, not a space character: SVG whitespace collapsing eats a lone
       // space at a tspan boundary, gluing the count to the name.
-      return `<text x="${pos.x}" y="${pos.y}" text-anchor="${pos.anchor}" class="gb-text-bold" font-size="${name.size}" fill="${nameFill}">${escapeXml(name.text)}<tspan class="gb-mono" font-size="9" dx="5" dy="-1" fill="${theme.textSecondary}">${lang.repos}</tspan></text>`;
+      return `<text x="${pos.x}" y="${pos.y}" text-anchor="${pos.anchor}" class="gb-text-bold" font-size="${name.size}" fill="${nameFill}">${escapeXml(name.text)}<tspan class="gb-mono" font-size="13" dx="6" dy="-1" fill="${theme.textSecondary}">${lang.repos}</tspan></text>`;
     })
     .join('');
 
   // Centre hub: the total, reference style.
   const hub =
     `<circle cx="${cx}" cy="${cy}" r="${HUB_R}" fill="${theme.tile}" stroke="${theme.divider}" stroke-width="1"/>` +
-    `<text x="${cx}" y="${cy + 5}" text-anchor="middle" class="gb-mono" font-size="14" fill="${theme.textPrimary}">${p.count}</text>`;
+    `<text x="${cx}" y="${cy + 6}" text-anchor="middle" class="gb-mono" font-size="17" fill="${theme.textPrimary}">${p.count}</text>`;
 
   return (
     `<defs>${glowFilter}</defs>` +

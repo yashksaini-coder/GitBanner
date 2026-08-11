@@ -155,7 +155,7 @@ describe('renderWave', () => {
     expect(svg).toContain('filter id="gw-glow"');
     expect(svg).toContain('stroke-width="2.5"');
     // Every-other-month ticks: 6 of the 12 letters.
-    expect(svg.match(/font-size="9"/g)).toHaveLength(6);
+    expect(svg.match(/font-size="14"/g)).toHaveLength(8); // 6 ticks + peak/last markers
     // Peak (9) and last month (count 2) both marked.
     expect(svg.match(/r="3.5"/g)).toHaveLength(2);
     expect(svg).toContain('>9</text>');
