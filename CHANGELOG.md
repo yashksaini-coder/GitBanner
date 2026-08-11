@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed — weighted language counting, full-body radar
+
+- **A language now needs real weight to count for a repo**: at least 8% of
+  its linguist bytes, or being the primary language. Presence-counting had
+  inflated incidental slivers — a lone committed JS helper or an unminified
+  dist/ bundle made a repo "use JavaScript". On the author's data JavaScript
+  fell 35 → 14 repos and TypeScript (17) became the honest #1; Dockerfile,
+  Makefile and Batchfile — near-always tiny files — left the chart entirely.
+  Language byte sizes now ride along on the existing query.
+- The ships-in stat trio is gone; the radar takes the whole card body
+  (radius ~120px, up from 98). Connecting lines are quiet ink instead of
+  neon green with no glow; vertex dots grow to r5.5 and carry all the
+  colour identity.
+
 ### Changed — reference-style mini row
 
 - Top projects and Stars earned show true top-3 leaderboards: ranked rows

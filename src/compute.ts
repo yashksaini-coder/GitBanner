@@ -373,11 +373,20 @@ function pickBiggest(repos: ExternalRepo[]): ExternalRepo | null {
 }
 
 /**
+ * A language only counts for a repo when it carries real weight there: at
+ * least MIN_LANGUAGE_SHARE of the repo's linguist bytes, or it is the repo's
+ * primary language. Presence-counting inflated incidental slivers — a lone
+ * committed JS helper (or an unminified dist/ bundle linguist cannot detect
+ * as generated) made a Python repo "use JavaScript".
+ */
+export const MIN_LANGUAGE_SHARE = 0.08;
+
+/**
  * Every programming language the user ships in, measured by how many external
- * projects use each one. Uses the full linguist language list per repo (which
- * already excludes vendored and generated files), then drops linguist's
- * markup/data/prose classes — HTML, CSS, notebooks, JSON and friends are not
- * a "ships in" claim. Rides along free on the merged-PR pages.
+ * projects meaningfully use each one. Uses the full linguist language list
+ * per repo (which already excludes vendored and generated files), drops
+ * linguist's markup/data/prose classes, and applies MIN_LANGUAGE_SHARE so
+ * incidental slivers don't count. Rides along free on the merged-PR pages.
  */
 function summariseLanguages(
   repos: ExternalRepo[],
@@ -389,10 +398,13 @@ function summariseLanguages(
   const totals = new Map<string, { repos: number; color: string | null }>();
 
   for (const repo of repos) {
-    for (const lang of repo.languages) {
+    const totalBytes = repo.languages.reduce((sum, l) => sum + Math.max(0, l.size), 0);
+    for (const [idx, lang] of repo.languages.entries()) {
       const key = lang.name.toLowerCase();
       if (NON_PROGRAMMING_LANGUAGES.has(key)) continue;
       if (ignored.has(key)) continue;
+      // Weight gate: primary always counts; others need a real share.
+      if (idx > 0 && totalBytes > 0 && lang.size / totalBytes < MIN_LANGUAGE_SHARE) continue;
       const entry = totals.get(lang.name) ?? { repos: 0, color: lang.color };
       entry.repos++;
       if (!entry.color && lang.color) entry.color = lang.color;

@@ -126,7 +126,6 @@ export function renderRadar(p: RadarProps): string {
   const langs = p.languages;
   const n = langs.length;
   const rMin = 10;
-  const accent = theme.accents.languages;
 
   const pts = radarLayout(langs.map((l) => l.repos), cx, cy, rMin, rMax);
   const shape = polygonPath(pts);
@@ -142,17 +141,17 @@ export function renderRadar(p: RadarProps): string {
     })
     .join('');
 
-  const glowFill = `<radialGradient id="gbr-fill" gradientUnits="userSpaceOnUse" cx="${cx}" cy="${cy}" r="${rMax}"><stop offset="0" stop-color="${accent}" stop-opacity="0.14"/><stop offset="1" stop-color="${accent}" stop-opacity="0"/></radialGradient>`;
-  // Generous filter region so the blur is not clipped at the group bounds.
-  const glowFilter = `<filter id="gbr-glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4"/></filter>`;
+  // Quiet neutral wash — the language dots carry the colour, not the shape.
+  const glowFill = `<radialGradient id="gbr-fill" gradientUnits="userSpaceOnUse" cx="${cx}" cy="${cy}" r="${rMax}"><stop offset="0" stop-color="#ffffff" stop-opacity="0.05"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>`;
 
-  const glow = `<path d="${shape}" fill="none" stroke="${accent}" stroke-width="8" stroke-linejoin="miter" stroke-opacity="0.45"/>`;
-  const stroke = `<path d="${shape}" fill="none" stroke="${accent}" stroke-width="2.5" stroke-linejoin="miter"/>`;
+  // Connecting lines in ink, no neon, no glow: the polygon is structure,
+  // identity lives in the vertex dots.
+  const stroke = `<path d="${shape}" fill="none" stroke="${theme.textSecondary}" stroke-width="1.5" stroke-opacity="0.8" stroke-linejoin="miter"/>`;
 
-  // Colour notation: one dot per vertex in the language's own colour, with a
-  // tile-coloured ring so overlapping geometry never swallows it.
+  // Colour notation: one large dot per vertex in the language's own colour,
+  // with a tile-coloured ring so overlapping geometry never swallows it.
   const dots = pts
-    .map((pt, i) => `<circle class="gbr-dot" cx="${pt.x}" cy="${pt.y}" r="3.5" fill="${escapeXml(langs[i].color)}" stroke="${theme.tile}" stroke-width="2"/>`)
+    .map((pt, i) => `<circle class="gbr-dot" cx="${pt.x}" cy="${pt.y}" r="5.5" fill="${escapeXml(langs[i].color)}" stroke="${theme.tile}" stroke-width="2"/>`)
     .join('');
 
   // Centre hub: the code glyph in a quiet ring, like the reference's diamond.
@@ -188,11 +187,10 @@ export function renderRadar(p: RadarProps): string {
     .join('');
 
   return (
-    `<defs>${glowFill}${glowFilter}</defs>` +
+    `<defs>${glowFill}</defs>` +
     rings +
     spokes +
     `<path d="${shape}" fill="url(#gbr-fill)"/>` +
-    `<g filter="url(#gbr-glow)">${glow}</g>` +
     stroke +
     `<circle cx="${cx}" cy="${cy}" r="11" fill="${theme.tile}" stroke="${theme.divider}" stroke-width="1"/>` +
     `<g transform="translate(${r2(cx - 7)}, ${r2(cy - 7)})">${hubIcon}</g>` +

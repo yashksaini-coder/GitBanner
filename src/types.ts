@@ -16,6 +16,8 @@ export type DataNeed = 'prs' | 'reviews' | 'issues' | 'ownRepos';
 export interface RepoLang {
   name: string;
   color: string | null;
+  /** Linguist byte count — used to drop incidental slivers from the tally. */
+  size: number;
 }
 
 export interface PrRepoRef {

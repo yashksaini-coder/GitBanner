@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { aggregate, NON_PROGRAMMING_LANGUAGES, topExternalByPrs, topExternalByStars } from '../src/compute.js';
+import { aggregate, MIN_LANGUAGE_SHARE, NON_PROGRAMMING_LANGUAGES, topExternalByPrs, topExternalByStars } from '../src/compute.js';
 import type { RawData } from '../src/types.js';
 
 const raw = JSON.parse(
@@ -74,8 +74,8 @@ describe('aggregate — external contribution metrics', () => {
     const onlyDriveBys: RawData = {
       ...raw,
       mergedPrs: [
-        { mergedAt: '2025-01-01T00:00:00Z', repo: { nameWithOwner: 'acme/one', owner: 'acme', stars: 10, isPrivate: false, languages: [{ name: 'Go', color: '#0ff' }] } },
-        { mergedAt: '2025-02-01T00:00:00Z', repo: { nameWithOwner: 'acme/two', owner: 'acme', stars: 20, isPrivate: false, languages: [{ name: 'Go', color: '#0ff' }] } },
+        { mergedAt: '2025-01-01T00:00:00Z', repo: { nameWithOwner: 'acme/one', owner: 'acme', stars: 10, isPrivate: false, languages: [{ name: 'Go', color: '#0ff', size: 1000 }] } },
+        { mergedAt: '2025-02-01T00:00:00Z', repo: { nameWithOwner: 'acme/two', owner: 'acme', stars: 20, isPrivate: false, languages: [{ name: 'Go', color: '#0ff', size: 1000 }] } },
       ],
     };
     const out = aggregate(onlyDriveBys, { minMergedPrs: 5 });
@@ -144,16 +144,43 @@ describe('aggregate — external contribution metrics', () => {
     }
   });
 
-  it('counts every programming language per project, not just the primary one', () => {
-    const distinct = new Set(
-      stats.externalRepos
-        .flatMap((r) => r.languages.map((l) => l.name))
-        .filter((name) => !NON_PROGRAMMING_LANGUAGES.has(name.toLowerCase())),
-    );
+  it('counts languages that carry real weight, mirroring the share gate', () => {
+    // Replicate the rule: primary always counts; others need >= 8% of bytes.
+    const distinct = new Set<string>();
+    for (const repo of stats.externalRepos) {
+      const total = repo.languages.reduce((s2, l) => s2 + Math.max(0, l.size), 0);
+      repo.languages.forEach((l, idx) => {
+        if (NON_PROGRAMMING_LANGUAGES.has(l.name.toLowerCase())) return;
+        if (idx > 0 && total > 0 && l.size / total < MIN_LANGUAGE_SHARE) return;
+        distinct.add(l.name);
+      });
+    }
     expect(stats.languageCount).toBe(distinct.size);
     const counts = stats.languages.map((l) => l.repos);
     expect(counts).toEqual([...counts].sort((a, b) => b - a));
     for (const lang of stats.languages) expect(lang.color).toMatch(/^#/);
+  });
+
+  it('drops incidental language slivers but never a primary language', () => {
+    const synth = aggregate({
+      ...raw,
+      mergedPrs: [
+        { mergedAt: '2026-01-01T00:00:00Z', repo: { nameWithOwner: 'a/x', owner: 'a', stars: 5, isPrivate: false, languages: [
+          { name: 'Python', color: '#3572a5', size: 95000 },
+          { name: 'JavaScript', color: '#f1e05a', size: 3000 }, // 3% sliver
+          { name: 'Rust', color: '#dea584', size: 9000 },       // 8.4% counts
+        ] } },
+        { mergedAt: '2026-01-02T00:00:00Z', repo: { nameWithOwner: 'a/x', owner: 'a', stars: 5, isPrivate: false, languages: [
+          { name: 'Python', color: '#3572a5', size: 95000 },
+          { name: 'JavaScript', color: '#f1e05a', size: 3000 },
+          { name: 'Rust', color: '#dea584', size: 9000 },
+        ] } },
+      ],
+    });
+    const names = synth.languages.map((l) => l.name);
+    expect(names).toContain('Python');
+    expect(names).toContain('Rust');
+    expect(names).not.toContain('JavaScript');
   });
 
   it('drops markup, data and prose languages from the ships-in claim', () => {

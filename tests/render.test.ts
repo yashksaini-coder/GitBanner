@@ -280,8 +280,10 @@ describe('language chart', () => {
 
   it('renders a straight-edged radar with one colour dot per language at 3+ axes', () => {
     const tile = render([lang('Python', 18), lang('Rust', 9, '#dea584'), lang('Go', 4, '#00add8')]);
-    expect(tile).toContain('gbr-glow');
-    expect([...tile.matchAll(/class="gbr-dot"/g)]).toHaveLength(3);
+    // no neon: the polygon strokes in ink with no glow filter, dots r5.5
+    expect(tile).not.toContain('gbr-glow');
+    expect(tile).toContain('stroke-opacity="0.8"');
+    expect([...tile.matchAll(/class="gbr-dot"[^/]*r="5.5"/g)]).toHaveLength(3);
     expect(tile).toContain('#dea584');
     // single accent stroke, not a per-segment gradient
     expect(tile).not.toContain('<linearGradient');
@@ -299,7 +301,7 @@ describe('language chart', () => {
 
   it('falls back to pills below 3 axes and to a message at zero', () => {
     const two = render([lang('Python', 3), lang('Go', 1)], 4);
-    expect(two).not.toContain('gbr-glow');
+    expect(two).not.toContain('gbr-dot');
     expect(two).toContain('+4');
     const none = render([], 0);
     expect(none).toContain('no language data');

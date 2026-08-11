@@ -124,23 +124,17 @@ export const TILES: Record<string, TileDef> = {
         accent: theme.accents.languages,
         title: 'Ships in',
         caption: `top ${Math.min(8, p.languages.length)} of ${n(p.languageCount)} languages · by project count`,
+        // No stat trio here — the freed body goes to the radar itself.
         chart: renderLanguagesChart({
           x: PAD,
           y: CHART_TOP,
           w: box.w - 2 * PAD,
-          h: CHART_H,
+          h: box.h - CHART_TOP - 26,
           languages: p.languages.map((l) => ({ name: l.name, color: l.color, repos: l.repos })),
           overflow: Math.max(0, p.languageCount - p.languages.length),
           theme,
         }),
-        stats: [
-          { value: n(p.languageCount), label: 'languages' },
-          { value: p.languages[0]?.name ?? '—', label: 'most used' },
-          {
-            value: p.languages[0] ? n(p.languages[0].repos) : '—',
-            label: 'projects use it',
-          },
-        ],
+        stats: [],
         theme,
       }),
   },

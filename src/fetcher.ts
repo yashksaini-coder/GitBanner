@@ -158,6 +158,7 @@ const MERGED_PR_QUERY = /* GraphQL */ `
             }
             languages(first: 10, orderBy: { field: SIZE, direction: DESC }) {
               edges {
+                size
                 node {
                   name
                   color
@@ -178,7 +179,7 @@ interface MergedPrNode {
     stargazerCount: number;
     isPrivate: boolean;
     owner: { login: string };
-    languages: { edges: Array<{ node: { name: string; color: string | null } }> };
+    languages: { edges: Array<{ size: number; node: { name: string; color: string | null } }> };
   };
 }
 
@@ -214,6 +215,7 @@ async function fetchMergedPrs(client: GqlClient, login: string): Promise<MergedP
           languages: node.repository.languages.edges.map((e) => ({
             name: e.node.name,
             color: e.node.color,
+            size: e.size,
           })),
         },
       });
