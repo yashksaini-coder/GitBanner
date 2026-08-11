@@ -68,6 +68,43 @@ export interface RadarProps {
   theme: Theme;
 }
 
+export interface RadarLabelPos {
+  x: number;
+  y: number;
+  anchor: 'start' | 'middle' | 'end';
+  cos: number;
+  sin: number;
+}
+
+/** Labels sit 9px past the outer ring, at the spoke tip. */
+const LABEL_GAP = 9;
+/** Past this |cos| a spoke reads as sideways and its label anchors at the tip. */
+const SIDE_COS = 0.35;
+
+/**
+ * Tip-side label placement: side spokes (|cos| > 0.35) anchor the text at the
+ * tip growing away from the ring (dy +4); top/bottom spokes centre the text
+ * above or below the vertex (dy -6 / +13). Exported so tests can prove every
+ * label either grows outward from the ring or lives in the vertical band.
+ */
+export function radarLabelLayout(
+  n: number,
+  cx: number,
+  cy: number,
+  rMax: number,
+): RadarLabelPos[] {
+  return Array.from({ length: n }, (_, i) => {
+    const angle = -Math.PI / 2 + (i * 2 * Math.PI) / n;
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    const x = r2(cx + (rMax + LABEL_GAP) * cos);
+    const side = Math.abs(cos) > SIDE_COS;
+    const anchor = side ? (cos > 0 ? 'start' : 'end') : 'middle';
+    const dy = side ? 4 : sin < 0 ? -6 : 13;
+    return { x, y: r2(cy + (rMax + LABEL_GAP) * sin + dy), anchor, cos, sin };
+  });
+}
+
 /** Perceived luminance 0..1; used to keep dark brand colours readable. */
 function luminance(hex: string): number {
   const m = /^#?([0-9a-f]{6})$/i.exec(hex);
@@ -126,26 +163,25 @@ export function renderRadar(p: RadarProps): string {
     strokeWidth: 2,
   });
 
+  const positions = radarLabelLayout(n, cx, cy, rMax);
   const labels = langs
     .map((lang, i) => {
-      const angle = -Math.PI / 2 + (i * 2 * Math.PI) / n;
-      const cos = Math.cos(angle);
-      const sin = Math.sin(angle);
-      const lx = r2(cx + (rMax + 9) * cos);
-      const ly = r2(cy + (rMax + 9) * sin);
-      // Every label is middle-anchored and pushed above or below its vertex
-      // by hemisphere: centring doubles the room before the tile edge, which
-      // is what lets 10-character names render whole on side spokes.
-      const dy = sin < -0.05 ? -6 : 13;
+      const pos = positions[i];
       // The name is colour-coded to its vertex dot; dark brand colours flip
       // to ink so they stay readable on the tile.
       const nameFill =
         luminance(lang.color) < 0.22 ? theme.textPrimary : escapeXml(lang.color);
-      // Clamp the label centre so half the fitted text always fits each side.
+      // Clamp the fitted text to the room its anchor leaves before the card
+      // edge: side labels grow one way, centred labels split the room in two.
       const countW = (String(lang.repos).length + 1) * 9 * 0.62;
-      const avail = 2 * Math.min(lx - p.labelLeft, p.labelRight - lx);
+      const avail =
+        pos.anchor === 'start'
+          ? p.labelRight - pos.x
+          : pos.anchor === 'end'
+            ? pos.x - p.labelLeft
+            : 2 * Math.min(pos.x - p.labelLeft, p.labelRight - pos.x);
       const name = fitText(lang.name, Math.max(34, avail - countW), [11, 10, 9], 0.55);
-      return `<text x="${lx}" y="${ly + dy}" text-anchor="middle" class="gb-text-bold" font-size="${name.size}" fill="${nameFill}">${escapeXml(name.text)}<tspan class="gb-mono" font-size="9" fill="${theme.textMuted}"> ${lang.repos}</tspan></text>`;
+      return `<text x="${pos.x}" y="${pos.y}" text-anchor="${pos.anchor}" class="gb-text-bold" font-size="${name.size}" fill="${nameFill}">${escapeXml(name.text)}<tspan class="gb-mono" font-size="9" fill="${theme.textMuted}"> ${lang.repos}</tspan></text>`;
     })
     .join('');
 

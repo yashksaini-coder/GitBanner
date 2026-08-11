@@ -4,7 +4,7 @@ import { aggregate } from '../src/compute.js';
 import { toSvg } from '../src/render/svg.js';
 import { dark } from '../src/render/theme.js';
 import { renderLanguagesTile } from '../src/render/tiles/languages-tile.js';
-import { polygonPath, radarLayout } from '../src/render/tiles/radar.js';
+import { polygonPath, radarLabelLayout, radarLayout } from '../src/render/tiles/radar.js';
 import { DEFAULT_TILES, neededData, parseTiles, TILE_KEYS, TILES } from '../src/tiles.js';
 import type { RawData } from '../src/types.js';
 
@@ -37,9 +37,25 @@ describe('toSvg', () => {
     expect(svg).not.toContain('Contributing since');
   });
 
-  it('shows trailing-12-month momentum', () => {
-    expect(svg).toContain('Last 12 months');
+  it('replaces the momentum mini with the Activity wave card', () => {
+    expect(svg).toContain('Activity');
+    expect(svg).toContain('url(#gba-wave)');
     expect(svg).toContain('external merges');
+    // the old mini is gone
+    expect(svg).not.toContain('Last 12 months');
+    expect(TILES['momentum']).toBeUndefined();
+  });
+
+  it('draws the hex cluster and the issues arc meter', () => {
+    expect(svg).toContain('<polygon points=');
+    expect(svg).toContain('hex intensity = merged PRs');
+    expect(svg).toContain('gbm-glow');
+    expect(svg).toContain('A 78 78');
+  });
+
+  it('renders the pure-black theme', () => {
+    expect(svg).toContain(`fill="#000000"`);
+    expect(svg).toContain('#0a0a0a');
   });
 
   it('shows stars earned with the highest-starred own repo', () => {
@@ -93,20 +109,20 @@ describe('toSvg', () => {
     expect(svgB.indexOf('Reviews for others')).toBeLessThan(svgB.indexOf(hero));
   });
 
-  it('allows only one hero tile', () => {
-    expect(() => parseTiles('merged-prs')).not.toThrow();
-    const heroes = TILE_KEYS.filter((k) => TILES[k].kind === 'hero');
-    expect(heroes).toEqual(['merged-prs']);
+  it('registers six equal cards and three minis, momentum gone', () => {
+    expect(TILE_KEYS).toHaveLength(9);
+    expect(TILE_KEYS.filter((k) => TILES[k].kind === 'card')).toHaveLength(6);
+    expect(TILE_KEYS.filter((k) => TILES[k].kind === 'mini')).toHaveLength(3);
+    expect(() => parseTiles('merged-prs,activity,issues')).not.toThrow();
+    expect(() => parseTiles('momentum')).toThrow(/Unknown tile/);
   });
 
-  it('gives the hero roughly double the width of a stat tile', () => {
-    const svgOut = toSvg(stats, 'dark', ['merged-prs', 'reviews', 'projects']);
-    const widths = [...svgOut.matchAll(/<rect width="(\d+)" height="360"/g)].map((m) =>
+  it('gives every card the same 498px column width', () => {
+    const widths = [...svg.matchAll(/<rect width="(\d+)" height="360"/g)].map((m) =>
       Number(m[1]),
     );
-    expect(widths).toHaveLength(3);
-    expect(widths[0]).toBeGreaterThan(widths[1] * 1.8);
-    expect(widths[1]).toBe(widths[2]);
+    expect(widths).toHaveLength(6);
+    for (const w of widths) expect(w).toBe(498);
   });
 
   it('renders no footer line and no unrenderable star glyph', () => {
@@ -315,6 +331,28 @@ describe('radar geometry', () => {
     // straight lines only — a curve command would mean overshoot is possible
     expect(d).not.toMatch(/[CQSTA]/);
     expect([...d.matchAll(/L /g)]).toHaveLength(pts.length - 1);
+  });
+
+  it('keeps every label clear of the ring: tip-anchored outward or in the vertical band', () => {
+    // Real card geometry: w=498 → cx 249, rMax min(74, 139) = 74.
+    const cx = 249, cy = 256, rMax = 74;
+    for (let axes = 3; axes <= 8; axes++) {
+      for (const pos of radarLabelLayout(axes, cx, cy, rMax)) {
+        if (Math.abs(pos.cos) <= 0.35) {
+          // Above/below hemisphere band: centred, pushed away from the ring.
+          expect(pos.anchor).toBe('middle');
+          expect(Math.abs(pos.y - cy)).toBeGreaterThanOrEqual((rMax + 9) * Math.abs(pos.sin));
+        } else {
+          // Side spoke: anchored at the tip, text grows away from the ring —
+          // sample a worst-case 90px x-extent and prove it never re-enters.
+          expect(pos.anchor).toBe(pos.cos > 0 ? 'start' : 'end');
+          const dir = pos.cos > 0 ? 1 : -1;
+          for (let t = 0; t <= 90; t += 10) {
+            expect(Math.hypot(pos.x + dir * t - cx, pos.y - cy)).toBeGreaterThan(rMax);
+          }
+        }
+      }
+    }
   });
 
   it('never crosses the outer ring, whatever the value pattern', () => {

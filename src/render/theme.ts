@@ -1,14 +1,14 @@
 import type { Theme, ThemeName } from '../types.js';
 
 export const dark: Theme = {
-  bg: '#0b0d12',
-  tile: '#11161f',
-  tileBorder: '#1c2230',
+  bg: '#000000',
+  tile: '#0a0a0a',
+  tileBorder: '#1b1b1b',
   textPrimary: '#ffffff',
   textSecondary: '#9ca3af',
   textMuted: '#6b7280',
-  divider: '#1f2937',
-  pillBg: '#172033',
+  divider: '#161616',
+  pillBg: '#101010',
   pillText: '#93c5fd',
   // Three hues, in this order, on surface #11161f. Validated all-pairs by
   // dataviz/scripts/validate_palette.js: lightness band, chroma floor, CVD
@@ -20,7 +20,7 @@ export const dark: Theme = {
     reviews: '#d95926', // slot 2
     projects: '#199e70', // slot 3
     reach: '#199e70', // same footprint story as projects
-    issues: '#8b949e',
+    issues: '#199e70', // the resolution meter is a "good" story, same hue as projects
     languages: '#199e70',
     neutral: '#8b949e',
   },

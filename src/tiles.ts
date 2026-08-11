@@ -1,8 +1,12 @@
 import { topExternalByPrs, topExternalByStars } from './compute.js';
+import { renderBars } from './render/tiles/bars.js';
 import { renderHeroTile } from './render/tiles/hero-tile.js';
+import { renderHexCluster } from './render/tiles/hex.js';
 import { renderLanguagesTile } from './render/tiles/languages-tile.js';
+import { renderMeter } from './render/tiles/meter.js';
 import { renderMiniTile } from './render/tiles/mini-tile.js';
 import { renderStatTile } from './render/tiles/stat-tile.js';
+import { renderWave } from './render/tiles/wave.js';
 import type { DataNeed, StatsPayload, Theme } from './types.js';
 
 export interface Box {
@@ -13,11 +17,8 @@ export interface Box {
 }
 
 export interface TileDef {
-  /**
-   * `hero` is the one loud tile and takes two columns — exactly one belongs on
-   * a card. `stat` supports it. `mini` sits in the short bottom row.
-   */
-  kind: 'hero' | 'stat' | 'mini';
+  /** `card` tiles fill the tall 3-column rows; `mini` tiles the short bottom row. */
+  kind: 'card' | 'mini';
   /** Queries the fetcher must run for this tile. Unselected tiles cost nothing. */
   needs: DataNeed[];
   render(p: StatsPayload, theme: Theme, box: Box): string;
@@ -34,10 +35,17 @@ function scope(p: StatsPayload): string {
   return p.periodLabel ?? 'all time';
 }
 
+/** Chart zone shared by the card tiles: below the divider, inside the padding. */
+const PAD = 28;
+const CHART_TOP = 168;
+/** Dot rows under a chart sit on a fixed grid near the card's bottom edge. */
+const CHART_ROW_START = 320;
+const CHART_ROW_PITCH = 32;
+
 export const TILES: Record<string, TileDef> = {
-  // --- the hero ----------------------------------------------------------
+  // --- the six chart cards ----------------------------------------------
   'merged-prs': {
-    kind: 'hero',
+    kind: 'card',
     needs: ['prs'],
     render: (p, theme, box) =>
       renderHeroTile({
@@ -56,9 +64,49 @@ export const TILES: Record<string, TileDef> = {
       }),
   },
 
-  // --- supporting stat tiles --------------------------------------------
+  activity: {
+    kind: 'card',
+    needs: ['prs'],
+    render: (p, theme, box) =>
+      renderStatTile({
+        ...box,
+        iconKey: 'trending-up',
+        accent: theme.accents.prs,
+        value: n(p.recentExternalPrs),
+        label: 'Activity',
+        caption: p.periodLabel ?? 'external merges · last 12 months',
+        rows: [],
+        chart: `<g transform="translate(${PAD}, ${CHART_TOP})">${renderWave({
+          w: box.w - 2 * PAD,
+          h: 344 - CHART_TOP,
+          points: p.monthlyExternalMerges,
+          accent: theme.accents.prs,
+          gradId: 'gba-wave',
+          theme,
+        })}</g>`,
+        theme,
+      }),
+  },
+
+  'ships-in': {
+    kind: 'card',
+    needs: ['prs'],
+    render: (p, theme, box) =>
+      renderLanguagesTile({
+        ...box,
+        iconKey: 'code-brackets',
+        accent: theme.accents.languages,
+        count: p.languageCount,
+        label: 'Ships in',
+        caption: `top ${Math.min(8, p.languages.length)} by project count`,
+        languages: p.languages.map((l) => ({ name: l.name, color: l.color, repos: l.repos })),
+        overflow: Math.max(0, p.languageCount - p.languages.length),
+        theme,
+      }),
+  },
+
   reviews: {
-    kind: 'stat',
+    kind: 'card',
     needs: ['reviews'],
     render: (p, theme, box) =>
       renderStatTile({
@@ -68,40 +116,57 @@ export const TILES: Record<string, TileDef> = {
         value: n(p.reviewsExternal),
         label: 'Reviews for others',
         caption: `of ${n(p.reviewsTotal)} reviews total`,
-        rows: p.topReviewedRepos.map((r) => ({
-          label: trunc(r.name, 18),
-          value: n(r.value),
-        })),
+        rows: [],
+        chart: `<g transform="translate(${PAD}, 176)">${renderBars({
+          entries: p.topReviewedRepos.slice(0, 4).map((r) => ({
+            label: r.name,
+            value: r.value,
+          })),
+          w: box.w - 2 * PAD,
+          pitch: 42,
+          gradId: 'gbrv-grad',
+          gradFrom: '#8a3416',
+          gradTo: '#d95926',
+          theme,
+        })}</g>`,
         theme,
       }),
   },
 
   projects: {
-    kind: 'stat',
+    kind: 'card',
     needs: ['prs'],
     render: (p, theme, box) =>
       renderStatTile({
         ...box,
         iconKey: 'package',
-        accent: theme.accents.projects,
+        accent: theme.accents.prs,
         value: n(p.externalRepoCount),
         label: 'Projects shipped to',
-        caption: 'with 2+ merged PRs',
-        rows: topExternalByStars(p, 4).map((r) => ({
-          label: trunc(r.name, 16),
+        caption: 'hex intensity = merged PRs',
+        chart: `<g transform="translate(${PAD}, ${CHART_TOP})">${renderHexCluster({
+          w: box.w - 2 * PAD,
+          h: 296 - CHART_TOP,
+          values: p.externalRepos.map((r) => r.mergedPrs),
+          theme,
+        })}</g>`,
+        rows: topExternalByStars(p, 2).map((r) => ({
+          label: trunc(r.name, 18),
           value: `${n(r.value)} stars`,
         })),
+        rowStart: CHART_ROW_START,
+        rowPitch: CHART_ROW_PITCH,
         theme,
       }),
   },
 
   issues: {
-    kind: 'stat',
+    kind: 'card',
     needs: ['issues'],
     render: (p, theme, box) => {
       const closed = p.issuesClosed;
       // Windowed cards can't show resolution: GitHub exposes issues opened in
-      // a range but not issues closed in one.
+      // a range but not issues closed in one — so no meter either.
       if (closed === null) {
         return renderStatTile({
           ...box,
@@ -123,31 +188,26 @@ export const TILES: Record<string, TileDef> = {
         value: `${pct}%`,
         label: 'Issues resolved',
         caption: `${n(closed)} of ${n(p.issuesOpened)} you filed`,
+        chart: renderMeter({
+          cx: box.w / 2,
+          cy: 268,
+          r: 78,
+          pct,
+          centerTop: n(closed),
+          centerBottom: `of ${n(p.issuesOpened)} resolved`,
+          accent: theme.accents.issues,
+          theme,
+        }),
+        // Resolved lives in the meter; the rows carry the other two numbers.
         rows: [
           { label: 'Opened', value: n(p.issuesOpened) },
-          { label: 'Resolved', value: n(closed) },
           { label: 'Still open', value: n(Math.max(0, p.issuesOpened - closed)) },
         ],
+        rowStart: CHART_ROW_START,
+        rowPitch: CHART_ROW_PITCH,
         theme,
       });
     },
-  },
-
-  'ships-in': {
-    kind: 'stat',
-    needs: ['prs'],
-    render: (p, theme, box) =>
-      renderLanguagesTile({
-        ...box,
-        iconKey: 'code-brackets',
-        accent: theme.accents.languages,
-        count: p.languageCount,
-        label: 'Ships in',
-        caption: `top ${Math.min(8, p.languages.length)} by project count`,
-        languages: p.languages.map((l) => ({ name: l.name, color: l.color, repos: l.repos })),
-        overflow: Math.max(0, p.languageCount - p.languages.length),
-        theme,
-      }),
   },
 
   // --- mini tiles --------------------------------------------------------
@@ -199,33 +259,18 @@ export const TILES: Record<string, TileDef> = {
         theme,
       }),
   },
-
-  momentum: {
-    kind: 'mini',
-    needs: ['prs'],
-    render: (p, theme, box) =>
-      renderMiniTile({
-        ...box,
-        iconKey: 'trending-up',
-        iconColor: theme.textMuted,
-        label: 'Last 12 months',
-        value: n(p.recentExternalPrs),
-        subLine: `external merges · ${n(p.recentExternalRepoCount)} projects`,
-        theme,
-      }),
-  },
 };
 
 export const DEFAULT_TILES = [
   'merged-prs',
+  'activity',
+  'ships-in',
   'reviews',
   'projects',
-  'ships-in',
   'issues',
   'biggest-project',
   'merge-rate',
   'own-stars',
-  'momentum',
 ];
 
 export const TILE_KEYS = Object.keys(TILES);
@@ -249,14 +294,7 @@ export function parseTiles(input: string | undefined): string[] {
   }
   if (keys.length === 0) return DEFAULT_TILES;
 
-  const unique = [...new Set(keys)];
-  const heroes = unique.filter((k) => TILES[k].kind === 'hero');
-  if (heroes.length > 1) {
-    throw new Error(
-      `Only one hero tile can be shown at a time; got: ${heroes.join(', ')}`,
-    );
-  }
-  return unique;
+  return [...new Set(keys)];
 }
 
 /** Union of every selected tile's data requirements. */

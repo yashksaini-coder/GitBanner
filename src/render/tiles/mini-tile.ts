@@ -32,7 +32,7 @@ export function renderMiniTile(p: MiniTileProps): string {
 
   return `
     <g transform="translate(${x}, ${y})">
-      <rect width="${w}" height="${h}" rx="22" fill="${theme.tile}" stroke="${theme.tileBorder}" stroke-width="1.5"/>
+      <rect width="${w}" height="${h}" rx="22" fill="${theme.tile}" stroke="${theme.tileBorder}" stroke-width="1"/>
       <g transform="translate(28, 24)">${icon}</g>
       <text x="58" y="41" class="gb-text" font-size="16" fill="${theme.textSecondary}">${escapeXml(label)}</text>
 

@@ -42,7 +42,7 @@ export function renderLanguagesTile(p: LanguagesTileProps): string {
 
   return `
     <g transform="translate(${x}, ${y})">
-      <rect width="${w}" height="${h}" rx="24" fill="${theme.tile}" stroke="${theme.tileBorder}" stroke-width="1.5"/>
+      <rect width="${w}" height="${h}" rx="24" fill="${theme.tile}" stroke="${theme.tileBorder}" stroke-width="1"/>
       <g transform="translate(28, 28)">
         <rect width="48" height="48" rx="12" fill="${p.accent}" fill-opacity="0.16"/>
         <g transform="translate(12, 12)">${icon}</g>
@@ -66,7 +66,9 @@ function chartFor(p: LanguagesTileProps, w: number, h: number, theme: Theme): st
     const zoneTop = 168;
     const zoneBottom = h - 16;
     const cy = (zoneTop + zoneBottom) / 2;
-    const rMax = Math.min((zoneBottom - zoneTop) / 2 - 14, (w - 2 * PAD) / 2 - 28);
+    // Horizontal bound reserves 78px each side for tip-anchored labels, so a
+    // side label can never reach back into the ring nor leave the card.
+    const rMax = Math.min((zoneBottom - zoneTop) / 2 - 14, (w - 64) / 2 - 78);
     return renderRadar({
       cx: w / 2,
       cy,

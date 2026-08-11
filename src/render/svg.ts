@@ -5,12 +5,13 @@ import { getTheme } from './theme.js';
 import { escapeXml } from './util.js';
 
 const CANVAS_W = 1600;
-const MARGIN = 28;
-const GAP = 16;
-const TOP_H = 360;
-const MINI_H = 150;
-/** A hero tile is worth two ordinary columns. */
-const HERO_SPAN = 2;
+const MARGIN = 32;
+const GAP = 20;
+const COLS = 3;
+const CARD_H = 360;
+const MINI_H = 140;
+/** Every card is the same width: three equal columns. */
+const CARD_W = Math.floor((CANVAS_W - 2 * MARGIN - (COLS - 1) * GAP) / COLS);
 
 export function toSvg(
   payload: StatsPayload,
@@ -19,19 +20,20 @@ export function toSvg(
 ): string {
   const theme = getTheme(themeName);
 
-  const top = tileKeys.filter((k) => TILES[k].kind !== 'mini');
+  const cards = tileKeys.filter((k) => TILES[k].kind !== 'mini');
   const minis = tileKeys.filter((k) => TILES[k].kind === 'mini');
 
   let y = MARGIN;
   const parts: string[] = [];
 
-  if (top.length > 0) {
-    parts.push(renderSpannedRow(top, payload, theme, y, TOP_H));
-    y += TOP_H + GAP;
-  }
-  if (minis.length > 0) {
-    parts.push(renderSpannedRow(minis, payload, theme, y, MINI_H));
-    y += MINI_H + GAP;
+  for (const [keys, h] of [
+    [cards, CARD_H],
+    [minis, MINI_H],
+  ] as const) {
+    for (let i = 0; i < keys.length; i += COLS) {
+      parts.push(renderRow(keys.slice(i, i + COLS), payload, theme, y, h));
+      y += h + GAP;
+    }
   }
 
   const canvasH = y - GAP + MARGIN;
@@ -46,31 +48,20 @@ export function toSvg(
 </svg>`;
 }
 
-/**
- * Lay a row out in column units: hero tiles take two, everything else one, so
- * a row of [hero, stat, stat, stat] divides the width into six.
- */
-function renderSpannedRow(
+/** One row of up to three equal-width tiles, left-aligned when partial. */
+function renderRow(
   keys: string[],
   payload: StatsPayload,
   theme: Theme,
   y: number,
   h: number,
 ): string {
-  const spans = keys.map((k) => (TILES[k].kind === 'hero' ? HERO_SPAN : 1));
-  const units = spans.reduce((a, b) => a + b, 0);
-  const inner = CANVAS_W - 2 * MARGIN;
-  const unitW = Math.floor((inner - GAP * (keys.length - 1)) / units);
-
-  let x = MARGIN;
-  const out: string[] = [];
-  keys.forEach((key, i) => {
-    const w = unitW * spans[i] + GAP * (spans[i] - 1);
-    const box: Box = { x, y, w, h };
-    out.push(TILES[key].render(payload, theme, box));
-    x += w + GAP;
-  });
-  return out.join('');
+  return keys
+    .map((key, i) => {
+      const box: Box = { x: MARGIN + i * (CARD_W + GAP), y, w: CARD_W, h };
+      return TILES[key].render(payload, theme, box);
+    })
+    .join('');
 }
 
 function ariaLabel(p: StatsPayload): string {

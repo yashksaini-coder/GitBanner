@@ -20,6 +20,11 @@ export interface StatTileProps {
   label: string;
   caption: string;
   rows: StatTileRow[];
+  /** Chart markup in tile-local coordinates, drawn below the divider. */
+  chart?: string;
+  /** First dot-row baseline; chart cards push their rows below the chart. */
+  rowStart?: number;
+  rowPitch?: number;
   theme: Theme;
 }
 
@@ -55,9 +60,11 @@ export function renderStatTile(p: StatTileProps): string {
   const fittedLabel = fitText(label, w - 2 * PAD, [17, 15, 14]);
   const fittedCaption = fitText(caption, w - 2 * PAD, [13, 12]);
 
+  const rowStart = p.rowStart ?? ROW_START;
+  const rowPitch = p.rowPitch ?? ROW_PITCH;
   const rowsSvg = rows
     .map((row, i) => {
-      const rowY = ROW_START + i * ROW_PITCH;
+      const rowY = rowStart + i * rowPitch;
       // Value column is right-aligned, so reserve it before truncating the label.
       const valueW = row.value.length * 15 * 0.6;
       const labelChars = Math.max(6, Math.floor((w - 2 * PAD - 18 - valueW - 10) / (15 * 0.55)));
@@ -71,7 +78,7 @@ export function renderStatTile(p: StatTileProps): string {
 
   return `
     <g transform="translate(${x}, ${y})">
-      <rect width="${w}" height="${h}" rx="24" fill="${theme.tile}" stroke="${theme.tileBorder}" stroke-width="1.5"/>
+      <rect width="${w}" height="${h}" rx="24" fill="${theme.tile}" stroke="${theme.tileBorder}" stroke-width="1"/>
       <g transform="translate(28, 28)">
         <rect width="48" height="48" rx="12" fill="${p.accent}" fill-opacity="0.16"/>
         <g transform="translate(12, 12)">${icon}</g>
@@ -83,6 +90,7 @@ export function renderStatTile(p: StatTileProps): string {
 
       <line x1="${PAD}" y1="${DIVIDER_Y}" x2="${w - PAD}" y2="${DIVIDER_Y}" stroke="${theme.divider}" stroke-width="1"/>
 
+      ${p.chart ?? ''}
       ${rowsSvg}
     </g>
   `;
