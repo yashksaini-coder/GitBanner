@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed — reference-style mini row
 
+- Top projects and Stars earned show true top-3 leaderboards: ranked rows
+  with names AND values (the card total moves into the title), sparkline
+  intact. Merge rate keeps the big-value anatomy — it is a single number.
+
 - The three bottom minis adopt the compact reference anatomy: bold title,
   big value with an honest green delta where one exists, muted sub-line,
   and a rounded-bar sparkline on the right (bottom-anchored — the candle

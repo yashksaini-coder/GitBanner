@@ -90,13 +90,18 @@ describe('toSvg', () => {
     expect(svg).toContain('#0a0a0a');
   });
 
-  it('minis carry sparklines, top-3 names and honest deltas', () => {
-    expect(svg).toContain('Stars earned');
-    expect(svg).toContain(stats.ownTopRepo!.name);
+  it('minis show top-3 leaderboards with sparklines', () => {
+    expect(svg).toContain('Stars earned ·');
     expect(svg).toContain('Top projects ·');
-    // spark bars render (rounded rects) and the year list drives the delta
+    // top-3 rows: every listed repo appears with its value
     const list = stats.topExternalThisYear.length > 0 ? stats.topExternalThisYear : stats.externalRepos.map((r) => ({ name: r.name, value: r.mergedPrs }));
-    expect(svg).toContain(`↑ ${list[0].value.toLocaleString('en-US')} merged`);
+    for (const row of list.slice(0, 3)) {
+      expect(svg).toContain(`${row.value.toLocaleString('en-US')} merged`);
+    }
+    for (const repo of stats.ownTopRepos.slice(0, 3)) {
+      expect(svg).toContain(`${repo.stars.toLocaleString('en-US')} stars`);
+      expect(svg).toContain(repo.name);
+    }
     expect(svg).toContain('spark: merges per month');
   });
 

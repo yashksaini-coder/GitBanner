@@ -267,19 +267,13 @@ export const TILES: Record<string, TileDef> = {
       const thisYear = p.topExternalThisYear;
       const list = thisYear.length > 0 ? thisYear : topExternalByPrs(p, 8);
       const scopeLabel = p.periodLabel ?? (thisYear.length > 0 ? String(year) : 'all time');
-      const [first, second, third] = list;
       return renderMiniTile({
         ...box,
         accent: theme.accents.prs,
         title: `Top projects · ${scopeLabel}`,
-        value: first?.name ?? '—',
-        delta: first ? `↑ ${n(first.value)} merged` : undefined,
-        subLine:
-          second || third
-            ? ['2nd ' + (second?.name ?? '—'), third ? '3rd ' + third.name : '']
-                .filter(Boolean)
-                .join(' · ')
-            : 'no external merges yet',
+        value: list[0]?.name ?? '—',
+        subLine: list.length === 0 ? 'no external merges yet' : '',
+        list: list.slice(0, 3).map((r) => ({ label: r.name, value: `${n(r.value)} merged` })),
         spark: list.map((r) => r.value),
         theme,
       });
@@ -304,22 +298,17 @@ export const TILES: Record<string, TileDef> = {
   'own-stars': {
     kind: 'mini',
     needs: ['ownRepos'],
-    render: (p, theme, box) => {
-      const [first, second] = p.ownTopRepos;
-      return renderMiniTile({
+    render: (p, theme, box) =>
+      renderMiniTile({
         ...box,
         accent: theme.accents.languages,
-        title: 'Stars earned',
+        title: `Stars earned · ${n(p.ownStars)} total`,
         value: n(p.ownStars),
-        subLine: first
-          ? [`top ${first.name} ${n(first.stars)}`, second ? `2nd ${second.name}` : '']
-              .filter(Boolean)
-              .join(' · ')
-          : `across ${n(p.ownRepoCount)} repos you built`,
+        subLine: p.ownTopRepos.length === 0 ? `across ${n(p.ownRepoCount)} repos you built` : '',
+        list: p.ownTopRepos.slice(0, 3).map((r) => ({ label: r.name, value: `${n(r.stars)} stars` })),
         spark: p.ownTopRepos.map((r) => r.stars),
         theme,
-      });
-    },
+      }),
   },
 };
 
