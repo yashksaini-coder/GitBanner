@@ -92,7 +92,7 @@ export const TILES: Record<string, TileDef> = {
       const pulse = p.commitPulse;
       return renderStatTile({
         ...box,
-        accent: theme.accents.prs,
+        accent: theme.accents.pulse,
         title: 'Commit pulse',
         caption: `my commits per week · top ${n(pulse.repoCount)} repos · 52 weeks`,
         // One point per week (REST participation stats, owner series summed
@@ -101,7 +101,7 @@ export const TILES: Record<string, TileDef> = {
           w: box.w - 2 * PAD,
           h: CHART_H,
           points: pulse.weeks,
-          accent: theme.accents.prs,
+          accent: theme.accents.pulse,
           gradId: 'gbp-pulse',
           gridlines: true,
           tickEvery: 1,
@@ -295,7 +295,7 @@ export const TILES: Record<string, TileDef> = {
       const scopeLabel = p.periodLabel ?? (thisYear.length > 0 ? String(year) : 'all time');
       return renderMiniTile({
         ...box,
-        accent: theme.accents.prs,
+        accent: theme.accents.topProjects,
         title: `Top projects · ${scopeLabel}`,
         value: list[0]?.name ?? '—',
         subLine: list.length === 0 ? 'no external merges yet' : '',

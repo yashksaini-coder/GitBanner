@@ -35,6 +35,9 @@ describe('toSvg', () => {
 
   it('commit pulse card is a weekly wave with month ticks and the trio', () => {
     expect(svg).toContain('url(#gbp-pulse)');
+    // green pulse, red Top projects mini — the requested balance picks
+    expect(svg).toContain('#2fd08a');
+    expect(svg.slice(svg.indexOf('Top projects'))).toContain('#f85149');
     expect(svg).toContain('my commits per week');
     expect(svg).toContain(`top ${stats.commitPulse.repoCount} repos`);
     expect(svg).toContain('commits · 52 weeks');

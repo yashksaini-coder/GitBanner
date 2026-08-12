@@ -227,6 +227,10 @@ export interface ThemeAccents {
   reach: string;
   issues: string;
   languages: string;
+  /** The commit pulse wave — green, balancing the blue story cards. */
+  pulse: string;
+  /** The Top projects mini — red, completing the mini row's triad. */
+  topProjects: string;
   neutral: string;
 }
 

@@ -25,6 +25,12 @@ export const dark: Theme = {
     // that exact state. Deliberate exception to the three-hue set above.
     issues: '#a371f7',
     languages: '#199e70',
+    // Requested balance picks (2026-08-12): the pulse goes green — the same
+    // bright green the activity ramp caps with, tying the two cadence cards —
+    // and the Top projects mini goes red (Primer danger.fg dark, readable on
+    // near-black) so the mini row reads red / blue / green.
+    pulse: '#2fd08a',
+    topProjects: '#f85149',
     neutral: '#8b949e',
   },
 };
