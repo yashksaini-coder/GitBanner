@@ -3,7 +3,7 @@
 [![GitHub release](https://img.shields.io/github/v/release/yashksaini-coder/GitBanner?logo=github&label=release)](https://github.com/yashksaini-coder/GitBanner/releases)
 [![Marketplace](https://img.shields.io/badge/Marketplace-GitBanner%20Profile%20Card-purple?logo=github)](https://github.com/marketplace/actions/gitbanner-profile-card)
 
-A GitHub Action that renders an open-source contribution banner (SVG + PNG) for your profile README. It measures what you shipped **in other people's repositories** — merged PRs, reviews given, projects you contributed to and their combined reach — rather than counting stars on your own work.
+A GitHub Action that renders an open-source contribution banner (SVG + PNG) for your profile README. It measures what you shipped **in other people's repositories** — merged PRs, reviews given, projects you contributed to, issues you filed that got resolved — rather than counting stars on your own work.
 
 Inspired by the [githubtimeline.com](https://githubtimeline.com) layout.
 

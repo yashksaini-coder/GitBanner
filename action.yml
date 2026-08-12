@@ -1,5 +1,5 @@
 name: GitBanner Profile Card
-description: 'Generate an open-source contribution banner: PRs merged into other people''s repos, reviews given, projects shipped to and their reach (SVG + PNG).'
+description: 'Generate an open-source contribution banner: PRs merged into other people''s repos, reviews given, projects shipped to, issues resolved (SVG + PNG).'
 author: yashksaini-coder
 branding:
   icon: bar-chart-2
