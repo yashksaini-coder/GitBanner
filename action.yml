@@ -59,7 +59,7 @@ inputs:
         ships-in    languages of the external projects you ship in
         reviews     code reviews you gave on others' repos
         projects    distinct external projects you've landed work in
-        issues      issues opened per year, resolution rate
+        issues      issues filed in others' repos that got resolved, per year
       Mini tiles (short):
         biggest-project, merge-rate, own-stars
 
