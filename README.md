@@ -190,7 +190,7 @@ npm run inspect -- --fixture tests/fixtures/raw.json
 
 # Machine-readable JSON, pipeable to jq
 npm run --silent inspect -- --user <login> --json \
-  | jq '.stats | {prsMergedExternal, externalRepoCount, combinedReach, mergeRatePct}'
+  | jq '.stats | {prsMergedExternal, externalRepoCount, languageCount, mergeRatePct}'
 ```
 
 Flags: `-u/--user`, `-t/--token`, `-f/--fixture`, `--include-private`,
