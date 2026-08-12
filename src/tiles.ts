@@ -109,7 +109,9 @@ export const TILES: Record<string, TileDef> = {
           theme,
         })),
         stats: [
-          { value: n(pulse.total), label: 'commits · 52 weeks' },
+          // The 52-week scope lives in the caption — repeating it here made
+          // the label overflow its column and shrink out of alignment.
+          { value: n(pulse.total), label: 'total commits' },
           { value: `${pulse.activeWeeks} of 52`, label: 'active weeks' },
           {
             value: n(pulse.best.count),

@@ -40,7 +40,7 @@ describe('toSvg', () => {
     expect(svg.slice(svg.indexOf('Top projects'))).toContain('#f85149');
     expect(svg).toContain('my commits per week');
     expect(svg).toContain(`top ${stats.commitPulse.repoCount} repos`);
-    expect(svg).toContain('commits · 52 weeks');
+    expect(svg).toContain('total commits');
     expect(svg).toContain(`${stats.commitPulse.activeWeeks} of 52`);
     expect(svg).toContain(`best week · ${stats.commitPulse.best.month}`);
     // month ticks appear only at boundaries: ~12 labelled weeks of 52
