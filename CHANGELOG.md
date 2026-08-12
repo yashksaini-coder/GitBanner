@@ -5,6 +5,41 @@ All notable changes to GitBanner will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-08-12
+
+### Added
+
+- **Commit pulse card** in slot 1: my commits per week over the trailing 52
+  weeks as a gradient area wave with month ticks at true month boundaries.
+  Data comes from the REST participation endpoint — the `owner` series summed
+  across my 12 most recently pushed own repos; 202-pending repos are retried
+  then skipped and the caption states how many repos the sum covers. Private
+  repos are sampled only with `include-private` (counts only, never names).
+  Stat trio: total commits, active weeks of 52, best week with its month.
+
+### Changed
+
+- **16-bit CLI/TUI type system.** Silkscreen 700 carries the card titles and
+  VT323 carries every class that can hold a number — display values,
+  captions, stat labels, ticks, mini titles and radar names. The split is
+  digit honesty: Pixelify Sans was tried for body text and rejected because
+  its pixel-grid glyphs blur at card sizes (5 read as 8, C as G); VT323's
+  terminal digits stay unambiguous at every size on this canvas. The embedded
+  subsets shrank from 44KB to 16KB of woff2.
+- The commit pulse wears green (the activity ramp's cap hue, tying the two
+  cadence cards) and the Top projects mini wears red, so the mini row reads
+  red / blue / green.
+- The pulse's first stat label is 'total commits' — the 52-week scope already
+  lives in the caption, and repeating it overflowed the column.
+
+### Removed
+
+- **The Pull requests card is benched, not deleted**: its tile block, the
+  popularitySpectrum payload field, the bucketByPopularity builder and its
+  tests are commented out in place with restore notes. `merged-prs` is no
+  longer a valid `tiles` key while benched; every other card still fetches
+  merged-PR pages as before.
+
 ## [1.2.1] - 2026-08-11
 
 ### Fixed

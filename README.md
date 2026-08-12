@@ -37,7 +37,7 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - uses: yashksaini-coder/GitBanner@v1
+      - uses: yashksaini-coder/GitBanner@v1.3.0
         with:
           github-token: ${{ secrets.GITBANNER_PAT }}
 ```
@@ -50,7 +50,9 @@ jobs:
 
 ### Pin to a commit SHA for stricter supply-chain safety
 
-`@v1` floats to the latest release in the v1 series. For full immutability, pin to a commit SHA:
+The examples pin the current release, `v1.3.0`. `@v1` floats to the latest
+release in the v1 series if you'd rather track it. For full immutability, pin
+to a commit SHA:
 
 ```yaml
 - uses: yashksaini-coder/GitBanner@<full-sha>
@@ -229,7 +231,7 @@ The period appears on the pull-requests and activity cards.
 
 ```yaml
 # A "what I shipped last month" card
-- uses: yashksaini-coder/GitBanner@v1
+- uses: yashksaini-coder/GitBanner@v1.3.0
   with:
     github-token: ${{ secrets.GITBANNER_PAT }}
     since: 2026-07-01
@@ -256,7 +258,7 @@ needs and skips everything nothing asked for.
 ```yaml
 # Pure external-contribution banner. Skips repository pagination entirely,
 # because no selected tile needs your own repos.
-- uses: yashksaini-coder/GitBanner@v1
+- uses: yashksaini-coder/GitBanner@v1.3.0
   with:
     github-token: ${{ secrets.GITBANNER_PAT }}
     tiles: activity,reviews
@@ -275,11 +277,14 @@ workflow can't quietly delete a tile.
 
 ## Fonts
 
-Inter and JetBrains Mono subsets are embedded in every SVG as `@font-face`
-data URIs, and the PNG renderer loads the same subsets with system fonts
-disabled — the card renders identically on every machine and in every browser.
-Regenerate the subsets with `npm run build:fonts`. (U+2605 ★ is not in either
-face; rendered text spells out "stars" instead.)
+The banner wears a 16-bit CLI/TUI type system: Silkscreen carries the card
+titles and VT323 carries everything that can hold a number — values,
+captions, labels and ticks, whose terminal digits stay unambiguous at every
+size. Both subsets are embedded in every SVG as `@font-face` data URIs, and
+the PNG renderer loads the same subsets with system fonts disabled — the card
+renders identically on every machine and in every browser. Regenerate the
+subsets with `npm run build:fonts`. (U+2605 ★ is not in either face; rendered
+text spells out "stars" instead.)
 
 ## Why the drive-by filter exists
 
