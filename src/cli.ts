@@ -46,7 +46,7 @@ async function main(): Promise<void> {
     console.log(
       `Fetching data for ${args.user}${window ? ` (${window.label})` : ''} — ${tiles.length} tiles need: ${[...needs].join(', ') || 'profile only'}`,
     );
-    raw = await fetchAll({ username: args.user, token, needs, window });
+    raw = await fetchAll({ username: args.user, token, needs, window, includePrivate: args.includePrivate });
   }
 
   const excludeRepos = computeExclude(args.exclude, raw.profile.login);

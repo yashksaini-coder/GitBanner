@@ -207,15 +207,11 @@ Flags: `-u/--user`, `-t/--token`, `-f/--fixture`, `--include-private`,
 
 ## What it shows
 
-Ten tiles by default, in two rows.
-
-**Row 1** leads with one hero tile — `merged-prs`, at double width, with a bar
-chart of where that work landed — followed by supporting stat tiles. Exactly one
-hero renders per card; selecting two is an error.
+Nine tiles by default: six equal chart cards in two rows, plus a mini row.
 
 | Tile | Shows |
 |---|---|
-| `merged-prs` | Area chart of the current year's merged PRs across the popularity spectrum (fixed star decades: <10 → 10k+) · merged-for-others, merge-rate and top-repo stats |
+| `commit-pulse` | Area wave of my commits per week over the trailing 52 weeks, summed across my most recently pushed repos (REST participation stats, owner series) · total, active weeks and best week. The benched `merged-prs` popularity-spectrum card stays in the source, commented out, for an easy restore |
 | `reviews` | Code reviews you gave on other people's repos |
 | `projects` | Distinct external projects you've landed work in |
 | `ships-in` | A straight-edged radar of your top 8 **programming** languages by project count — linguist's markup/data/prose classes (HTML, CSS, JSON, notebooks) don't count toward the claim. Labels and vertex dots wear each language's own colour. Falls back to pills below 3 languages |
@@ -263,12 +259,13 @@ needs and skips everything nothing asked for.
 - uses: yashksaini-coder/GitBanner@v1
   with:
     github-token: ${{ secrets.GITBANNER_PAT }}
-    tiles: merged-prs,activity,reviews
+    tiles: activity,reviews
 ```
 
 | Tile | Needs |
 |---|---|
-| `merged-prs`, `activity`, `projects`, `ships-in`, `biggest-project`, `merge-rate` | merged PR pages |
+| `activity`, `projects`, `ships-in`, `biggest-project`, `merge-rate` | merged PR pages |
+| `commit-pulse` | repository pagination + one REST participation call per sampled repo (up to 12; 202-pending repos are retried, then skipped) |
 | `reviews` | one aliased contributions request |
 | `issues` | one aliased issue-search request (per-year counts) |
 | `own-stars` | repository pagination |

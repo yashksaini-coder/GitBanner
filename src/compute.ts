@@ -239,7 +239,11 @@ export function aggregate(
     // PRs into huge repos belong in the top decade, honestly. All-time cards
     // scope to the current UTC year (the tile tells this year's story); a
     // windowed card's PRs are already range-filtered, so no extra year filter.
-    popularitySpectrum: bucketByPopularity(thisYearRepos),
+    // Benched with the merged-prs card (commit-pulse holds its slot). Restore
+    // by uncommenting here, the bucketByPopularity block below, and the
+    // matching spots in types.ts and tiles.ts.
+    // popularitySpectrum: bucketByPopularity(thisYearRepos),
+    commitPulse: buildCommitPulse(raw.weeklyCommits ?? [], raw.pulseRepoCount ?? 0),
     // This year's ranking for the top-projects mini; falls back to the
     // all-time list at the tile when the year is empty.
     topExternalThisYear: thisYearRepos
@@ -319,31 +323,72 @@ function bucketByMonth(
   return buckets;
 }
 
-const POPULARITY_LABELS = ["<10", "10+", "100+", "1k+", "10k+"];
+// Benched with the merged-prs card — see the commitPulse note in aggregate().
+// const POPULARITY_LABELS = ["<10", "10+", "100+", "1k+", "10k+"];
+//
+// /**
+//  * Merged PRs summed into fixed star-magnitude decades. Fixed buckets (not
+//  * data-driven) so two users' charts — or the same user a year apart — are
+//  * directly comparable, and an empty tier renders as an honest gap.
+//  */
+// function bucketByPopularity(
+//   repos: ExternalRepo[],
+// ): { label: string; count: number }[] {
+//   const buckets = POPULARITY_LABELS.map((label) => ({ label, count: 0 }));
+//   for (const repo of repos) {
+//     const idx =
+//       repo.stars < 10
+//         ? 0
+//         : repo.stars < 100
+//           ? 1
+//           : repo.stars < 1000
+//             ? 2
+//             : repo.stars < 10000
+//               ? 3
+//               : 4;
+//     buckets[idx].count += repo.mergedPrs;
+//   }
+//   return buckets;
+// }
+
+const MONTH_ABBR = [
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+];
 
 /**
- * Merged PRs summed into fixed star-magnitude decades. Fixed buckets (not
- * data-driven) so two users' charts — or the same user a year apart — are
- * directly comparable, and an empty tier renders as an honest gap.
+ * The commit pulse: weekly commit sums (oldest first) turned into wave points
+ * with a short month name where the month turns over, plus the trio the card
+ * shows — total, active weeks, best week. The REST participation payload has
+ * no week timestamps, so week i is anchored at now minus (n-1-i) weeks; ticks
+ * are month-granular, so the approximation cannot mislabel them by more than
+ * the week that straddles a boundary.
  */
-function bucketByPopularity(
-  repos: ExternalRepo[],
-): { label: string; count: number }[] {
-  const buckets = POPULARITY_LABELS.map((label) => ({ label, count: 0 }));
-  for (const repo of repos) {
-    const idx =
-      repo.stars < 10
-        ? 0
-        : repo.stars < 100
-          ? 1
-          : repo.stars < 1000
-            ? 2
-            : repo.stars < 10000
-              ? 3
-              : 4;
-    buckets[idx].count += repo.mergedPrs;
-  }
-  return buckets;
+export function buildCommitPulse(
+  weekly: number[],
+  repoCount: number,
+): StatsPayload['commitPulse'] {
+  const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+  const now = Date.now();
+  // Anchor on the week BEFORE the window so week 0 is only labelled when it
+  // truly starts a month — a forced first label collides with the next
+  // boundary when they land a week or two apart.
+  let prevMonth = new Date(now - weekly.length * WEEK_MS).getUTCMonth();
+  let best = { count: 0, month: '' };
+  let total = 0;
+  let activeWeeks = 0;
+
+  const weeks = weekly.map((count, i) => {
+    const month = new Date(now - (weekly.length - 1 - i) * WEEK_MS).getUTCMonth();
+    const label = month !== prevMonth ? MONTH_ABBR[month] : '';
+    prevMonth = month;
+    total += count;
+    if (count > 0) activeWeeks++;
+    if (count > best.count) best = { count, month: MONTH_ABBR[month] };
+    return { label, count };
+  });
+
+  return { weeks, total, activeWeeks, best, repoCount };
 }
 
 /** One entry per external repo, ranked by how much of the user's work it took. */

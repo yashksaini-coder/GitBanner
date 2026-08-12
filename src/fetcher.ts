@@ -17,6 +17,8 @@ interface FetchOptions {
   needs: Set<DataNeed>;
   /** Scope the card to a date range instead of all time. */
   window?: DateWindow | null;
+  /** Let the commit pulse sample private repos (counts only, never names). */
+  includePrivate?: boolean;
 }
 
 type GqlClient = typeof graphql;
@@ -42,6 +44,10 @@ export async function fetchAll(opts: FetchOptions): Promise<RawData> {
   const wantContributions =
     needs.has("reviews") || (window !== null && needs.has("prs"));
 
+  // The commit pulse samples the user's own repos, so it shares one repo
+  // pagination with the own-stars tile instead of adding a second.
+  const wantOwnRepos = needs.has("ownRepos") || needs.has("commitPulse");
+
   const [mergedPrs, reviewYears, issueYears, ownRepos] = await Promise.all([
     needs.has("prs") ? fetchMergedPrs(client, username) : Promise.resolve([]),
     wantContributions
@@ -50,10 +56,17 @@ export async function fetchAll(opts: FetchOptions): Promise<RawData> {
     needs.has("issues")
       ? fetchIssueYears(client, username, head.profile.createdAt, window)
       : Promise.resolve([]),
-    needs.has("ownRepos")
-      ? fetchOwnRepos(client, username)
-      : Promise.resolve([]),
+    wantOwnRepos ? fetchOwnRepos(client, username) : Promise.resolve([]),
   ]);
+
+  const pulse = needs.has("commitPulse")
+    ? await fetchWeeklyCommits(
+        opts.token,
+        username,
+        ownRepos,
+        opts.includePrivate ?? false,
+      )
+    : { weeks: [], repoCount: 0 };
 
   return {
     profile: head.profile,
@@ -62,6 +75,8 @@ export async function fetchAll(opts: FetchOptions): Promise<RawData> {
     mergedPrs,
     reviewYears,
     ownRepos,
+    weeklyCommits: pulse.weeks,
+    pulseRepoCount: pulse.repoCount,
     window,
   };
 }
@@ -402,6 +417,82 @@ async function fetchIssueYears(
     .filter((y) => y.opened > 0 || y.closed > 0 || window !== null);
 }
 
+// --- commit pulse ---------------------------------------------------------
+// REST participation stats: the last 52 weeks of commit counts per repo,
+// split into `all` and `owner`. Summing the `owner` series across the user's
+// own most recently pushed repos gives "my commits per week" — the weekly
+// consistency story. The stats are computed lazily server-side, so a cold
+// repo answers 202 until the numbers are ready; those repos are retried,
+// then skipped, and pulseRepoCount reports what the sum actually covers.
+
+/** Most recently pushed own repos the pulse samples — recent pushes hold
+ * essentially all recent commits, and 12 REST calls stay cheap. */
+const PULSE_REPO_SAMPLE = 12;
+const PULSE_WEEKS = 52;
+
+export async function fetchWeeklyCommits(
+  token: string,
+  login: string,
+  repos: OwnRepo[],
+  includePrivate: boolean,
+): Promise<{ weeks: number[]; repoCount: number }> {
+  const sample = repos
+    .filter((r) => !r.isFork && (includePrivate || !r.isPrivate))
+    .sort((a, b) => Date.parse(b.pushedAt) - Date.parse(a.pushedAt))
+    .slice(0, PULSE_REPO_SAMPLE);
+
+  const weeks = new Array<number>(PULSE_WEEKS).fill(0);
+  let repoCount = 0;
+  await Promise.all(
+    sample.map(async (repo) => {
+      const owner = await fetchParticipation(token, login, repo.name);
+      if (!owner) return;
+      addWeeks(weeks, owner);
+      repoCount++;
+    }),
+  );
+  return { weeks, repoCount };
+}
+
+/** Sum a repo's owner series into the running total, index-aligned. */
+export function addWeeks(total: number[], owner: number[]): void {
+  for (let i = 0; i < total.length; i++) total[i] += owner[i] ?? 0;
+}
+
+async function fetchParticipation(
+  token: string,
+  login: string,
+  repo: string,
+): Promise<number[] | null> {
+  const url = `https://api.github.com/repos/${login}/${repo}/stats/participation`;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const res = await fetch(url, {
+      headers: {
+        authorization: `Bearer ${token}`,
+        accept: "application/vnd.github+json",
+        "x-github-api-version": "2026-03-10",
+        "user-agent": "gitbanner",
+      },
+    });
+    if (res.status === 200) {
+      const body = (await res.json()) as { owner?: number[] };
+      return body.owner ?? null;
+    }
+    if (res.status !== 202) {
+      console.warn(
+        `GitBanner: participation stats for ${login}/${repo} failed (${res.status}); repo skipped from the commit pulse.`,
+      );
+      return null;
+    }
+    // 202: GitHub is still computing the stats; give it a moment.
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+  }
+  console.warn(
+    `GitBanner: participation stats for ${login}/${repo} still computing; repo skipped from the commit pulse.`,
+  );
+  return null;
+}
+
 // --- own repos ----------------------------------------------------------
 // Only what the own-stars tile needs. No languages, no dates, no commit
 // history — those all went with the tiles that used them.
@@ -419,6 +510,7 @@ const OWN_REPOS_QUERY = /* GraphQL */ `
           isFork
           isPrivate
           stargazerCount
+          pushedAt
         }
       }
     }
@@ -442,6 +534,7 @@ async function fetchOwnRepos(
             isFork: boolean;
             isPrivate: boolean;
             stargazerCount: number;
+            pushedAt: string;
           }>;
         };
       };
@@ -454,6 +547,7 @@ async function fetchOwnRepos(
             isFork: boolean;
             isPrivate: boolean;
             stargazerCount: number;
+            pushedAt: string;
           }>;
         };
       };
@@ -465,6 +559,7 @@ async function fetchOwnRepos(
         isFork: node.isFork,
         isPrivate: node.isPrivate,
         stars: node.stargazerCount,
+        pushedAt: node.pushedAt,
       });
     }
 

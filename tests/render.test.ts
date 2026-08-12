@@ -25,24 +25,25 @@ describe('toSvg', () => {
 
   it('renders the external contribution headline numbers', () => {
     expect(svg).toContain(stats.prsMergedExternal.toLocaleString('en-US'));
-    expect(svg).toContain('Pull requests');
+    expect(svg).toContain('Commit pulse');
     expect(svg).toContain('Projects shipped to');
     expect(svg).not.toContain('Combined reach');
+    // merged-prs is benched, not deleted: the registry drops it while its
+    // block stays commented in tiles.ts for an easy restore.
+    expect(svg).not.toContain('popularity spectrum');
   });
 
-  it('pull requests card is a popularity-spectrum area, top repo in the stats', () => {
-    expect(svg).toContain('url(#gbh-wave)');
-    expect(svg).toContain('popularity spectrum');
-    for (const label of ['&lt;10', '10+', '100+', '1k+', '10k+']) {
-      expect(svg).toContain(label);
-    }
-    // the top-repo stat is the YEAR's leader (all-time fallback when empty)
-    const yearTop = stats.topExternalThisYear[0] ?? {
-      name: stats.externalRepos[0].name,
-      value: stats.externalRepos[0].mergedPrs,
-    };
-    expect(svg).toContain(yearTop.name);
-    expect(svg).toContain(`top repo · ${yearTop.value.toLocaleString('en-US')} PRs`);
+  it('commit pulse card is a weekly wave with month ticks and the trio', () => {
+    expect(svg).toContain('url(#gbp-pulse)');
+    expect(svg).toContain('my commits per week');
+    expect(svg).toContain(`top ${stats.commitPulse.repoCount} repos`);
+    expect(svg).toContain('commits · 52 weeks');
+    expect(svg).toContain(`${stats.commitPulse.activeWeeks} of 52`);
+    expect(svg).toContain(`best week · ${stats.commitPulse.best.month}`);
+    // month ticks appear only at boundaries: ~12 labelled weeks of 52
+    const monthTicks = stats.commitPulse.weeks.filter((w) => w.label !== '').length;
+    expect(monthTicks).toBeGreaterThanOrEqual(11);
+    expect(monthTicks).toBeLessThanOrEqual(14);
   });
 
   it('issues card charts resolved external issues as capped purple columns', () => {
@@ -148,8 +149,8 @@ describe('toSvg', () => {
   });
 
   it('height follows the selected tiles instead of being fixed', () => {
-    const both = toSvg(stats, 'dark', ['merged-prs', 'merge-rate']);
-    const statOnly = toSvg(stats, 'dark', ['merged-prs']);
+    const both = toSvg(stats, 'dark', ['commit-pulse', 'merge-rate']);
+    const statOnly = toSvg(stats, 'dark', ['commit-pulse']);
     const miniOnly = toSvg(stats, 'dark', ['merge-rate']);
 
     const heightOf = (s: string) => Number(/height="(\d+)"/.exec(s)![1]);
@@ -165,18 +166,18 @@ describe('toSvg', () => {
   });
 
   it('honours tile order', () => {
-    const svgA = toSvg(stats, 'dark', ['merged-prs', 'reviews']);
-    const svgB = toSvg(stats, 'dark', ['reviews', 'merged-prs']);
+    const svgA = toSvg(stats, 'dark', ['commit-pulse', 'reviews']);
+    const svgB = toSvg(stats, 'dark', ['reviews', 'commit-pulse']);
     expect(svgA).not.toContain('Projects shipped to');
-    expect(svgA.indexOf('Pull requests')).toBeLessThan(svgA.indexOf('Code review'));
-    expect(svgB.indexOf('Code review')).toBeLessThan(svgB.indexOf('Pull requests'));
+    expect(svgA.indexOf('Commit pulse')).toBeLessThan(svgA.indexOf('Code review'));
+    expect(svgB.indexOf('Code review')).toBeLessThan(svgB.indexOf('Commit pulse'));
   });
 
   it('registers six equal cards and three minis, momentum gone', () => {
     expect(TILE_KEYS).toHaveLength(9);
     expect(TILE_KEYS.filter((k) => TILES[k].kind === 'card')).toHaveLength(6);
     expect(TILE_KEYS.filter((k) => TILES[k].kind === 'mini')).toHaveLength(3);
-    expect(() => parseTiles('merged-prs,activity,issues')).not.toThrow();
+    expect(() => parseTiles('commit-pulse,activity,issues')).not.toThrow();
     expect(() => parseTiles('momentum')).toThrow(/Unknown tile/);
   });
 
@@ -204,22 +205,22 @@ describe('tile selection', () => {
   });
 
   it('rejects an unknown tile instead of silently dropping it', () => {
-    expect(() => parseTiles('merged-prs,typo-here')).toThrow(/Unknown tile/);
+    expect(() => parseTiles('commit-pulse,typo-here')).toThrow(/Unknown tile/);
   });
 
   it('trims, orders, and de-duplicates', () => {
-    expect(parseTiles(' reviews , merged-prs ,reviews')).toEqual(['reviews', 'merged-prs']);
+    expect(parseTiles(' reviews , commit-pulse ,reviews')).toEqual(['reviews', 'commit-pulse']);
   });
 
   it('only asks for the data the selected tiles need', () => {
     // The whole point of pass 2: no own-repo tile means no repo pagination.
-    expect([...neededData(['merged-prs'])]).toEqual(['prs']);
+    expect([...neededData(['commit-pulse'])]).toEqual(['commitPulse']);
     expect([...neededData(['reviews'])]).toEqual(['reviews']);
-    expect(neededData(['merged-prs', 'projects', 'ships-in']).has('ownRepos')).toBe(false);
+    expect(neededData(['commit-pulse', 'projects', 'ships-in']).has('ownRepos')).toBe(false);
     expect('reach' in TILES).toBe(false);
     expect(neededData(['own-stars']).has('ownRepos')).toBe(true);
     expect(neededData(['issues'])).toEqual(new Set(['issues']));
-    expect(neededData(DEFAULT_TILES)).toEqual(new Set(['prs', 'reviews', 'issues', 'ownRepos']));
+    expect(neededData(DEFAULT_TILES)).toEqual(new Set(['commitPulse', 'prs', 'reviews', 'issues', 'ownRepos']));
   });
 
   it('every registered tile declares at least one need', () => {
@@ -266,7 +267,7 @@ describe('date windows', () => {
     const empty = aggregate({ ...week, mergedPrs: [] });
     const out = toSvg(empty, 'dark');
     expect(out).toContain('</svg>');
-    expect(out).toContain('no external merges yet');
+    expect(out).toContain('no external merges in the last 12 months');
     expect(empty.biggestProject).toBeNull();
   });
 

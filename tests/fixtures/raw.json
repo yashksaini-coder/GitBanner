@@ -2757,151 +2757,176 @@
       "name": "C_coding",
       "isFork": false,
       "isPrivate": false,
-      "stars": 5
+      "stars": 5,
+      "pushedAt": "2026-07-01T00:00:00Z"
     },
     {
       "name": "Leetcode-Python-Solutions",
       "isFork": false,
       "isPrivate": false,
-      "stars": 14
+      "stars": 14,
+      "pushedAt": "2026-07-01T00:00:00Z"
     },
     {
       "name": "Admission-Chances-Machine-Learning-Project",
       "isFork": false,
       "isPrivate": false,
-      "stars": 16
+      "stars": 16,
+      "pushedAt": "2026-07-01T00:00:00Z"
     },
     {
       "name": "Bharat-Intern",
       "isFork": false,
       "isPrivate": false,
-      "stars": 15
+      "stars": 15,
+      "pushedAt": "2026-07-01T00:00:00Z"
     },
     {
       "name": "Prodigy-InfoTech",
       "isFork": false,
       "isPrivate": false,
-      "stars": 25
+      "stars": 25,
+      "pushedAt": "2026-07-01T00:00:00Z"
     },
     {
       "name": "Gemini-Bot",
       "isFork": false,
       "isPrivate": false,
-      "stars": 19
+      "stars": 19,
+      "pushedAt": "2026-07-01T00:00:00Z"
     },
     {
       "name": "Credit-Card-Fraud-Detection-Project",
       "isFork": true,
       "isPrivate": false,
-      "stars": 15
+      "stars": 15,
+      "pushedAt": "2026-07-01T00:00:00Z"
     },
     {
       "name": "CodePen",
       "isFork": false,
       "isPrivate": false,
-      "stars": 23
+      "stars": 23,
+      "pushedAt": "2026-07-01T00:00:00Z"
     },
     {
       "name": "Github-Markdown-Beginner-Guide",
       "isFork": false,
       "isPrivate": false,
-      "stars": 15
+      "stars": 15,
+      "pushedAt": "2026-07-01T00:00:00Z"
     },
     {
       "name": "Javascript-30Days",
       "isFork": false,
       "isPrivate": false,
-      "stars": 14
+      "stars": 14,
+      "pushedAt": "2026-07-01T00:00:00Z"
     },
     {
       "name": "Zomato-Data-Analysis",
       "isFork": false,
       "isPrivate": false,
-      "stars": 20
+      "stars": 20,
+      "pushedAt": "2026-07-01T00:00:00Z"
     },
     {
       "name": "Express-101",
       "isFork": false,
       "isPrivate": false,
-      "stars": 16
+      "stars": 16,
+      "pushedAt": "2026-07-01T00:00:00Z"
     },
     {
       "name": "August-Leetcode-Daily-2024",
       "isFork": false,
       "isPrivate": false,
-      "stars": 15
+      "stars": 15,
+      "pushedAt": "2026-07-01T00:00:00Z"
     },
     {
       "name": "Code-Whisper",
       "isFork": false,
       "isPrivate": false,
-      "stars": 17
+      "stars": 17,
+      "pushedAt": "2026-07-01T00:00:00Z"
     },
     {
       "name": "Update-Leetcode-Gist",
       "isFork": false,
       "isPrivate": false,
-      "stars": 15
+      "stars": 15,
+      "pushedAt": "2026-07-01T00:00:00Z"
     },
     {
       "name": "September-Leetcode-Daily-2024",
       "isFork": false,
       "isPrivate": false,
-      "stars": 13
+      "stars": 13,
+      "pushedAt": "2026-07-01T00:00:00Z"
     },
     {
       "name": "Task-Tracker",
       "isFork": false,
       "isPrivate": false,
-      "stars": 14
+      "stars": 14,
+      "pushedAt": "2026-07-01T00:00:00Z"
     },
     {
       "name": "Pet-Image-Classifier",
       "isFork": false,
       "isPrivate": false,
-      "stars": 11
+      "stars": 11,
+      "pushedAt": "2026-07-01T00:00:00Z"
     },
     {
       "name": "Leetcode-monthly-template",
       "isFork": false,
       "isPrivate": false,
-      "stars": 9
+      "stars": 9,
+      "pushedAt": "2026-07-01T00:00:00Z"
     },
     {
       "name": "October-Leetcode-Daily-2024",
       "isFork": false,
       "isPrivate": false,
-      "stars": 12
+      "stars": 12,
+      "pushedAt": "2026-07-01T00:00:00Z"
     },
     {
       "name": "yashksaini-coder",
       "isFork": false,
       "isPrivate": false,
-      "stars": 14
+      "stars": 14,
+      "pushedAt": "2026-07-01T00:00:00Z"
     },
     {
       "name": "copilot-vscode-codespace",
       "isFork": false,
       "isPrivate": false,
-      "stars": 8
+      "stars": 8,
+      "pushedAt": "2026-07-01T00:00:00Z"
     },
     {
       "name": "React-fundamentals",
       "isFork": false,
       "isPrivate": false,
-      "stars": 10
+      "stars": 10,
+      "pushedAt": "2026-07-01T00:00:00Z"
     },
     {
       "name": "web3-assignments",
       "isFork": true,
       "isPrivate": false,
-      "stars": 8
+      "stars": 8,
+      "pushedAt": "2026-07-01T00:00:00Z"
     },
     {
       "name": "Cohort-3-assignments",
       "isFork": true,
       "isPrivate": false,
-      "stars": 9
+      "stars": 9,
+      "pushedAt": "2026-07-01T00:00:00Z"
     }
   ],
   "window": null,
@@ -2931,5 +2956,60 @@
       "opened": 10,
       "closed": 6
     }
-  ]
+  ],
+  "weeklyCommits": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    2,
+    5,
+    0,
+    3,
+    8,
+    1,
+    0,
+    4,
+    6,
+    2,
+    0,
+    0,
+    7,
+    3,
+    1,
+    0,
+    2,
+    9,
+    4,
+    0,
+    1,
+    3,
+    0,
+    2,
+    5,
+    8,
+    2,
+    1,
+    0,
+    4,
+    6,
+    3,
+    2,
+    7,
+    1,
+    0,
+    5,
+    2,
+    3,
+    10,
+    6,
+    89
+  ],
+  "pulseRepoCount": 9
 }

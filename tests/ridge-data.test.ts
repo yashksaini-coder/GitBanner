@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { aggregate } from '../src/compute.js';
-import type { MergedPr, RawData, ReviewYear } from '../src/types.js';
+import type { RawData, ReviewYear } from '../src/types.js';
 
 const raw = JSON.parse(
   readFileSync(new URL('./fixtures/raw.json', import.meta.url), 'utf8'),
@@ -12,6 +12,8 @@ const base: RawData = {
   mergedPrs: [],
   prTotals: { opened: 0, merged: 0, open: 0 },
   issueYears: [],
+  weeklyCommits: [],
+  pulseRepoCount: 0,
   reviewYears: [],
   ownRepos: [],
   window: null,
@@ -33,18 +35,19 @@ const repo = (nameWithOwner: string, count: number, stars = 0) => ({
   count,
 });
 
-const pr = (nameWithOwner: string, mergedAt: string, stars = 0): MergedPr => ({
-  mergedAt,
-  repo: {
-    nameWithOwner,
-    owner: nameWithOwner.split('/')[0],
-    stars,
-    isPrivate: false,
-    languages: [],
-  },
-});
-
-const thisYear = new Date().getUTCFullYear();
+// Benched with the merged-prs card — helpers for the spectrum tests below.
+// const pr = (nameWithOwner: string, mergedAt: string, stars = 0): MergedPr => ({
+//   mergedAt,
+//   repo: {
+//     nameWithOwner,
+//     owner: nameWithOwner.split('/')[0],
+//     stars,
+//     isPrivate: false,
+//     languages: [],
+//   },
+// });
+//
+// const thisYear = new Date().getUTCFullYear();
 
 describe('reviewRidges — synthetic', () => {
   it('aligns counts to ascending years and zero-fills missing years', () => {
@@ -102,40 +105,41 @@ describe('reviewRidges — synthetic', () => {
   });
 });
 
-describe('popularitySpectrum — current-year scope', () => {
-  it('a PR merged last year does not bucket; sum equals current-year merges', () => {
-    const stats = aggregate({
-      ...base,
-      mergedPrs: [
-        pr('acme/old', `${thisYear - 1}-06-01T00:00:00Z`, 50000),
-        pr('acme/now', `${thisYear}-03-01T00:00:00Z`, 5),
-        pr('acme/now', `${thisYear}-04-01T00:00:00Z`, 5),
-      ],
-    });
-    const sum = stats.popularitySpectrum.reduce((s, b) => s + b.count, 0);
-    expect(sum).toBe(2);
-    expect(stats.popularitySpectrum.map((b) => b.count)).toEqual([2, 0, 0, 0, 0]);
-    // The all-time headline still counts the old PR.
-    expect(stats.prsMergedExternal).toBe(3);
-  });
-
-  it('keeps the window scope as-is on a windowed card, with no year filter', () => {
-    const stats = aggregate({
-      ...base,
-      mergedPrs: [
-        pr('acme/old', `${thisYear - 1}-06-01T00:00:00Z`, 50000),
-        pr('acme/now', `${thisYear}-03-01T00:00:00Z`, 5),
-      ],
-      window: {
-        since: `${thisYear - 1}-01-01T00:00:00Z`,
-        until: `${thisYear}-12-31T23:59:59Z`,
-        label: 'two years',
-      },
-    });
-    const sum = stats.popularitySpectrum.reduce((s, b) => s + b.count, 0);
-    expect(sum).toBe(2);
-  });
-});
+// Benched with the merged-prs card — restore alongside popularitySpectrum.
+  // describe('popularitySpectrum — current-year scope', () => {
+  // it('a PR merged last year does not bucket; sum equals current-year merges', () => {
+  // const stats = aggregate({
+  // ...base,
+  // mergedPrs: [
+  // pr('acme/old', `${thisYear - 1}-06-01T00:00:00Z`, 50000),
+  // pr('acme/now', `${thisYear}-03-01T00:00:00Z`, 5),
+  // pr('acme/now', `${thisYear}-04-01T00:00:00Z`, 5),
+  // ],
+  // });
+  // const sum = stats.popularitySpectrum.reduce((s, b) => s + b.count, 0);
+  // expect(sum).toBe(2);
+  // expect(stats.popularitySpectrum.map((b) => b.count)).toEqual([2, 0, 0, 0, 0]);
+  // // The all-time headline still counts the old PR.
+  // expect(stats.prsMergedExternal).toBe(3);
+  // });
+  //
+  // it('keeps the window scope as-is on a windowed card, with no year filter', () => {
+  // const stats = aggregate({
+  // ...base,
+  // mergedPrs: [
+  // pr('acme/old', `${thisYear - 1}-06-01T00:00:00Z`, 50000),
+  // pr('acme/now', `${thisYear}-03-01T00:00:00Z`, 5),
+  // ],
+  // window: {
+  // since: `${thisYear - 1}-01-01T00:00:00Z`,
+  // until: `${thisYear}-12-31T23:59:59Z`,
+  // label: 'two years',
+  // },
+  // });
+  // const sum = stats.popularitySpectrum.reduce((s, b) => s + b.count, 0);
+  // expect(sum).toBe(2);
+  // });
+  // });
 
 describe('fixture invariants', () => {
   const stats = aggregate(raw);

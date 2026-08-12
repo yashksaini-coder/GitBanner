@@ -54,7 +54,7 @@ async function main(): Promise<void> {
     if (!args.user) throw new Error('--user is required (or use --fixture <path>)');
     const token = args.token ?? process.env.GH_PAT ?? process.env.GITHUB_TOKEN;
     if (!token) throw new Error('Provide --token or set GH_PAT/GITHUB_TOKEN in .env');
-    raw = await fetchAll({ username: args.user, token, needs, window });
+    raw = await fetchAll({ username: args.user, token, needs, window, includePrivate: args.includePrivate });
   }
 
   const stats = aggregate(raw, {

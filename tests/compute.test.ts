@@ -132,7 +132,7 @@ describe('aggregate — external contribution metrics', () => {
       ...raw,
       ownRepos: [
         ...raw.ownRepos,
-        { name: 'secret-sauce', isFork: false, isPrivate: true, stars: 99999 },
+        { name: 'secret-sauce', isFork: false, isPrivate: true, stars: 99999, pushedAt: '2026-08-01T00:00:00Z' },
       ],
     };
     expect(aggregate(inflated).ownTopRepo?.name).not.toBe('secret-sauce');
@@ -244,36 +244,37 @@ describe('aggregate — external contribution metrics', () => {
     expect(ignored.languageCount).toBe(stats.languageCount - 1);
   });
 
-  it('buckets current-year merged PRs into fixed popularity decades', () => {
-    expect(stats.popularitySpectrum.map((b) => b.label)).toEqual([
-      '<10', '10+', '100+', '1k+', '10k+',
-    ]);
-    // The spectrum is scoped to the current UTC calendar year, so it sums to
-    // the current-year external merge count, not the all-time headline.
-    const thisYear = new Date().getUTCFullYear();
-    const expected = publicPrs.filter(
-      (p) =>
-        isExternal(p.repo.owner) &&
-        new Date(p.mergedAt).getUTCFullYear() === thisYear,
-    ).length;
-    const sum = stats.popularitySpectrum.reduce((s2, b) => s2 + b.count, 0);
-    expect(sum).toBe(expected);
-    // boundary check via synthetic repos, merged in the current year
-    const jan = `${thisYear}-01-01T00:00:00Z`;
-    const feb = `${thisYear}-02-01T00:00:00Z`;
-    const synth = aggregate({
-      ...raw,
-      mergedPrs: [
-        { mergedAt: jan, repo: { nameWithOwner: 'a/nine', owner: 'a', stars: 9, isPrivate: false, languages: [] } },
-        { mergedAt: feb, repo: { nameWithOwner: 'a/nine', owner: 'a', stars: 9, isPrivate: false, languages: [] } },
-        { mergedAt: jan, repo: { nameWithOwner: 'a/ten', owner: 'a', stars: 10, isPrivate: false, languages: [] } },
-        { mergedAt: feb, repo: { nameWithOwner: 'a/ten', owner: 'a', stars: 10, isPrivate: false, languages: [] } },
-        { mergedAt: jan, repo: { nameWithOwner: 'a/big', owner: 'a', stars: 10000, isPrivate: false, languages: [] } },
-        { mergedAt: feb, repo: { nameWithOwner: 'a/big', owner: 'a', stars: 10000, isPrivate: false, languages: [] } },
-      ],
-    });
-    expect(synth.popularitySpectrum.map((b) => b.count)).toEqual([2, 2, 0, 0, 2]);
-  });
+  // Benched with the merged-prs card — restore alongside popularitySpectrum.
+  // it('buckets current-year merged PRs into fixed popularity decades', () => {
+  // expect(stats.popularitySpectrum.map((b) => b.label)).toEqual([
+  // '<10', '10+', '100+', '1k+', '10k+',
+  // ]);
+  // // The spectrum is scoped to the current UTC calendar year, so it sums to
+  // // the current-year external merge count, not the all-time headline.
+  // const thisYear = new Date().getUTCFullYear();
+  // const expected = publicPrs.filter(
+  // (p) =>
+  // isExternal(p.repo.owner) &&
+  // new Date(p.mergedAt).getUTCFullYear() === thisYear,
+  // ).length;
+  // const sum = stats.popularitySpectrum.reduce((s2, b) => s2 + b.count, 0);
+  // expect(sum).toBe(expected);
+  // // boundary check via synthetic repos, merged in the current year
+  // const jan = `${thisYear}-01-01T00:00:00Z`;
+  // const feb = `${thisYear}-02-01T00:00:00Z`;
+  // const synth = aggregate({
+  // ...raw,
+  // mergedPrs: [
+  // { mergedAt: jan, repo: { nameWithOwner: 'a/nine', owner: 'a', stars: 9, isPrivate: false, languages: [] } },
+  // { mergedAt: feb, repo: { nameWithOwner: 'a/nine', owner: 'a', stars: 9, isPrivate: false, languages: [] } },
+  // { mergedAt: jan, repo: { nameWithOwner: 'a/ten', owner: 'a', stars: 10, isPrivate: false, languages: [] } },
+  // { mergedAt: feb, repo: { nameWithOwner: 'a/ten', owner: 'a', stars: 10, isPrivate: false, languages: [] } },
+  // { mergedAt: jan, repo: { nameWithOwner: 'a/big', owner: 'a', stars: 10000, isPrivate: false, languages: [] } },
+  // { mergedAt: feb, repo: { nameWithOwner: 'a/big', owner: 'a', stars: 10000, isPrivate: false, languages: [] } },
+  // ],
+  // });
+  // expect(synth.popularitySpectrum.map((b) => b.count)).toEqual([2, 2, 0, 0, 2]);
+  // });
 
   it('sums own stars over non-fork repos only', () => {
     const expected = raw.ownRepos
@@ -300,6 +301,8 @@ describe('aggregate — empty inputs', () => {
     mergedPrs: [],
     prTotals: { opened: 0, merged: 0, open: 0 },
     issueYears: [],
+    weeklyCommits: [],
+    pulseRepoCount: 0,
     reviewYears: [],
     ownRepos: [],
     window: null,
@@ -315,5 +318,51 @@ describe('aggregate — empty inputs', () => {
     expect(stats.recentExternalPrs).toBe(0);
     expect(stats.languages).toEqual([]);
     expect(topExternalByPrs(stats, 3)).toEqual([]);
+  });
+});
+
+describe('buildCommitPulse', () => {
+  it('sums totals, counts active weeks, finds the best week', async () => {
+    const { buildCommitPulse } = await import('../src/compute.js');
+    const weekly = new Array(52).fill(0);
+    weekly[10] = 3;
+    weekly[20] = 7;
+    weekly[51] = 2;
+    const pulse = buildCommitPulse(weekly, 9);
+    expect(pulse.total).toBe(12);
+    expect(pulse.activeWeeks).toBe(3);
+    expect(pulse.best.count).toBe(7);
+    expect(pulse.repoCount).toBe(9);
+    expect(pulse.weeks).toHaveLength(52);
+  });
+
+  it('labels only month boundaries — roughly one tick per month', async () => {
+    const { buildCommitPulse } = await import('../src/compute.js');
+    const pulse = buildCommitPulse(new Array(52).fill(1), 5);
+    const labelled = pulse.weeks.filter((w) => w.label !== '');
+    expect(labelled.length).toBeGreaterThanOrEqual(11);
+    expect(labelled.length).toBeLessThanOrEqual(13);
+    // only true boundaries are labelled, so ticks can never sit side by side
+    const idx = pulse.weeks.flatMap((w, i) => (w.label !== '' ? [i] : []));
+    for (let i = 1; i < idx.length; i++) {
+      expect(idx[i] - idx[i - 1]).toBeGreaterThanOrEqual(3);
+    }
+  });
+
+  it('handles the not-fetched case without inventing data', async () => {
+    const { buildCommitPulse } = await import('../src/compute.js');
+    const pulse = buildCommitPulse([], 0);
+    expect(pulse.weeks).toEqual([]);
+    expect(pulse.total).toBe(0);
+    expect(pulse.best.count).toBe(0);
+  });
+});
+
+describe('addWeeks', () => {
+  it('sums index-aligned and tolerates short owner arrays', async () => {
+    const { addWeeks } = await import('../src/fetcher.js');
+    const total = [1, 2, 3, 4];
+    addWeeks(total, [10, 0, 5]); // shorter than total
+    expect(total).toEqual([11, 2, 8, 4]);
   });
 });

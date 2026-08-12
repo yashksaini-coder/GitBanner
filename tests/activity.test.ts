@@ -28,6 +28,8 @@ function syntheticRaw(mergedAts: string[]): RawData {
     })),
     prTotals: { opened: 0, merged: 0, open: 0 },
     issueYears: [],
+    weeklyCommits: [],
+    pulseRepoCount: 0,
     reviewYears: [],
     ownRepos: [],
     window: null,

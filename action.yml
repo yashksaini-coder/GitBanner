@@ -54,7 +54,7 @@ inputs:
       repository pagination entirely.
 
       Chart cards (tall):
-        merged-prs  PRs merged into repos you don't own, by project popularity
+        commit-pulse  my commits per week across my newest repos, 52 weeks
         activity    external merges per month, trailing 12 months
         ships-in    languages of the external projects you ship in
         reviews     code reviews you gave on others' repos
@@ -63,7 +63,7 @@ inputs:
       Mini tiles (short):
         biggest-project, merge-rate, own-stars
 
-      Default: merged-prs,activity,ships-in,reviews,projects,issues,
+      Default: commit-pulse,activity,ships-in,reviews,projects,issues,
                biggest-project,merge-rate,own-stars
     required: false
     default: ''

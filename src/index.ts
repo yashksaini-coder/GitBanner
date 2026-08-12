@@ -34,7 +34,7 @@ async function run(): Promise<void> {
     core.info(
       `Fetching GitHub data for ${username}${window ? ` (${window.label})` : ''} — ${tiles.length} tiles need: ${[...needs].join(', ') || 'profile only'}`,
     );
-    const raw = await fetchAll({ username, token, needs, window });
+    const raw = await fetchAll({ username, token, needs, window, includePrivate });
 
     const payload = aggregate(raw, { excludeRepos, includePrivate, minMergedPrs, ignoreLanguages });
     core.info(

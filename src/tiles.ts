@@ -44,36 +44,77 @@ function chartGroup(_w: number, inner: string): string {
 
 export const TILES: Record<string, TileDef> = {
   // --- the six chart cards ----------------------------------------------
-  'merged-prs': {
+  // --- benched: the Pull requests card ---------------------------------
+  // Commit pulse holds its slot. To restore: uncomment this block, the
+  // popularitySpectrum lines in types.ts and compute.ts, put 'merged-prs'
+  // back in DEFAULT_TILES and action.yml's tiles docs, and re-enable its
+  // tests. Nothing else changed.
+  // 'merged-prs': {
+  // kind: 'card',
+  // needs: ['prs'],
+  // render: (p, theme, box) => {
+  // // This year's leader, matching the chart's year scope; all-time fallback.
+  // const top = p.topExternalThisYear[0] ?? topExternalByPrs(p, 1)[0];
+  // return renderStatTile({
+  // ...box,
+  // accent: theme.accents.prs,
+  // title: 'Pull requests',
+  // caption: `merged PRs across the popularity spectrum · ${p.periodLabel ?? new Date().getUTCFullYear()}`,
+  // // Area under the curve = your merged work, laid out by how popular
+  // // the receiving project is (fixed log-decade star buckets).
+  // chart: chartGroup(box.w, renderWave({
+  // w: box.w - 2 * PAD,
+  // h: CHART_H,
+  // points: p.popularitySpectrum,
+  // accent: theme.accents.prs,
+  // gradId: 'gbh-wave',
+  // gridlines: true,
+  // tickEvery: 1,
+  // emptyText: 'no external merges yet',
+  // theme,
+  // })),
+  // stats: [
+  // { value: n(p.prsMergedExternal), label: 'merged for others' },
+  // { value: `${p.mergeRatePct}%`, label: 'merge rate' },
+  // top
+  // ? { value: top.name, label: `top repo · ${n(top.value)} PRs` }
+  // : { value: '—', label: 'top repo' },
+  // ],
+  // theme,
+  // });
+  // },
+  // },
+
+  'commit-pulse': {
     kind: 'card',
-    needs: ['prs'],
+    needs: ['commitPulse'],
     render: (p, theme, box) => {
-      // This year's leader, matching the chart's year scope; all-time fallback.
-      const top = p.topExternalThisYear[0] ?? topExternalByPrs(p, 1)[0];
+      const pulse = p.commitPulse;
       return renderStatTile({
         ...box,
         accent: theme.accents.prs,
-        title: 'Pull requests',
-        caption: `merged PRs across the popularity spectrum · ${p.periodLabel ?? new Date().getUTCFullYear()}`,
-        // Area under the curve = your merged work, laid out by how popular
-        // the receiving project is (fixed log-decade star buckets).
+        title: 'Commit pulse',
+        caption: `my commits per week · top ${n(pulse.repoCount)} repos · 52 weeks`,
+        // One point per week (REST participation stats, owner series summed
+        // across my most recently pushed repos), month ticks at boundaries.
         chart: chartGroup(box.w, renderWave({
           w: box.w - 2 * PAD,
           h: CHART_H,
-          points: p.popularitySpectrum,
+          points: pulse.weeks,
           accent: theme.accents.prs,
-          gradId: 'gbh-wave',
+          gradId: 'gbp-pulse',
           gridlines: true,
           tickEvery: 1,
-          emptyText: 'no external merges yet',
+          emptyText: 'no commits in the last year',
           theme,
         })),
         stats: [
-          { value: n(p.prsMergedExternal), label: 'merged for others' },
-          { value: `${p.mergeRatePct}%`, label: 'merge rate' },
-          top
-            ? { value: top.name, label: `top repo · ${n(top.value)} PRs` }
-            : { value: '—', label: 'top repo' },
+          { value: n(pulse.total), label: 'commits · 52 weeks' },
+          { value: `${pulse.activeWeeks} of 52`, label: 'active weeks' },
+          {
+            value: n(pulse.best.count),
+            label: pulse.best.count > 0 ? `best week · ${pulse.best.month}` : 'best week',
+          },
         ],
         theme,
       });
@@ -298,7 +339,7 @@ export const TILES: Record<string, TileDef> = {
 };
 
 export const DEFAULT_TILES = [
-  'merged-prs',
+  'commit-pulse',
   'activity',
   'ships-in',
   'reviews',

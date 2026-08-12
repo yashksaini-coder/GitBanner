@@ -11,7 +11,7 @@ export interface Profile {
  * tiles and skips every query nothing asked for — dropping the own-repo tiles
  * skips repo pagination entirely, for example.
  */
-export type DataNeed = 'prs' | 'reviews' | 'issues' | 'ownRepos';
+export type DataNeed = 'prs' | 'reviews' | 'issues' | 'ownRepos' | 'commitPulse';
 
 export interface RepoLang {
   name: string;
@@ -83,6 +83,8 @@ export interface OwnRepo {
   isFork: boolean;
   isPrivate: boolean;
   stars: number;
+  /** Last push timestamp — ranks which repos the commit pulse samples. */
+  pushedAt: string;
 }
 
 /** Empty collections mean "no tile asked for it", not "the user has none". */
@@ -93,6 +95,14 @@ export interface RawData {
   issueYears: IssueYear[];
   reviewYears: ReviewYear[];
   ownRepos: OwnRepo[];
+  /**
+   * The user's commits per week summed across their most recently pushed own
+   * repos (REST participation stats, `owner` series), oldest week first,
+   * 52 entries. Empty when no tile asked for it.
+   */
+  weeklyCommits: number[];
+  /** How many repos the weekly sum actually covers (202-skips excluded). */
+  pulseRepoCount: number;
   /** Non-null when the card is scoped to a date range rather than all time. */
   window: DateWindow | null;
 }
@@ -157,13 +167,25 @@ export interface StatsPayload {
    * first, with how many were resolved; empty when not fetched.
    */
   issuesByYear: { year: number; opened: number; closed: number }[];
+  // Benched with the merged-prs card (commit-pulse holds its slot). Restore
+  // by uncommenting here, in compute.ts and in tiles.ts.
+  // /**
+  //  * Merged external PRs bucketed by the target repo's star magnitude —
+  //  * fixed log decades, so the x-axis is stable across users. Scoped to the
+  //  * current UTC calendar year (or to the window on a windowed card).
+  //  */
+  // popularitySpectrum: { label: string; count: number }[];
   /**
-   * Merged external PRs bucketed by the target repo's star magnitude —
-   * fixed log decades, so the x-axis is stable across users. Scoped to the
-   * current UTC calendar year (or to the window on a windowed card), so it
-   * sums to the current-year external merge count, not the all-time headline.
+   * My commits per week across my most recently pushed repos, trailing 52
+   * weeks. Labels carry the short month name at month boundaries, else ''.
    */
-  popularitySpectrum: { label: string; count: number }[];
+  commitPulse: {
+    weeks: { label: string; count: number }[];
+    total: number;
+    activeWeeks: number;
+    best: { count: number; month: string };
+    repoCount: number;
+  };
   /** This calendar year's external repos ranked by merged PRs (top 8). */
   topExternalThisYear: TopRepo[];
 
