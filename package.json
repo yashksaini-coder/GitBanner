@@ -48,6 +48,8 @@
   "devDependencies": {
     "@fontsource/inter": "^5.3.0",
     "@fontsource/jetbrains-mono": "^5.3.0",
+    "@fontsource/silkscreen": "^5.3.0",
+    "@fontsource/vt323": "^5.3.0",
     "@types/node": "^20.16.5",
     "@vercel/ncc": "^0.38.2",
     "subset-font": "^2.5.0",

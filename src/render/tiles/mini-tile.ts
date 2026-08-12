@@ -52,7 +52,7 @@ export function renderMiniTile(p: MiniTileProps): string {
     return `
     <g transform="translate(${x}, ${y})">
       <rect width="${w}" height="${h}" rx="22" fill="${theme.tile}" stroke="${theme.tileBorder}" stroke-width="1"/>
-      <text x="${PAD}" y="40" class="gb-text-bold" font-size="${fittedTitle.size}" fill="${theme.textPrimary}">${escapeXml(fittedTitle.text)}</text>
+      <text x="${PAD}" y="40" class="gb-mono" font-size="${fittedTitle.size + 2}" fill="${theme.textPrimary}">${escapeXml(fittedTitle.text)}</text>
       ${rows.join('')}
       ${sparkSvg}
     </g>
@@ -66,7 +66,7 @@ export function renderMiniTile(p: MiniTileProps): string {
   return `
     <g transform="translate(${x}, ${y})">
       <rect width="${w}" height="${h}" rx="22" fill="${theme.tile}" stroke="${theme.tileBorder}" stroke-width="1"/>
-      <text x="${PAD}" y="40" class="gb-text-bold" font-size="${fittedTitle.size}" fill="${theme.textPrimary}">${escapeXml(fittedTitle.text)}</text>
+      <text x="${PAD}" y="40" class="gb-mono" font-size="${fittedTitle.size + 2}" fill="${theme.textPrimary}">${escapeXml(fittedTitle.text)}</text>
       <text x="${PAD}" y="86" class="gb-display" font-size="${fittedValue.size}" fill="${theme.textPrimary}">${escapeXml(fittedValue.text)}</text>
       <text x="${PAD}" y="${h - 24}" class="gb-text" font-size="${fittedSub.size}" fill="${theme.textMuted}">${escapeXml(fittedSub.text)}</text>
       ${sparkSvg}

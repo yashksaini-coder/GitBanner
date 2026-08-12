@@ -3,14 +3,11 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { FONTS } from './font-data.js';
 
-export const FONT_STACK_DISPLAY =
-  '"Inter Display", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+export const FONT_STACK_DISPLAY = '"VT323", ui-monospace, Menlo, Consolas, monospace';
 
-export const FONT_STACK_TEXT =
-  '"Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+export const FONT_STACK_TEXT = '"Silkscreen", ui-sans-serif, system-ui, sans-serif';
 
-export const FONT_STACK_MONO =
-  '"JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace';
+export const FONT_STACK_MONO = '"VT323", ui-monospace, Menlo, Consolas, monospace';
 
 export function fontStyleBlock(): string {
   const faces = FONTS.map(
@@ -22,13 +19,15 @@ export function fontStyleBlock(): string {
       src: url(data:font/woff2;base64,${f.woff2}) format('woff2');
     }`,
   ).join('');
-  // The hero and tile values use the same sans as body text — a display or
-  // serif face on a headline figure reads as off-brand decoration.
+  // Digit honesty decides the split: Pixelify's 2/5/0 blur together below
+  // ~24px, so every class that can carry a number runs in VT323 (whose
+  // terminal digits stay unambiguous at any size on this canvas) and
+  // Pixelify 700 is reserved for the pure-word card titles.
   return `${faces}
-    .gb-display { font-family: ${FONT_STACK_TEXT}; font-weight: 700; letter-spacing: -0.02em; }
-    .gb-text { font-family: ${FONT_STACK_TEXT}; font-weight: 500; }
+    .gb-display { font-family: ${FONT_STACK_MONO}; font-weight: 400; }
+    .gb-text { font-family: ${FONT_STACK_MONO}; font-weight: 400; }
     .gb-text-bold { font-family: ${FONT_STACK_TEXT}; font-weight: 700; }
-    .gb-mono { font-family: ${FONT_STACK_MONO}; font-weight: 600; }
+    .gb-mono { font-family: ${FONT_STACK_MONO}; font-weight: 400; }
   `.trim();
 }
 
@@ -48,7 +47,7 @@ export function resvgFontOptions(): {
   return {
     loadSystemFonts: false,
     fontFiles: materializeFonts(),
-    defaultFontFamily: 'Inter',
+    defaultFontFamily: 'VT323',
   };
 }
 

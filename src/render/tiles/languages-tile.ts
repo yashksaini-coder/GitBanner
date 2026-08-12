@@ -90,7 +90,7 @@ function place(items: { label: string; color: string }[], maxWidth: number): Pil
   const out: Pill[] = [];
 
   for (const item of items) {
-    const w = Math.ceil(item.label.length * PILL_FONT_SIZE * 0.6 + PILL_PADDING_X * 2);
+    const w = Math.ceil(item.label.length * PILL_FONT_SIZE * 0.85 + PILL_PADDING_X * 2);
     if (cursorX + w > maxWidth && cursorX > 0) {
       cursorX = 0;
       cursorY += LINE_HEIGHT;

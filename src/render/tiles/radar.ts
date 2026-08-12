@@ -174,7 +174,7 @@ export function renderBurst(p: RadarProps): string {
       const name = fitText(lang.name, Math.max(40, avail - countW), [16, 15, 13], 0.55);
       // dx, not a space character: SVG whitespace collapsing eats a lone
       // space at a tspan boundary, gluing the count to the name.
-      return `<text x="${pos.x}" y="${pos.y}" text-anchor="${pos.anchor}" class="gb-text-bold" font-size="${name.size}" fill="${nameFill}">${escapeXml(name.text)}<tspan class="gb-mono" font-size="13" dx="6" dy="-1" fill="${theme.textSecondary}">${lang.repos}</tspan></text>`;
+      return `<text x="${pos.x}" y="${pos.y}" text-anchor="${pos.anchor}" class="gb-text" font-size="${name.size}" fill="${nameFill}">${escapeXml(name.text)}<tspan class="gb-mono" font-size="13" dx="6" dy="-1" fill="${theme.textSecondary}">${lang.repos}</tspan></text>`;
     })
     .join('');
 

@@ -6,20 +6,25 @@ import subsetFont from 'subset-font';
 
 const require = createRequire(import.meta.url);
 
+// 16-bit CLI/TUI system: Silkscreen 700 carries the card titles (clean,
+// unambiguous pixel caps — Pixelify's C read as G and its 5 as 8), VT323
+// carries every class that can hold a number (0.40 avg advance, terminal
+// digits that stay unambiguous at any size on this canvas).
 const FACES = [
-  { family: 'Inter', weight: 500, file: '@fontsource/inter/files/inter-latin-500-normal.woff2' },
-  { family: 'Inter', weight: 700, file: '@fontsource/inter/files/inter-latin-700-normal.woff2' },
   {
-    family: 'JetBrains Mono',
-    weight: 600,
-    file: '@fontsource/jetbrains-mono/files/jetbrains-mono-latin-600-normal.woff2',
+    family: 'Silkscreen',
+    weight: 700,
+    file: '@fontsource/silkscreen/files/silkscreen-latin-700-normal.woff2',
   },
+  { family: 'VT323', weight: 400, file: '@fontsource/vt323/files/vt323-latin-400-normal.woff2' },
 ];
 
-// Printable ASCII + the handful of typographic glyphs the cards use.
+// Printable ASCII + the typographic glyphs the cards actually render.
+// (★ ↑ ✦ left with the designs that used them — and the pixel faces don't
+// carry them anyway; a glyph absent from a subset renders as nothing.)
 let glyphs = '';
 for (let c = 0x20; c <= 0x7e; c++) glyphs += String.fromCharCode(c);
-glyphs += '★·—…↑✦– ';
+glyphs += '·—…–\u00a0';
 
 const fonts = [];
 for (const face of FACES) {
